@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>WeatherApp</display-name>
+
+  <listener>
+    <listener-class>com.controlj.addon.weather.ScheduledWeatherLookup</listener-class>
+  </listener>
+
+  <servlet>
+    <display-name>Controller Servlet</display-name>
+    <servlet-name>controller</servlet-name>
+    <servlet-class>com.controlj.addon.weather.servlets.Controller</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>controller</servlet-name>
+    <url-pattern>/controller</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+      <servlet-name>primdata</servlet-name>
+      <servlet-class>com.controlj.addon.weather.servlets.PrimDeclaration</servlet-class>
+  </servlet>
+    <servlet-mapping>
+      <servlet-name>primdata</servlet-name>
+      <url-pattern>/data</url-pattern>
+  </servlet-mapping>
+    <servlet>
+        <display-name>Primitive Update</display-name>
+        <servlet-name>PrimUpdate</servlet-name>
+        <servlet-class>com.controlj.addon.weather.servlets.PrimUpdate</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PrimUpdate</servlet-name>
+        <url-pattern>/dataupdate</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>WEB</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>login</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <form-login-config>
+      <form-login-page>/loginout/login.jsp</form-login-page>
+      <form-error-page>/loginout/fail_login.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+  <welcome-file-list>
+    <welcome-file>controller</welcome-file>
+  </welcome-file-list>
+</web-app>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dwml xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:noNamespaceSchemaLocation="http://www.nws.noaa.gov/forecasts/xml/DWMLgen/schema/DWML.xsd">  
+  <head> 
+    <product srsName="WGS 1984" concise-name="dwmlByDay" operational-mode="official"> 
+      <title>NOAA's National Weather Service Forecast by 24 Hour Period</title>  
+      <field>meteorological</field>  
+      <category>forecast</category>  
+      <creation-date refresh-frequency="PT1H">2011-10-31T20:45:10Z</creation-date> 
+    </product>  
+    <source> 
+      <more-information>http://www.nws.noaa.gov/forecasts/xml/</more-information>  
+      <production-center>Meteorological Development Laboratory
+        <sub-center>Product Generation Branch</sub-center>
+      </production-center>  
+      <disclaimer>http://www.nws.noaa.gov/disclaimer.html</disclaimer>  
+      <credit>http://www.weather.gov/</credit>  
+      <credit-logo>http://www.weather.gov/images/xml_logo.gif</credit-logo>  
+      <feedback>http://www.weather.gov/feedback.php</feedback> 
+    </source> 
+  </head>  
+  <data> 
+    <location> 
+      <location-key>point1</location-key>  
+      <point latitude="34.02" longitude="-84.62"/>
+    </location>  
+    <moreWeatherInformation applicable-location="point1">http://forecast.weather.gov/MapClick.php?textField1=34.02&amp;textField2=-84.62</moreWeatherInformation>  
+    <time-layout time-coordinate="local" summarization="24hourly"> 
+      <layout-key>k-p24h-n7-1</layout-key>  
+      <start-valid-time>2011-10-31T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-01T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-01T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-02T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-02T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-03T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-03T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-04T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-04T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-05T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-05T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-06T06:00:00-05:00</end-valid-time>  
+      <start-valid-time>2011-11-06T06:00:00-05:00</start-valid-time>  
+      <end-valid-time>2011-11-07T06:00:00-05:00</end-valid-time> 
+    </time-layout>  
+    <time-layout time-coordinate="local" summarization="12hourly"> 
+      <layout-key>k-p12h-n14-2</layout-key>  
+      <start-valid-time>2011-10-31T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-10-31T18:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-10-31T18:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-01T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-01T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-01T18:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-01T18:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-02T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-02T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-02T18:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-02T18:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-03T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-03T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-03T18:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-03T18:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-04T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-04T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-04T18:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-04T18:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-05T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-05T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-05T18:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-05T18:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-06T06:00:00-05:00</end-valid-time>  
+      <start-valid-time>2011-11-06T06:00:00-05:00</start-valid-time>  
+      <end-valid-time>2011-11-06T18:00:00-05:00</end-valid-time>  
+      <start-valid-time>2011-11-06T18:00:00-05:00</start-valid-time>  
+      <end-valid-time>2011-11-07T06:00:00-05:00</end-valid-time> 
+    </time-layout>  
+    <time-layout time-coordinate="local" summarization="24hourly"> 
+      <layout-key>k-p5h-n2-3</layout-key>  
+      <start-valid-time>2011-11-01T04:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-01T06:00:00-04:00</end-valid-time>  
+      <start-valid-time>2011-11-01T06:00:00-04:00</start-valid-time>  
+      <end-valid-time>2011-11-01T09:00:00-04:00</end-valid-time> 
+    </time-layout>  
+    <parameters applicable-location="point1"> 
+      <temperature type="maximum" units="Fahrenheit" time-layout="k-p24h-n7-1"> 
+        <name>Daily Maximum Temperature</name>  
+        <value>61</value>  
+        <value>67</value>  
+        <value>65</value>  
+        <value>61</value>  
+        <value>63</value>  
+        <value>67</value>  
+        <value>68</value> 
+      </temperature>  
+      <temperature type="minimum" units="Fahrenheit" time-layout="k-p24h-n7-1"> 
+        <name>Daily Minimum Temperature</name>  
+        <value>32</value>  
+        <value>37</value>  
+        <value>40</value>  
+        <value>47</value>  
+        <value>45</value>  
+        <value>46</value>  
+        <value xsi:nil="true"/> 
+      </temperature>  
+      <probability-of-precipitation type="12 hour" units="percent" time-layout="k-p12h-n14-2"> 
+        <name>12 Hourly Probability of Precipitation</name>  
+        <value>0</value>  
+        <value>0</value>  
+        <value>0</value>  
+        <value>0</value>  
+        <value>0</value>  
+        <value>12</value>  
+        <value>23</value>  
+        <value>22</value>  
+        <value>11</value>  
+        <value>7</value>  
+        <value>7</value>  
+        <value>10</value>  
+        <value>12</value>  
+        <value xsi:nil="true"/> 
+      </probability-of-precipitation>  
+      <weather time-layout="k-p24h-n7-1"> 
+        <name>Weather Type, Coverage, and Intensity</name>  
+        <weather-conditions weather-summary="Mostly Sunny"> 
+          <value coverage="patchy" intensity="none" weather-type="frost" qualifier="none"/> 
+        </weather-conditions>  
+        <weather-conditions weather-summary="Mostly Sunny"> 
+          <value coverage="patchy" intensity="none" weather-type="frost" qualifier="none"/> 
+        </weather-conditions>  
+        <weather-conditions weather-summary="Mostly Sunny"/>  
+        <weather-conditions weather-summary="Slight Chance Rain Showers"> 
+          <value coverage="slight chance" intensity="light" weather-type="rain showers" qualifier="none"/> 
+        </weather-conditions>  
+        <weather-conditions weather-summary="Partly Sunny"/>  
+        <weather-conditions weather-summary="Partly Sunny"/>  
+        <weather-conditions weather-summary="Fire from the Heavens"/>
+      </weather>  
+      <conditions-icon type="forecast-NWS" time-layout="k-p24h-n7-1"> 
+        <name>Conditions Icons</name>  
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/few.jpg</icon-link>  
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/few.jpg</icon-link>  
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/few.jpg</icon-link>  
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/hi_shwrs20.jpg</icon-link>  
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/sct.jpg</icon-link>  
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/sct.jpg</icon-link>  
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/sct.jpg</icon-link> 
+      </conditions-icon>  
+      <hazards time-layout="k-p5h-n2-3"> 
+        <name>Watches, Warnings, and Advisories</name>  
+        <hazard-conditions> 
+          <hazard hazardCode="FR.Y" phenomena="Frost" significance="Advisory" hazardType="long duration"> 
+            <hazardTextURL>http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ffc&amp;wwa=Frost%20Advisory</hazardTextURL> 
+          </hazard>  
+          <hazard hazardCode="FR.Y" phenomena="Frost" significance="Advisory" hazardType="long duration"> 
+            <hazardTextURL>http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=ffc&amp;wwa=Frost%20Advisory</hazardTextURL> 
+          </hazard> 
+        </hazard-conditions> 
+      </hazards> 
+    </parameters> 
+  </data> 
+</dwml>

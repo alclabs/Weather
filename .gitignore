@@ -1,0 +1,10 @@
+#ignore idea files
+*.iml
+*.ipr
+*.iws
+
+out/
+build/
+build.options
+gradle-app.setting
+.gradle/
