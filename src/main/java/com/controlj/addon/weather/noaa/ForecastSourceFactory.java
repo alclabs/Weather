@@ -25,6 +25,7 @@ package com.controlj.addon.weather.noaa;
 import com.controlj.addon.weather.data.ForecastSource;
 import com.controlj.addon.weather.data.WeatherIcon;
 import com.controlj.addon.weather.service.WeatherServiceException;
+import com.controlj.addon.weather.util.Logging;
 import org.dom4j.Document;
 import org.dom4j.Node;
 
@@ -73,14 +74,33 @@ public class ForecastSourceFactory {
     }
 
     private List<Date> getForecastDates(Document forecast) {
+        boolean problem = false;
         ArrayList<Date> result = new ArrayList<Date>();
         Node node = forecast.selectSingleNode("/dwml/data/parameters/temperature[@type='maximum']/@time-layout");
-        String timeLayout = node.getText();
-        List list = forecast.selectNodes("/dwml/data/time-layout/layout-key[text()='"+timeLayout+"']//following-sibling::start-valid-time");
-        for (Object o : list) {
-            try {
-                result.add(timeLayoutFormat.parse(((Node) o).getText()));
-            } catch (ParseException e) {result.add(null); }
+        if (node != null) {
+            String timeLayout = node.getText();
+            if (timeLayout != null) {
+                List list = forecast.selectNodes("/dwml/data/time-layout/layout-key[text()='"+timeLayout+"']//following-sibling::start-valid-time");
+                for (Object o : list) {
+                    try {
+                        result.add(timeLayoutFormat.parse(((Node) o).getText()));
+                    } catch (ParseException e) {
+                        result.add(null);
+                        Logging.println("Couldn't parse date in the forecast", e);
+                        problem = true;
+                    }
+                }
+                if (result.size() == 0) {
+                    Logging.println("Didn't find any days in forecast");
+                    problem = true;
+                }
+            }
+        } else {
+            Logging.println("Can't find max temperature in forecast");
+            problem = true;
+        }
+        if (problem) {
+            Logging.logDocument("forecast", "Problem parsing forecast dates", forecast);
         }
         return result;
     }
@@ -95,18 +115,34 @@ public class ForecastSourceFactory {
 
     private List<Float> getForecastTemps(Document forecast, String type) {
         ArrayList<Float> result = new ArrayList<Float>();
+        boolean problem = false;
 
         List list = forecast.selectNodes("/dwml/data/parameters/temperature[@type='"+type+"']//value");
         for (Object o : list) {
             try {
                 result.add(new Float(((Node)o).getText()));
-            } catch (NumberFormatException e) { result.add(null); }
+            } catch (NumberFormatException e) {
+                result.add(null);
+                String badText = ((Node)o).getText();
+                if (badText!=null && badText.length()>0) {
+                    Logging.println("Error parsing temperature in forecast of '"+badText+"'");
+                    problem = true;
+                }
+            }
+        }
+        if (problem) {
+            Logging.logDocument("forecast", "Problem parsing temperature", forecast);
         }
         return result;
     }
 
+    /*
+    Precipitation data is on a 12 hour cycle, so tere are 2 precipitation predictions for a day.
+    We return the max of these for the 25 hour cycle.
+     */
     private List<Float> getProbPrecip(Document forecast) {
         ArrayList<Float> result = new ArrayList<Float>();
+        boolean problem = false;
 
         List list = forecast.selectNodes("/dwml/data/parameters/probability-of-precipitation//value");
         boolean morning = true;
@@ -121,7 +157,17 @@ public class ForecastSourceFactory {
                     result.add(new Float(accumulate));
                 }
                 morning = !morning;
-            } catch (NumberFormatException e) { result.add(null); }
+            } catch (NumberFormatException e) {
+                result.add(null);
+                String badText = ((Node)o).getText();
+                if (badText!=null && badText.length()>0) {
+                    Logging.println("Error parsing prob precip in forecast of '"+badText+"'");
+                    problem = true;
+                }
+            }
+        }
+        if (problem) {
+            Logging.logDocument("forecast", "Problem parsing prob precip", forecast);
         }
         return result;
     }
