@@ -24,6 +24,7 @@ package com.controlj.addon.weather.config;
 import com.controlj.addon.weather.RuntimeInformation;
 import com.controlj.addon.weather.data.ConditionsSource;
 import com.controlj.addon.weather.data.StationSource;
+import com.controlj.addon.weather.servlets.PrimitiveServletBase;
 
 /**
  * A control program/zip code entry in the configuration data.  Each entry also stores whether
@@ -74,7 +75,7 @@ public class WeatherConfigEntry
 
       ConditionsSource lastConditionsData = rti.getLastConditionsData(this);
       if (lastConditionsData != null)
-         return lastConditionsData.getUpdateTime().toString();
+         return PrimitiveServletBase.timeFormat.format(lastConditionsData.getUpdateTime());
 
       return "";
    }

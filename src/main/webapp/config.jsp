@@ -82,12 +82,12 @@
     <table cellpadding="0" cellspacing="0">
         <tr>
             <td style="border:solid black 1px; margin-right:100px; padding-right:25px; position:relative;" rowspan="2">
-                <span class="boxheading">Control Programs to update:</span>
+                <span class="boxheading">Locations to update:</span>
                 <c:if test="${not empty config_data.list}">
                 <table cellpadding="0" cellspacing="0">
                     <tr>
                         <th>Delete</th>
-                        <th>Control Program</th>
+                        <th>Location Path</th>
                         <th>Zip Code</th>
                         <th>Metric</th>
                         <th>Last Update</th>
@@ -107,7 +107,7 @@
                 </c:if>
                 <form action="controller" method="post">
                 <div style="white-space:nowrap; margin-top:20px;">
-                    Control Program Path: <input type="text" name="cppath" size="25"/>
+                    Location Path: <input type="text" name="cppath" size="25"/>
                     Zip Code: <input type="text" name="zipcode" size="10"/>
                     <input type="radio" name="units" value="imperial" checked/>US Customary&nbsp;&nbsp;&nbsp;
                     <input type="radio" name="units" value="metric" />Metric&nbsp;&nbsp;
