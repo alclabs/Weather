@@ -89,6 +89,7 @@ public class EquipmentHandler
          {
             @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
             {
+               systemAccess.getSystemDataStore("not_real").getOutputStream();  // workaround for 4.1 SP1b bug
                for (PresentValue presentValue : presentValues)
                {
                   String referenceName = presentValue.getLocation().getReferenceName();
@@ -116,6 +117,7 @@ public class EquipmentHandler
          {
             @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
             {
+               systemAccess.getSystemDataStore("not_real").getOutputStream();   // workaround for 4.1 SP1b bug
                for (PresentValue presentValue : presentValues)
                {
                   String referenceName = presentValue.getLocation().getReferenceName();
@@ -143,6 +145,7 @@ public class EquipmentHandler
          {
             @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
             {
+               systemAccess.getSystemDataStore("not_real").getOutputStream();   // workaround for 4.1 SP1b bug
                for (PresentValue presentValue : presentValues)
                {
                   String referenceName = presentValue.getLocation().getReferenceName();
