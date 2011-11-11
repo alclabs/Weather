@@ -87,6 +87,11 @@ public enum ConditionsField
    observationTime(DateType),
 
    /**
+    * Field for {@link ConditionsSource#getObservationTime()}.getTime()/600000
+    */
+   observationStamp(IntegerType),
+
+   /**
     * Field for {@link ConditionsSource#getIcon()}.getDisplayName()
     */
    iconName(StringType),
@@ -181,6 +186,7 @@ public enum ConditionsField
          case windDirection:      return source.getWindDirection();
          case windDegrees:        return source.getWindDegrees();
          case observationTime:    return source.getObservationTime();
+         case observationStamp:   return (int)(source.getObservationTime().getTime()/600000);
          case iconName:           return source.getIcon().getDisplayName();
          case iconValue:          return source.getIcon().getValue();
       }
