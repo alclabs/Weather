@@ -85,11 +85,11 @@ public class ScheduledWeatherLookup implements ServletContextListener
 
       int conditionsRefresh = ConfigDataFactory.loadConfigData().getConditionsRefreshInMinutes();
       Logging.println("    current conditions updated at a fixed rate of every "+conditionsRefresh+" minutes");
-      conditionsUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(new ConditionsUpdate(), initialDelay, conditionsRefresh, TimeUnit.MINUTES);
+      conditionsUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(new ConditionsUpdate(), initialDelay*60, conditionsRefresh*60, TimeUnit.SECONDS);
 
       int forecastsRefresh = ConfigDataFactory.loadConfigData().getForecastsRefreshInMinutes();
       Logging.println("    forecasts updated at a fixed rate of every "+forecastsRefresh+" minutes");
-      forecastsUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(new ForecastsUpdate(), initialDelay, forecastsRefresh, TimeUnit.MINUTES);
+      forecastsUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(new ForecastsUpdate(), initialDelay*60, forecastsRefresh*60, TimeUnit.SECONDS);
    }
 
    /**

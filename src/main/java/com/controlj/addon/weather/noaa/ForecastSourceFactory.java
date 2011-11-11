@@ -178,7 +178,7 @@ public class ForecastSourceFactory {
         List list = forecast.selectNodes("/dwml/data/parameters/weather/weather-conditions");
         for (Object o : list) {
            String value = ((Node) o).valueOf("@weather-summary");
-           result.add(value.isEmpty() ? null : value);
+           result.add(value.length() == 0 ? null : value);
         }
         return result;
     }

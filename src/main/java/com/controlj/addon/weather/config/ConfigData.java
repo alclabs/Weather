@@ -66,7 +66,7 @@ public class ConfigData
             public void execute(SystemAccess systemAccess) throws Exception
             {
                DataStore store = systemAccess.getSystemDataStore(DATASTORE_NAME);
-               Properties properties = loadFile(store.getReader());
+               Properties properties = loadFile(store.getInputStream());
                extractConfig(new ConfigProperties(properties));
             }
          });
@@ -81,10 +81,10 @@ public class ConfigData
       }
    }
 
-   private Properties loadFile(Reader in) throws IOException
+   private Properties loadFile(InputStream in) throws IOException
    {
       Properties properties = new Properties();
-      properties.load(new BufferedReader(in));
+      properties.load(new BufferedInputStream(in));
       return properties;
    }
 
@@ -198,7 +198,7 @@ public class ConfigData
             {
                DataStore store = systemAccess.getSystemDataStore(DATASTORE_NAME);
                Properties properties = buildConfig();
-               properties.store(store.getWriter(), "");
+               properties.store(store.getOutputStream(), "");
             }
          });
       }

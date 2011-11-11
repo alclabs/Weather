@@ -1,7 +1,9 @@
 <%@ page import="com.controlj.addon.weather.data.*" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="com.controlj.addon.weather.servlets.PrimitiveServletBase" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.controlj.addon.weather.config.ConfigData" %>
+<%@ page import="com.controlj.addon.weather.config.WeatherConfigEntry" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
   ~ Copyright (c) 2010 Automated Logic Corporation
@@ -26,21 +28,15 @@
   --%>
 
 <%!
-    String formatValue(Object value)
-    {
-        if (value instanceof Date)
-        {
-            return PrimitiveServletBase.timeFormat.format(value);
-        } else
-        {
-            return value.toString();
-        }
+    String formatValue(Object value) {
+        return value instanceof Date ? PrimitiveServletBase.timeFormat.format(value) : value.toString();
     }
 %>
 <html>
   <head><title>Weather Settings</title></head>
   <style type="text/css">
-      body {font-family:sans-serif; color:black; }
+      body {
+          font-family:sans-serif; color:black; }
       a { color:black; }
       td { padding-left:1em; text-align:left; }
       th { padding-left:1em; text-align:left; }
@@ -58,6 +54,9 @@
         <span class="subtitle">powered by NOAA's National Weather Service</span>
     </div>
     <br/>
+    <%
+        ConfigData configData = (ConfigData) request.getAttribute("config_data");
+    %>
     <form action="controller" method="post">
         <table>
             <tr>
@@ -66,11 +65,11 @@
                     <table cellpadding="0" cellspacing="0" style="position:relative; top:-10px;">
                         <tr>
                             <td class="right">Current Conditions:</td>
-                            <td><input type="text" name="conditions_rate" size="4" value="${config_data.conditionsRefreshInMinutes}"/>minutes</td>
+                            <td><input type="text" name="conditions_rate" size="4" value="<%=configData.getConditionsRefreshInMinutes()%>"/>minutes</td>
                         </tr>
                         <tr>
                             <td class="right">Forecast:</td>
-                            <td><input type="text" name="forecasts_rate" size="4" value="${config_data.forecastsRefreshInMinutes}"/>minutes</td>
+                            <td><input type="text" name="forecasts_rate" size="4" value="<%=configData.getForecastsRefreshInMinutes()%>"/>minutes</td>
                             <td>&nbsp;<input type="submit" name="action" value="Apply"/></td>
                         </tr>
                     </table>
@@ -83,7 +82,10 @@
         <tr>
             <td style="border:solid black 1px; margin-right:100px; padding-right:25px; position:relative;" rowspan="2">
                 <span class="boxheading">Locations to update:</span>
-                <c:if test="${not empty config_data.list}">
+                <%
+                    List<WeatherConfigEntry> entryList = configData.getList();
+                    if (!entryList.isEmpty()) {
+                %>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
                         <th>Delete</th>
@@ -91,20 +93,24 @@
                         <th>Zip Code</th>
                         <th>Metric</th>
                         <th>Last Update</th>
-
                     </tr>
-                    <c:forEach var="entry" varStatus="loop" items="${config_data.list}">
+                    <%
+                        int index = 0;
+                        for (WeatherConfigEntry entry : entryList)
+                        {
+                    %>
                     <tr>
-                        <td class="del"><a href="controller?action=delete&item=${loop.index}">X</a></td>
-                        <td>${entry.cpPath}</td>
-                        <td>${entry.zipCode}</td>
-                        <td>${entry.metric}</td>
-                        <td>${entry.lastUpdate}</td>
-                        <td class="test"><a href="controller?action=show&item=${loop.index}">Show Data</a></td>
+                        <td class="del"><a href="controller?action=delete&item=<%=index%>">X</a></td>
+                        <td><%=entry.getCpPath()%></td>
+                        <td><%=entry.getZipCode()%></td>
+                        <td><%=entry.isMetric()%></td>
+                        <td><%=entry.getLastUpdate()%></td>
+                        <td class="test"><a href="controller?action=show&item=<%=index%>">Show Data</a></td>
                     </tr>
-                    </c:forEach>
+                    <%     ++index;
+                        } // end for (entryList) %>
                 </table>
-                </c:if>
+                <% } // end if (!entryList.isEmpty()) %>
                 <form action="controller" method="post">
                 <div style="white-space:nowrap; margin-top:20px;">
                     Location Path: <input type="text" name="cppath" size="25"/>
@@ -117,15 +123,16 @@
             </td>
         </tr>
     </table>
-    <c:if test="${not empty weather_zip}">
+    <%
+        String weatherZip = (String) request.getAttribute("weather_zip");
+        if (weatherZip != null && weatherZip.length() > 0) {
+    %>
     <div>
+        <h3>Results of reading weather data for <%=weatherZip%></h3>
         <%
             StationSource stationSource = (StationSource) request.getAttribute("weather_station");
-            ConditionsSource conditionsSource = (ConditionsSource) request.getAttribute("weather_conditions");
-            ForecastSource[] forecastSources = (ForecastSource[]) request.getAttribute("weather_forecast");
+            if (stationSource != null) {
         %>
-        <h3>Results of reading weather data for ${weather_zip}</h3>
-        <c:if test="${not empty weather_station}">
         <h4>Station Data</h4>
         <table>
             <tr>
@@ -149,8 +156,11 @@
                 }
             %>
         </table>
-        </c:if>
-        <c:if test="${not empty weather_conditions}">
+        <% } // end if ((stationSource != null)
+
+           ConditionsSource conditionsSource = (ConditionsSource) request.getAttribute("weather_conditions");
+           if (conditionsSource != null) {
+        %>
         <h4>Current Conditions (updateStamp is the number of 10 minute intervals between midnight Jan. 1, 1970 GMT and the update time)</h4>
         <table>
             <tr>
@@ -174,8 +184,11 @@
                 }
             %>
         </table>
-        </c:if>
-        <c:if test="${not empty weather_forecast}">
+        <% } // end if ((conditionsSource != null)
+
+           ForecastSource[] forecastSources = (ForecastSource[]) request.getAttribute("weather_forecast");
+           if (forecastSources != null) {
+        %>
         <h4>Forecast (replace the ? in the field with the day number to reference the value)</h4>
         <table>
             <tr>
@@ -209,6 +222,7 @@
                 }
             %>
         </table>
+        <% } // end if ((forecastSources != null) %>
         <h4>Weather Icons (all possible icon names and values)</h4>
         <table>
             <tr>
@@ -237,8 +251,7 @@
                 }
             %>
         </table>
-        </c:if>
     </div>
-    </c:if>
+    <% } // end if (weatherZip != null && weatherZip.length() > 0) %>
 </body>
 </html>
