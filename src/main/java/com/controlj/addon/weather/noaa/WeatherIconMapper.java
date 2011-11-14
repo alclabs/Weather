@@ -41,7 +41,7 @@ public class WeatherIconMapper
     */
    public WeatherIcon mapIconURL(String iconUrl)
    {
-      if (iconUrl == null || iconUrl.isEmpty())
+      if (iconUrl == null || iconUrl.length() == 0)
          return WeatherIcon.Unknown;
 
       Matcher matcher = ICON_URL_PATTERN.matcher(iconUrl);
