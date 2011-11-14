@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Weather Settings</title>
+    <link type="text/css" href="css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+    <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="js/weather.js"></script>
+    <style type="text/css">
+        body {font-family:sans-serif; color:black; }
+        a { color:black; }
+        td { padding-left:1em; text-align:left; }
+        th { padding-left:1em; text-align:left; }
+        input { margin-right:1em; }
+        .title { font-weight:bold; font-size:150%; }
+        .subtitle { font-style:italic; padding-left:2em; }
+        .right {text-align: right;}
+        .select { background-color: #c0e0ff; }
+        .ui-widget {font-size: .9em; }
+        .ui-button-text-only .ui-button-text { padding: 0.2em 1em; }
+        button.del { width: 20px; height: 20px; }
+        /* button.data { height: 1em; } */
+    </style>
+</head>
+<body>
+<div>
+    <span class="title">Weather</span>
+    <span class="subtitle">powered by NOAA's National Weather Service</span>
+</div>
+<form id="rates">
+<fieldset>
+    <legend>Refresh Rates:</legend>
+    <table>
+        <tr>
+            <td class="right">Current Conditions:</td>
+            <td><input type="text" id="condition_rate" name="condition_rate" size="4" value=""/>&nbsp;minutes</td>
+        </tr>
+        <tr>
+            <td class="right">Forecast:</td>
+            <td><input type="text" id="forecast_rate" name="forecast_rate" size="4" value=""/>&nbsp;minutes</td>
+            <td>&nbsp;<button id="submitrates" type="button">Apply</button></td>
+        </tr>
+    </table>
+</fieldset>
+    <input type="hidden" name="action" value="postrates">
+</form>
+<br/>
+<fieldset>
+    <legend>Locations to Update:</legend>
+    <table id="locations">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Location Path</th>
+                <th>Zip Code</th>
+                <th>Last Update</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <button id="addlocation">Add...</button>
+</fieldset>
+<div id="adddialog">
+    <form>
+        <table>
+            <tr>
+                <td nowrap="true">Location Path:&nbsp;</td>
+                <td><input type="text" name="newpath" id="newpath" value=""/></td>
+            </tr>
+            <tr>
+                <td>Zip Code:&nbsp;</td>
+                <td><input type="text" name="newzip" id="newzip" value=""/></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

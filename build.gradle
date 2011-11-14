@@ -17,6 +17,8 @@ dependencies {
    compile 'org.apache.httpcomponents:httpclient:4.1.2'
    compile 'commons-lang:commons-lang:2.4'
    compile 'dom4j:dom4j:1.6.1'
+   compile     'org.json:json:20090211'
+
 
    providedCompile 'com.controlj.green:addonsupport-api-addon:1.0.8'
    providedCompile 'javax.servlet:servlet-api:2.5'

@@ -33,6 +33,14 @@
         <servlet-name>PrimUpdate</servlet-name>
         <url-pattern>/dataupdate</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>AjaxController</servlet-name>
+        <servlet-class>com.controlj.addon.weather.servlets.AjaxController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxController</servlet-name>
+        <url-pattern>/ajaxcontroller</url-pattern>
+    </servlet-mapping>
 
     <security-constraint>
     <web-resource-collection>
