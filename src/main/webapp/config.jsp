@@ -1,8 +1,9 @@
 <%@ page import="com.controlj.addon.weather.data.*" %>
-<%@ page import="java.util.Date" %>
 <%@ page import="com.controlj.addon.weather.servlets.PrimitiveServletBase" %>
 <%@ page import="com.controlj.addon.weather.config.ConfigData" %>
 <%@ page import="com.controlj.addon.weather.config.WeatherConfigEntry" %>
+<%@ page import="com.controlj.addon.weather.util.Logging" %>
+<%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
@@ -53,6 +54,15 @@
         <span class="title">Weather</span>
         <span class="subtitle">powered by NOAA's National Weather Service</span>
     </div>
+    <% if (Logging.is41) { %>
+      <br/>
+      <div>
+          <p>
+              Warning: This add-on does not download weather data into control programs when using WebCTRL 4.  In order
+              to get values to download into a control program, you must be using WebCTRL 5 or later.
+          </p>
+      </div>
+    <% } %>
     <br/>
     <%
         ConfigData configData = (ConfigData) request.getAttribute("config_data");

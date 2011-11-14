@@ -90,6 +90,10 @@ public class ConfigData
 
    private void extractConfig(ConfigProperties properties) throws IOException
    {
+      int version = properties.getIntProperty("version", 1);
+      if (version != 1)
+         throw new IOException("Configuration data is an unsupported version (expected 1, was "+version+')');
+
       conditionsRefreshInMinutes = properties.getIntProperty("conditionsRefreshInMinutes", conditionsRefreshInMinutes);
       forecastsRefreshInMinutes = properties.getIntProperty("forecastsRefreshInMinutes", forecastsRefreshInMinutes);
       synchronized (list)
@@ -190,58 +194,21 @@ public class ConfigData
 
    public void save() throws IOException
    {
-         // this is only done in a runnable to workaround a 4.1 SP1b bug.  Put back to normal when we don't
-         // support 4.1 any more! (Normal is the try {} part of the run() method of the runnable go inside the
-         // try {} part of this code.
-
       try
       {
-         SaveDataRunnable runnable = new SaveDataRunnable(systemConn, buildConfig());
-         Thread thread = new Thread(runnable);
-         thread.start();
-         thread.join();
-         runnable.checkException();
+         systemConn.runWriteAction("Writing defaults to system datastore", new WriteAction()
+         {
+            public void execute(WritableSystemAccess systemAccess) throws Exception
+            {
+               DataStore store = systemAccess.getSystemDataStore(DATASTORE_NAME);
+               Properties properties = buildConfig();
+               properties.store(store.getOutputStream(), "");
+            }
+         });
       }
       catch (Exception e)
       {
          throw new IOException("Error writing to data store");
-      }
-   }
-
-   private static class SaveDataRunnable implements Runnable
-   {
-      private final SystemConnection systemConn;
-      private final Properties properties;
-      private Exception exception;
-
-      private SaveDataRunnable(SystemConnection systemConn, Properties properties)
-      {
-         this.systemConn = systemConn;
-         this.properties = properties;
-      }
-
-      @Override public void run()
-      {
-         try
-         {
-            systemConn.runWriteAction("Writing defaults to system datastore", new WriteAction()
-            {
-               public void execute(WritableSystemAccess systemAccess) throws Exception
-               {
-                  DataStore store = systemAccess.getSystemDataStore(DATASTORE_NAME);
-                  properties.store(store.getOutputStream(), "");
-               }
-            });
-         }
-         catch (Exception e)
-         {
-            exception = e;
-         }
-      }
-
-      public void checkException() throws Exception {
-         if (exception != null)
-            throw exception;
       }
    }
 
@@ -254,6 +221,7 @@ public class ConfigData
    {
       Properties props = new Properties();
       ConfigProperties properties = new ConfigProperties(props);
+      properties.setIntProperty("version", 1);
       properties.setIntProperty("conditionsRefreshInMinutes", conditionsRefreshInMinutes);
       properties.setIntProperty("forecastsRefreshInMinutes", forecastsRefreshInMinutes);
       synchronized (list)

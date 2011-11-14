@@ -9,7 +9,7 @@ info {
   name = 'Weather'
   description = 'Periodically imports weather data from the National Weather Service into one or more control '+
                 'programs for use in views and logic programming.'
-  version = '1.0 Beta'
+  version = '1.0 Beta1'
   vendor = 'ALC Labs'
 }
 

@@ -58,23 +58,33 @@ public class EquipmentHandler
    public EquipmentHandler(SystemConnection systemConn, final String lookupString) throws EquipmentWriteException
    {
       systemConnection = systemConn;
-      try
+      if (Logging.is41)
       {
-         presentValues = systemConnection.runReadAction(new ReadActionResult<Collection<PresentValue>>()
-         {
-            @Override public Collection<PresentValue> execute(@NotNull SystemAccess systemAccess) throws Exception
-            {
-               Location location = systemAccess.getTree(SystemTree.Geographic).resolve(lookupString);
-               if (location.getType() == LocationType.Equipment)
-                  return location.find(PresentValue.class, Acceptors.acceptAll());
-               else
-                  return Collections.emptyList();
-            }
-         });
+         // 4.1 doesn't support writing to equipment (the presentValue aspect does not correctly redirect
+         // writes to the relinquish_default node).  So, just set the presentValues to an empty list, effectively
+         // bypassing the attempt to write data to the control programs.
+         presentValues = Collections.emptyList();
       }
-      catch (Exception e)
+      else
       {
-         throw new EquipmentWriteException(e);
+         try
+         {
+            presentValues = systemConnection.runReadAction(new ReadActionResult<Collection<PresentValue>>()
+            {
+               @Override public Collection<PresentValue> execute(@NotNull SystemAccess systemAccess) throws Exception
+               {
+                  Location location = systemAccess.getTree(SystemTree.Geographic).resolve(lookupString);
+                  if (location.getType() == LocationType.Equipment)
+                     return location.find(PresentValue.class, Acceptors.acceptAll());
+                  else
+                     return Collections.emptyList();
+               }
+            });
+         }
+         catch (Exception e)
+         {
+            throw new EquipmentWriteException(e);
+         }
       }
    }
 
@@ -89,7 +99,6 @@ public class EquipmentHandler
          {
             @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
             {
-               systemAccess.getSystemDataStore("not_real").getOutputStream();  // workaround for 4.1 SP1b bug
                for (PresentValue presentValue : presentValues)
                {
                   String referenceName = presentValue.getLocation().getReferenceName();
@@ -117,7 +126,6 @@ public class EquipmentHandler
          {
             @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
             {
-               systemAccess.getSystemDataStore("not_real").getOutputStream();   // workaround for 4.1 SP1b bug
                for (PresentValue presentValue : presentValues)
                {
                   String referenceName = presentValue.getLocation().getReferenceName();
@@ -145,7 +153,6 @@ public class EquipmentHandler
          {
             @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
             {
-               systemAccess.getSystemDataStore("not_real").getOutputStream();   // workaround for 4.1 SP1b bug
                for (PresentValue presentValue : presentValues)
                {
                   String referenceName = presentValue.getLocation().getReferenceName();
@@ -206,6 +213,7 @@ public class EquipmentHandler
    {
       if (value == null)
          return null;
+
       switch(type)
       {
          case FloatType:   return (Float)value;
