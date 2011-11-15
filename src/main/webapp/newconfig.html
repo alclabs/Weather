@@ -22,6 +22,7 @@
         button.del { width: 20px; height: 20px; }
         #error {display:none;}
         .field-error {border:solid red 1px; }
+        .section {display:inline; border-radius: 8px;}
     </style>
 </head>
 <body>
@@ -35,7 +36,7 @@
 </div>
 <br/><br/>
 <form id="rates">
-<fieldset>
+<fieldset class="section">
     <legend>Refresh Rates:</legend>
     <table>
         <tr>
@@ -52,7 +53,7 @@
     <input type="hidden" name="action" value="postrates">
 </form>
 <br/>
-<fieldset>
+<fieldset class="section">
     <legend>Locations to Update:</legend>
     <table id="locations">
         <thead>
