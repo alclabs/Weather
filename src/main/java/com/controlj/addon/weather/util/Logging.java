@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 public class Logging
 {
    public static final PrintWriter LOGGER = createLogger();
+   public static boolean is41;
 
    public static void println(String msg)
    {
@@ -87,10 +88,12 @@ public class Logging
          Method method = AddOnInfo.class.getDeclaredMethod("getDateStampLogger");
          AddOnInfo addOnInfo = AddOnInfo.getAddOnInfo();
          Writer writer = (Writer) method.invoke(addOnInfo);
+         is41 = false;
          return new PrintWriter(writer);
       }
       catch (Throwable e)
       {
+         is41 = true;
          // otherwise, just write to System.out (it's the best we can do)...
          return new PrintWriter(System.out);
       }
