@@ -19,9 +19,11 @@ function setupHandlers() {
 
     // Apply Rates
     $("#submitrates").button().on('click', function() {
-        $.get("ajaxcontroller", $("#rates").serialize(), function(result) {
-            handleData(result)
-            noErrors()
+        $.post("ajaxcontroller", $("#rates").serialize(), function(result) {
+            if (!handleResponseErrors(result)) {
+                handleData(result)
+                noErrors()
+            }
         })
     })
 
@@ -30,16 +32,12 @@ function setupHandlers() {
 
 function noErrors() {
     $("#error").css("display","none");
-    $(".field-error").toggleClass("field-error", false)
+    $(".field-error").toggleClass("field-error", false).attr("title","")
 }
 
 function ajaxErrors(e, xhr, settings) {
-    var err = $.parseJSON(xhr.statusText)
-    if (err.errortype && err.errortype=="validation") {
-        $("#"+err.field).toggleClass("field-error", true)
-        $("#errortext").text("Invalid value")
-        $("#error").css("display","block")
-    }
+    $("#errortext").text("Error communicating with server")
+    $("#error").css("display","block")
 }
 
 function addRowSelectHandler() {
@@ -49,6 +47,31 @@ function addRowSelectHandler() {
         row.toggleClass("select",true);
         row.data("row")
     })
+}
+
+function handleResponseErrors(data) {
+    if (data.errors) { // if we have any errors
+        var errors = data.errors
+        var globalErrors = false;
+        if (errors) {
+            $("#errortext").empty()
+            for (var i in errors) {
+                var error = errors[i]
+                if (error.errortype && error.errortype=="validation") {
+                    $("#"+error.field).toggleClass("field-error", true).attr("title", error.message)
+                } else {
+                    globalErrors = true;
+                    $("#errortext").append("<div>"+error.message+"</div>")
+                }
+            }
+            if (globalErrors) {
+                $("#error").css("display","block")
+            }
+        }
+
+        return true
+    } else
+        return false
 }
 
 function handleData(data) {
@@ -68,12 +91,24 @@ function handleData(data) {
     }
 
 function initData() {
-    $.get("ajaxcontroller", {action:'init'}, handleData)
+    $.get("ajaxcontroller", {action:'init'}, function(result) {
+        if (!handleResponseErrors(result)) {
+            handleData(result)
+        }
+    })
+}
+
+function initAddDialog() {
+    $.get("ajaxcontroller", {action:'adddialog'}, function(content){
+        $("#adddialog").html(content)
+    })
+
 }
 
 $(document).ready(function() {
     setupHandlers()
     initData()
+    initAddDialog()
     addDialog = $("#adddialog").dialog({
         autoOpen:false,
         title:'Add New Location',

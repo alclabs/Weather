@@ -3,7 +3,10 @@ package com.controlj.addon.weather.servlets;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
+import com.controlj.addon.weather.service.WeatherServiceException;
+import com.controlj.addon.weather.service.WeatherServiceUI;
 import com.controlj.addon.weather.util.Logging;
+import com.controlj.addon.weather.util.ResponseWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,18 +26,28 @@ public class AjaxController extends HttpServlet {
     private static final String ACTION_PARAM_NAME = "action";
     private static final String ACTION_INIT = "init";
     private static final String ACTION_POSTRATES = "postrates";
+    private static final String ACTION_ADDDIALOG = "adddialog";
 
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        String action = req.getParameter(ACTION_PARAM_NAME);
+
+        if (ACTION_POSTRATES.equals(action)) {
+            updateRates(req, resp);
+        } else {
+            String msg = "Unknown action \""+action+"\" specified for controller";
+            resp.sendError(500, msg);
+            Logging.println("ERROR:"+msg);
+        }
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
         String action = req.getParameter(ACTION_PARAM_NAME);
         if (ACTION_INIT.equals(action)) {
             retrieveAll(req, resp);
-        } else if (ACTION_POSTRATES.equals(action)) {
-            updateRates(req, resp);
+        } else if (ACTION_ADDDIALOG.equals(action)) {
+            getAddDialog(req, resp);
         } else {
             String msg = "Unknown action \""+action+"\" specified for controller";
             resp.sendError(500, msg);
@@ -51,7 +65,7 @@ public class AjaxController extends HttpServlet {
 
     private void updateRates(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ConfigData configData = getConfigData(req);
-        JSONObject result = new JSONObject();
+        ResponseWriter errorWriter = new ResponseWriter(resp);
 
         String conditionRateString = req.getParameter("condition_rate");
         String forecastRateString = req.getParameter("forecast_rate");
@@ -62,64 +76,79 @@ public class AjaxController extends HttpServlet {
             try {
                 conditionRate = Integer.parseInt(conditionRateString);
             } catch (NumberFormatException e) {
-                try {
-                    result.put("errortype","validation");
-                    result.put("field", "condition_rate");
-                } catch (JSONException e1) { } // ignore
+                errorWriter.addValidationError("condition_rate", "\"" + conditionRateString + "\" is not a valid number");
             }
+        } else {
+            errorWriter.addValidationError("condition_rate", "condition rate not specified");
         }
+
         if (forecastRateString!= null) {
             try {
                 forecastRate = Integer.parseInt(forecastRateString);
             } catch (NumberFormatException e) {
-                try {
-                    result.put("errortype","validation");
-                    result.put("field", "forecast_rate");
-                } catch (JSONException e1) { } // ignore
+                errorWriter.addValidationError("forecast_rate", "\"" + forecastRateString + "\" is not a valid number");
             }
+        } else {
+            errorWriter.addValidationError("forecast_rate", "forecast rate not specified");
         }
 
         // if there was an error
-        if (result.keys().hasNext()) {
-            resp.sendError(403, result.toString());
+        if (errorWriter.hasErrors()) {
+            errorWriter.write();
         } else {
             configData.setConditionsRefreshInMinutes(conditionRate);
             configData.setForecastsRefreshInMinutes(forecastRate);
             configData.save();
+
             retrieveAll(req, resp);
+        }
+    }
+
+    private void getAddDialog(HttpServletRequest req, HttpServletResponse resp) {
+        ConfigData configData = getConfigData(req);
+
+        try {
+            WeatherServiceUI wsui = configData.getWeatherService();
+            resp.setContentType("text/html");
+            wsui.writeAddDialog(resp.getWriter());
+        } catch (WeatherServiceException e) {
+            // todo - handle with error that shows up in ui
+        } catch (IOException e) {
+            // Can't write response, just log
+            Logging.println("Can't write response from servlet", e);
         }
     }
 
     private void retrieveAll(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ConfigData configData = getConfigData(req);
-        JSONObject result = new JSONObject();
+        ResponseWriter writer = new ResponseWriter(resp);
 
-        try {
-            result.put("conditionrefresh", configData.getConditionsRefreshInMinutes());
-            result.put("forecastrefresh", configData.getForecastsRefreshInMinutes());
-            result.put("locations", listLocations(configData));
-            result.write(resp.getWriter());
-        } catch (JSONException e) {
-            handleError(resp, e);
-        }
+        writer.putInteger("conditionrefresh", configData.getConditionsRefreshInMinutes());
+        writer.putInteger("forecastrefresh", configData.getForecastsRefreshInMinutes());
+        writeLocations(writer, configData);
+
+        writer.write();
     }
 
-    private JSONArray listLocations(ConfigData configData) throws JSONException {
+    private void writeLocations(ResponseWriter writer, ConfigData configData) {
         List<WeatherConfigEntry> locations = configData.getList();
-        final JSONArray results = new JSONArray();
 
         for (WeatherConfigEntry location : locations) {
-            JSONObject next = new JSONObject();
+            HashMap<String, Object> next = new HashMap<String, Object>(3);
             next.put("path", location.getCpPath());
             next.put("zip", location.getZipCode());
             next.put("update", location.getLastUpdate());
-            results.put(next);
+
+            writer.appendToArray("locations", next);
         }
-        return results;
     }
 
     private void handleError(HttpServletResponse resp, Throwable th) throws IOException {
         resp.sendError(500, th.getMessage());
         Logging.println(th);
+    }
+
+    private void addValidationError(JSONObject response, String field, String message) {
+        JSONArray errors = null;
     }
 }

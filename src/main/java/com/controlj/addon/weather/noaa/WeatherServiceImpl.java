@@ -37,6 +37,7 @@ import org.dom4j.Node;
 import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
 
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -184,5 +185,21 @@ public class WeatherServiceImpl implements WeatherService {
             } catch (NumberFormatException e) {} // skip this one if malformed
         }
         return minId;
+    }
+
+    @Override
+    public void writeAddDialog(PrintWriter writer) {
+        writer.print("<form>\n" +
+                "        <table>\n" +
+                "            <tr>\n" +
+                "                <td nowrap=\"true\">Location Path:&nbsp;</td>\n" +
+                "                <td><input type=\"text\" name=\"newpath\" id=\"newpath\" value=\"\"/></td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <td>Zip Code:&nbsp;</td>\n" +
+                "                <td><input type=\"text\" name=\"newzip\" id=\"newzip\" value=\"\"/></td>\n" +
+                "            </tr>\n" +
+                "        </table>\n" +
+                "    </form>");
     }
 }
