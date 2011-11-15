@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**<!=========================================================================>
    <p>
@@ -158,7 +159,7 @@ public class Controller extends HttpServlet
          throw new ServletException("Error resolving zip code", e);
       }
 
-      WeatherConfigEntry entry = new WeatherConfigEntry(cpPath, zipCode, units.equals("metric"), stationSource);
+      WeatherConfigEntry entry = new WeatherConfigEntry(cpPath, stationSource, new HashMap<String, String>());
       configData.add(entry);
       try
       {
@@ -224,7 +225,7 @@ public class Controller extends HttpServlet
          request.setAttribute("weather_station", entry.getStationSource());
          request.setAttribute("weather_conditions", ScheduledWeatherLookup.updateConditionsData(configData, entry));
          request.setAttribute("weather_forecast", ScheduledWeatherLookup.updateForecastsData(configData, entry));
-         request.setAttribute("weather_zip", entry.getZipCode());
+         request.setAttribute("weather_zip", /*entry.getZipCode()*/"xxxxx"); // TODO: fix me!
       }
       catch (NumberFormatException e)
       {

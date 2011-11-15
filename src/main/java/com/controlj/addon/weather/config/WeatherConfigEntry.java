@@ -26,6 +26,9 @@ import com.controlj.addon.weather.data.ConditionsSource;
 import com.controlj.addon.weather.data.StationSource;
 import com.controlj.addon.weather.servlets.PrimitiveServletBase;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * A control program/zip code entry in the configuration data.  Each entry also stores whether
  * it should use metric values and the "config key" that is determined by the WeatherService when
@@ -34,16 +37,14 @@ import com.controlj.addon.weather.servlets.PrimitiveServletBase;
 public class WeatherConfigEntry
 {
    private final String cpPath;
-   private final String zipCode;
-   private final boolean isMetric;
    private final StationSource stationSource;
+   private final Map<String, String> serviceEntryData;
 
-   public WeatherConfigEntry(String cpPath, String zipCode, boolean metric, StationSource stationSource)
+   public WeatherConfigEntry(String cpPath, StationSource stationSource, Map<String, String> serviceEntryData)
    {
       this.cpPath = cpPath;
-      this.zipCode = zipCode;
-      isMetric = metric;
       this.stationSource = stationSource;
+      this.serviceEntryData = Collections.unmodifiableMap(serviceEntryData);
    }
 
    public String getCpPath()
@@ -51,14 +52,9 @@ public class WeatherConfigEntry
       return cpPath;
    }
 
-   public String getZipCode()
+   public Map<String, String> getServiceEntryData()
    {
-      return zipCode;
-   }
-
-   public boolean isMetric()
-   {
-      return isMetric;
+      return serviceEntryData;
    }
 
    public StationSource getStationSource()
@@ -84,9 +80,8 @@ public class WeatherConfigEntry
    {
       return "WeatherConfigEntry{" +
             "cpPath='" + cpPath + '\'' +
-            ", zipCode='" + zipCode + '\'' +
-            ", isMetric=" + isMetric +
             ", stationId='" + stationSource.getId() + '\'' +
+            ", serviceConfigData=" + serviceEntryData +
             '}';
    }
 

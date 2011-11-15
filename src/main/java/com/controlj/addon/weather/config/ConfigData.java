@@ -47,6 +47,7 @@ public class ConfigData
    private WeatherServices service = WeatherServices.nws; // the default is NWS
    private int conditionsRefreshInMinutes = 60;
    private int forecastsRefreshInMinutes = 120;
+   private Map<String, String> serviceConfigData = Collections.emptyMap();
 
    ConfigData(SystemConnection systemConn)
    {
@@ -91,19 +92,19 @@ public class ConfigData
    private void extractConfig(ConfigProperties properties) throws IOException
    {
       int version = properties.getIntProperty("version", 1);
-      if (version != 1)
-         throw new IOException("Configuration data is an unsupported version (expected 1, was "+version+')');
+      if (version != 2)
+         throw new IOException("Configuration data is an unsupported version (expected 2, was "+version+')');
 
       conditionsRefreshInMinutes = properties.getIntProperty("conditionsRefreshInMinutes", conditionsRefreshInMinutes);
       forecastsRefreshInMinutes = properties.getIntProperty("forecastsRefreshInMinutes", forecastsRefreshInMinutes);
+      serviceConfigData = properties.getMap("servicedata.");
+
       synchronized (list)
       {
          int entryCount = properties.getIntProperty("entryCount", 0);
          for (int i = 1; i <= entryCount; i++)
          {
             String cpPath = properties.getStringProperty("entry"+i+".cpPath", "");
-            String zipCode = properties.getStringProperty("entry"+i+".zipCode", "");
-            boolean isMetric = properties.getBooleanProperty("entry"+i+".isMetric", false);
 
             StationSource stationSource = new StationSource();
             stationSource.setId(properties.getStringProperty("entry"+i+".station.id", ""));
@@ -111,7 +112,8 @@ public class ConfigData
             stationSource.setLatitude(properties.getFloatProperty("entry" + i + ".station.latitude", 0f));
             stationSource.setLongitude(properties.getFloatProperty("entry" + i + ".station.longitude", 0f));
 
-            list.add(new WeatherConfigEntry(cpPath, zipCode, isMetric, stationSource));
+            Map<String, String> map = properties.getMap("entry" + i + ".servicedata.");
+            list.add(new WeatherConfigEntry(cpPath, stationSource, map));
          }
       }
    }
@@ -130,6 +132,24 @@ public class ConfigData
          serviceRef.compareAndSet(null, newService);
       }
       return serviceRef.get(); // cannot be null now
+   }
+
+   /**
+    * Returns the configuration data that is managed by the current weather service.  This class
+    * takes care of persisting this data, but does not try to interpret it in any way.
+    */
+   public Map<String, String> getServiceConfigData()
+   {
+      return serviceConfigData;
+   }
+
+   /**
+    * Sets the configuration data that is managed by the current weather service.  This class
+    * takes care of persisting this data, but does not try to interpret it in any way.
+    */
+   public void setServiceConfigData(Map<String, String> serviceConfigData)
+   {
+      this.serviceConfigData = serviceConfigData;
    }
 
    /**
@@ -208,7 +228,7 @@ public class ConfigData
       }
       catch (Exception e)
       {
-         throw new IOException("Error writing to data store");
+         throw new IOException("Error writing to data store", e);
       }
    }
 
@@ -221,25 +241,28 @@ public class ConfigData
    {
       Properties props = new Properties();
       ConfigProperties properties = new ConfigProperties(props);
-      properties.setIntProperty("version", 1);
+
+      properties.setIntProperty("version", 2);
       properties.setIntProperty("conditionsRefreshInMinutes", conditionsRefreshInMinutes);
       properties.setIntProperty("forecastsRefreshInMinutes", forecastsRefreshInMinutes);
+      properties.setMap(serviceConfigData, "servicedata.");
+
       synchronized (list)
       {
          properties.setIntProperty("entryCount", list.size());
          int i = 1;
          for (WeatherConfigEntry entry : list)
          {
-            properties.setStringProperty("entry"+i+".cpPath", entry.getCpPath());
-            properties.setStringProperty("entry"+i+".zipCode", entry.getZipCode());
-            properties.setBooleanProperty("entry"+i+".isMetric", entry.isMetric());
+            properties.setStringProperty("entry" + i + ".cpPath", entry.getCpPath());
 
             StationSource stationSource = entry.getStationSource();
             properties.setStringProperty("entry"+i+".station.id", stationSource.getId());
             properties.setStringProperty("entry"+i+".station.name", stationSource.getName());
             properties.setFloatProperty("entry" + i + ".station.latitude", stationSource.getLatitude());
             properties.setFloatProperty("entry" + i + ".station.longitude", stationSource.getLongitude());
-            i++;
+
+            properties.setMap(entry.getServiceEntryData(), "entry" + i + ".servicedata.");
+            ++i;
          }
       }
       return props;

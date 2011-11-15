@@ -23,6 +23,7 @@
 package com.controlj.addon.weather.noaa;
 
 import com.controlj.addon.weather.data.StationSource;
+import com.controlj.addon.weather.service.WeatherServiceException;
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.dom4j.XPath;
@@ -33,13 +34,42 @@ import java.util.List;
  *
  */
 public class StationSourceFactory {
-    private Document weatherStations;
+    private Document latLongDoc;
 
     StationSourceFactory(Document document) {
-        this.weatherStations = document;
+        this.latLongDoc = document;
     }
 
-    public String findClosestWeatherStationID(float latitude, float longitude) {
+   public StationSource findClosestWeatherStation(Document weatherStations) throws WeatherServiceException
+   {
+      String text = getLatLong();
+      float latitude;
+      float longitude;
+      try
+      {
+        String[] strings = text.split(",", 2);
+        latitude = Float.parseFloat(strings[0]);
+        longitude = Float.parseFloat(strings[1]);
+      }
+      catch (NumberFormatException e)
+      {
+         throw new WeatherServiceException("Error parsing lat/lon from "+text, e);
+      }
+
+      String id = findClosestWeatherStationID(weatherStations, latitude, longitude);
+      return getStationSource(weatherStations, id);
+   }
+
+   private String getLatLong() throws WeatherServiceException
+      {
+       Node node = latLongDoc.selectSingleNode("/dwml/latLonList");
+       if (node == null) {
+           throw new WeatherServiceException("Can't find latitude/longitude from zip code");
+       }
+       return node.getText();
+   }
+
+    private String findClosestWeatherStationID(Document weatherStations, float latitude, float longitude) {
         XPath idXpath = weatherStations.createXPath("station_id");
         float minDistance = Float.MAX_VALUE;
         String minId= null;
@@ -61,7 +91,7 @@ public class StationSourceFactory {
         return minId;
     }
 
-    public StationSource getStationSource(String stationID) {
+    private StationSource getStationSource(Document weatherStations, String stationID) {
        StationSourceImpl impl = new StationSourceImpl(weatherStations.selectSingleNode("/wx_station_index/station[station_id = '" + stationID + "']"));
        StationSource source = new StationSource();
        source.setId(impl.getId());

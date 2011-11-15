@@ -112,8 +112,8 @@
                     <tr>
                         <td class="del"><a href="controller?action=delete&item=<%=index%>">X</a></td>
                         <td><%=entry.getCpPath()%></td>
-                        <td><%=entry.getZipCode()%></td>
-                        <td><%=entry.isMetric()%></td>
+                        <td></td>
+                        <td></td>
                         <td><%=entry.getLastUpdate()%></td>
                         <td class="test"><a href="controller?action=show&item=<%=index%>">Show Data</a></td>
                     </tr>

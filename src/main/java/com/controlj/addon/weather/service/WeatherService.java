@@ -25,6 +25,8 @@ import com.controlj.addon.weather.data.ForecastSource;
 import com.controlj.addon.weather.data.StationSource;
 import com.controlj.addon.weather.data.ConditionsSource;
 
+import java.util.Map;
+
 /**
  * A WeatherService is used to look up weather information given some configuration data.
  */
@@ -42,23 +44,20 @@ public interface WeatherService extends WeatherServiceUI
    public StationSource resolveConfigurationToStation(String zipCode) throws InvalidConfigurationDataException, WeatherServiceException;
 
    /**
-    * Retrieves the current weather conditions using the resolved configuration information
-    * indicated by <code>key</code>.
+    * Retrieves the current weather conditions using the given configuration information.
     *
-    * @param station@return the current weather conditions.
+    * @param configData configuration settings for the whole weather service.
+    * @param entryData configuration for the entry for which to retrieve conditions.
+    * @return the current weather conditions.
     */
-   public ConditionsSource getConditionsSource(StationSource station, boolean isMetric) throws WeatherServiceException;
+   public ConditionsSource getConditionsSource(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException;
 
    /**
-    * Retrieves the weather forecast information using the resolved configuration information
-    * indicated by <code>key</code>.  The number of days of forecast information that is
-    * desired is given by <code>forecastDays</code>.  If the service cannot provide that many
-    * days, it shall return as many days as it can provide.  The result is an array of forecasts
-    * where index 0 is 1 day out, index 1 is 2 days out, etc..
+    * Retrieves the weather forecast information using the given configuration information.
     *
-    * @param station
-    * @param forecastDays the number of forecast days that are desired.
+    * @param configData configuration settings for the whole weather service.
+    * @param entryData configuration for the entry for which to retrieve conditions.
     * @return the forecast information.
     */
-   public ForecastSource[] getForecastSources(String zipCode, int forecastDays, boolean isMetric) throws WeatherServiceException;
+   public ForecastSource[] getForecastSources(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException;
 }
