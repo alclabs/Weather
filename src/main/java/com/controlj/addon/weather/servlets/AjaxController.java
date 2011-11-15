@@ -23,6 +23,7 @@ public class AjaxController extends HttpServlet {
     private static final String ACTION_INIT = "init";
     private static final String ACTION_POSTRATES = "postrates";
 
+
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     }
 
@@ -55,20 +56,38 @@ public class AjaxController extends HttpServlet {
         String conditionRateString = req.getParameter("condition_rate");
         String forecastRateString = req.getParameter("forecast_rate");
 
-        if (conditionRateString != null && forecastRateString!= null) {
+        int conditionRate = 0;
+        int forecastRate = 0;
+        if (conditionRateString != null) {
             try {
-                int conditionRate = Integer.parseInt(conditionRateString);
+                conditionRate = Integer.parseInt(conditionRateString);
             } catch (NumberFormatException e) {
                 try {
                     result.put("errortype","validation");
                     result.put("field", "condition_rate");
-                    resp.sendError(403, result.toString());
                 } catch (JSONException e1) { } // ignore
-
             }
-            int forecastRate = Integer.parseInt(forecastRateString);
+        }
+        if (forecastRateString!= null) {
+            try {
+                forecastRate = Integer.parseInt(forecastRateString);
+            } catch (NumberFormatException e) {
+                try {
+                    result.put("errortype","validation");
+                    result.put("field", "forecast_rate");
+                } catch (JSONException e1) { } // ignore
+            }
         }
 
+        // if there was an error
+        if (result.keys().hasNext()) {
+            resp.sendError(403, result.toString());
+        } else {
+            configData.setConditionsRefreshInMinutes(conditionRate);
+            configData.setForecastsRefreshInMinutes(forecastRate);
+            configData.save();
+            retrieveAll(req, resp);
+        }
     }
 
     private void retrieveAll(HttpServletRequest req, HttpServletResponse resp) throws IOException {

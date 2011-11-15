@@ -2,37 +2,44 @@
 var addDialog;
 
 function setupHandlers() {
-    //addRowSelectHandler
-    addDeleteHandler();
-    addShowDataHandler();
+    // Delete handler
+    $("#locations").on('click', "button.del", function() {
+        alert("Delete:"+$(this).parents("tr").data("row"))
+    })
+
+    // Show Data
+    $("#locations").on('click', "button.data", function() {
+        alert("Show data for:"+$(this).parents("tr").data("row"))
+    })
 
     // add location button
     $("#addlocation").button({icons:{primary: 'ui-icon-circle-plus'}}).on('click', function() {
         addDialog.dialog("open");
     });
 
+    // Apply Rates
     $("#submitrates").button().on('click', function() {
         $.get("ajaxcontroller", $("#rates").serialize(), function(result) {
-            alert("Posted:"+result)
+            handleData(result)
+            noErrors()
         })
     })
-/*
-    $("#submitrates").button().on('click', function() {
-        alert("submitrates")
-    })
-    */
+
+    $("#error").ajaxError(ajaxErrors);
 }
 
-function addDeleteHandler() {
-    $("#locations").on('click', "button.del", function() {
-        alert("Delete:"+$(this).parents("tr").data("row"))
-    })
+function noErrors() {
+    $("#error").css("display","none");
+    $(".field-error").toggleClass("field-error", false)
 }
 
-function addShowDataHandler() {
-    $("#locations").on('click', "button.data", function() {
-        alert("Show data for:"+$(this).parents("tr").data("row"))
-    })
+function ajaxErrors(e, xhr, settings) {
+    var err = $.parseJSON(xhr.statusText)
+    if (err.errortype && err.errortype=="validation") {
+        $("#"+err.field).toggleClass("field-error", true)
+        $("#errortext").text("Invalid value")
+        $("#error").css("display","block")
+    }
 }
 
 function addRowSelectHandler() {
@@ -44,10 +51,10 @@ function addRowSelectHandler() {
     })
 }
 
-function initData() {
-    $.get("ajaxcontroller", {action:'init'}, function(data) {
+function handleData(data) {
         $("#condition_rate").val(data.conditionrefresh)
         $("#forecast_rate").val(data.forecastrefresh)
+        $("#locations tbody").empty()
         for (var i=0; i<data.locations.length; i++) {
             var next = data.locations[i]
             var row = $("#locations tbody").append("<tr><td><button class='del'></button></td><td>"+next.path+"</td>"+
@@ -58,8 +65,10 @@ function initData() {
         }
         $("#locations button.del").button({text:false, icons:{primary: 'ui-icon-circle-minus'}})
         $("#locations button.data").button()
-    })
+    }
 
+function initData() {
+    $.get("ajaxcontroller", {action:'init'}, handleData)
 }
 
 $(document).ready(function() {

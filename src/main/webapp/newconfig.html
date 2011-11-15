@@ -18,16 +18,22 @@
         .right {text-align: right;}
         .select { background-color: #c0e0ff; }
         .ui-widget {font-size: .9em; }
-        .ui-button-text-only .ui-button-text { padding: 0.2em 1em; }
+        .ui-button-text-only .ui-button-text { padding: 0.2em 0.8em; }
         button.del { width: 20px; height: 20px; }
-        /* button.data { height: 1em; } */
+        #error {display:none;}
+        .field-error {border:solid red 1px; }
     </style>
 </head>
 <body>
 <div>
     <span class="title">Weather</span>
     <span class="subtitle">powered by NOAA's National Weather Service</span>
+    <div id="error" class="ui-state-error ui-corner-all" style="padding: 0 .7em; float:right;">
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+        <span id="errortext">Sample ui-state-error style.</span></p>
+    </div>
 </div>
+<br/><br/>
 <form id="rates">
 <fieldset>
     <legend>Refresh Rates:</legend>
@@ -62,7 +68,7 @@
     </table>
     <button id="addlocation">Add...</button>
 </fieldset>
-<div id="adddialog">
+<div id="adddialog" style="display:none">
     <form>
         <table>
             <tr>
