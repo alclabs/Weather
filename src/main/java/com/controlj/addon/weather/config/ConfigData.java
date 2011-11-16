@@ -91,7 +91,7 @@ public class ConfigData
 
    private void extractConfig(ConfigProperties properties) throws IOException
    {
-      int version = properties.getIntProperty("version", 1);
+      int version = properties.getIntProperty("version", 2);
       if (version != 2)
          throw new IOException("Configuration data is an unsupported version (expected 2, was "+version+')');
 

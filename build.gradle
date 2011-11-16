@@ -7,9 +7,9 @@ apply from: configurations.gradleScript.resolve().iterator().next()
 
 info {
   name = 'Weather'
-  description = 'Periodically imports weather data from the National Weather Service into one or more control '+
-                'programs for use in views and logic programming.'
-  version = '1.0 Beta1'
+  description = 'Periodically imports weather data from a selectable weather service into one or more locations '+
+                'for use in views and logic programming.'
+  version = '2.0 Pre-release '+new Date().format('yyyy/MM/dd kk:mm:ss')
   vendor = 'ALC Labs'
 }
 

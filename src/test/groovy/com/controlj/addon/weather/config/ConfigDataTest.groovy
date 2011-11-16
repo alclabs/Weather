@@ -84,7 +84,7 @@ public class ConfigDataTest extends Specification
          def props = readProperties(outputStream.toString())
 
       expect:
-         props['version'] == '1'
+         props['version'] == '2'
          props['conditionsRefreshInMinutes'] == '60'
          props['forecastsRefreshInMinutes'] == '120'
          props['entryCount'] == '0'
