@@ -101,7 +101,7 @@
                         <th>Delete</th>
                         <th>Location Path</th>
                         <th>Zip Code</th>
-                        <th>Metric</th>
+                        <th>Units</th>
                         <th>Last Update</th>
                     </tr>
                     <%
@@ -112,8 +112,8 @@
                     <tr>
                         <td class="del"><a href="controller?action=delete&item=<%=index%>">X</a></td>
                         <td><%=entry.getCpPath()%></td>
-                        <td></td>
-                        <td></td>
+                        <td><%=entry.getServiceEntryData().get("zipcode")%></td>
+                        <td><%=entry.getServiceEntryData().get("units")%></td>
                         <td><%=entry.getLastUpdate()%></td>
                         <td class="test"><a href="controller?action=show&item=<%=index%>">Show Data</a></td>
                     </tr>
@@ -125,8 +125,8 @@
                 <div style="white-space:nowrap; margin-top:20px;">
                     Location Path: <input type="text" name="cppath" size="25"/>
                     Zip Code: <input type="text" name="zipcode" size="10"/>
-                    <input type="radio" name="units" value="imperial" checked/>US Customary&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="units" value="metric" />Metric&nbsp;&nbsp;
+                    <input type="radio" name="units" value="US Customary" checked/>US Customary&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="units" value="Metric" />Metric&nbsp;&nbsp;
                     <input type="submit" name="action" value="Add"/>
                 </div>
                 </form>
