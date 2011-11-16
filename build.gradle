@@ -9,7 +9,7 @@ info {
   name = 'Weather'
   description = 'Periodically imports weather data from the National Weather Service into one or more control '+
                 'programs for use in views and logic programming.'
-  version = '1.0 Beta1'
+  version = '1.0'
   vendor = 'ALC Labs'
 }
 
@@ -21,8 +21,6 @@ dependencies {
    providedCompile 'com.controlj.green:addonsupport-api-addon:1.0.8'
    providedCompile 'javax.servlet:servlet-api:2.5'
 
-//   runtime 'jstl:jstl:1.2'
-//   runtime 'taglibs:standard:1.1.2'
    runtime 'jaxen:jaxen:1.0-FCS'
    runtime 'saxpath:saxpath:1.0-FCS'
 
