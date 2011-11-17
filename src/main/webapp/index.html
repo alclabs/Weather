@@ -64,22 +64,8 @@
 <fieldset>
 <form id="rates">
     <legend>Service Configuration:</legend>
-    <p>pick service here</p>
-    <h2>Refresh Rates</h2>
-    <div class="indent">
-        <div class="nobr">
-            <label>Current Conditions:</label>
-            <input type="text" id="conditionrefresh" name="condition_rate" size="4" value=""/>
-            minutes
-        </div>
-        <div class="nobr">
-            <label>Forecast:</label>
-            <input type="text" id="forecastrefresh" name="forecast_rate" size="4" value=""/>
-            minutes
-        </div>
-    </div>
-    <h2>Service Options</h2>
-    <div class="indent" id="serviceoptions">
+    <div id="serviceconfig">
+
     </div>
     <button style="float:right" id="submitrates" type="button">Apply</button>
     <input type="hidden" name="action" value="postconfig">
@@ -93,8 +79,6 @@
             <tr>
                 <th>&nbsp;</th>
                 <th>Location Path</th>
-                <th>Zip Code</th>
-                <th>Last Update</th>
             </tr>
         </thead>
         <tbody>

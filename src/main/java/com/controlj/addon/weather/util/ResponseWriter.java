@@ -69,7 +69,28 @@ public class ResponseWriter {
         } catch (JSONException e) {
             Logging.println("Error adding to JSON array", e);
         }
+    }
 
+    public void appendToArray(String arrayName, String value) {
+        try {
+            JSONArray array = getOrCreateArray(arrayName);
+            array.put(value);
+        } catch (JSONException e) {
+            Logging.println("Error adding string to JSON array", e);
+        }
+    }
+
+    public void appendToArray(String arrayName, String[] values) {
+        try {
+            JSONArray array = getOrCreateArray(arrayName);
+            JSONArray next = new JSONArray();
+            for (String value : values) {
+                next.put(value);
+            }
+            array.put(next);
+        } catch (JSONException e) {
+            Logging.println("Error adding to JSON array", e);
+        }
     }
 
     public boolean hasErrors() {
