@@ -22,15 +22,23 @@
 package com.controlj.addon.weather.util;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -39,11 +47,32 @@ import java.util.Map;
 
 public class HTTPHelper {
 
+    private HttpClient httpclient;
+
+    public HTTPHelper() {
+        httpclient = new DefaultHttpClient();
+    }
+
     public Document readDocument(String scheme, String host, int port, String path, Map<String, Object> params)
-            throws URISyntaxException, MalformedURLException, DocumentException {
+            throws IOException, URISyntaxException {
         URI uri = URIUtils.createURI(scheme, host, port, path, encodeParams(params), null);
-        SAXReader reader = new SAXReader();
-        return reader.read(uri.toURL());
+        return httpclient.execute(new HttpGet(uri), new ResponseHandler<Document>() {
+            @Override
+            public Document handleResponse(HttpResponse response) throws IOException {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    String responseString = EntityUtils.toString(entity);
+                    try {
+                        SAXReader reader = new SAXReader();
+                        return reader.read(new StringReader(responseString));
+                    } catch (DocumentException e) {
+                        throw new IOException("Service returned \""+responseString+'"', e);
+                    }
+                }
+
+                throw new IOException("No response");
+            }
+        });
     }
 
     private String encodeParams(Map<String, Object> params) {
@@ -55,6 +84,4 @@ public class HTTPHelper {
             qparams.add(new BasicNameValuePair(entry.getKey(), ObjectUtils.toString(entry.getValue())));
         return URLEncodedUtils.format(qparams, "UTF-8");
     }
-
 }
-
