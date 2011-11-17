@@ -8,7 +8,6 @@ import com.controlj.addon.weather.service.WeatherServiceUI;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -25,34 +24,43 @@ import java.util.List;
 public class AjaxController extends HttpServlet {
     private static final String ACTION_PARAM_NAME = "action";
     private static final String ACTION_INIT = "init";
-    private static final String ACTION_POSTRATES = "postrates";
+    private static final String ACTION_UPDATE = "update";
+    private static final String ACTION_POSTCONFIG = "postconfig";
     private static final String ACTION_ADDDIALOG = "adddialog";
 
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
+        ConfigData configData = getConfigData(req);
+        ResponseWriter writer = new ResponseWriter(resp);
+
         String action = req.getParameter(ACTION_PARAM_NAME);
 
-        if (ACTION_POSTRATES.equals(action)) {
-            updateRates(req, resp);
+        if (ACTION_POSTCONFIG.equals(action)) {
+            updateRates(configData, writer, req);
         } else {
-            String msg = "Unknown action \""+action+"\" specified for controller";
-            resp.sendError(500, msg);
-            Logging.println("ERROR:"+msg);
+            String message = "Unknown action \"" + action + "\" specified in post for controller";
+            writer.addError(message);
+            Logging.println("ERROR:"+message);
         }
+        writer.write();
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ConfigData configData = getConfigData(req);
+        ResponseWriter writer = new ResponseWriter(resp);
+
         String action = req.getParameter(ACTION_PARAM_NAME);
         if (ACTION_INIT.equals(action)) {
-            retrieveAll(req, resp);
-        } else if (ACTION_ADDDIALOG.equals(action)) {
-            getAddDialog(req, resp);
+            retrieveData(configData, writer);
+            retrieveUI(configData, writer);
+        } else if (ACTION_UPDATE.equals(action)) {
+            retrieveData(configData, writer);
         } else {
-            String msg = "Unknown action \""+action+"\" specified for controller";
-            resp.sendError(500, msg);
-            Logging.println("ERROR:"+msg);
+            String message = "Unknown action \"" + action + "\" specified for controller";
+            writer.addError(message);
+            Logging.println("ERROR:"+message);
         }
+        writer.write();
     }
 
     private ConfigData getConfigData(HttpServletRequest request)
@@ -63,9 +71,7 @@ public class AjaxController extends HttpServlet {
        return data;
     }
 
-    private void updateRates(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ConfigData configData = getConfigData(req);
-        ResponseWriter errorWriter = new ResponseWriter(resp);
+    private void updateRates(ConfigData config, ResponseWriter writer, HttpServletRequest req) throws IOException {
 
         String conditionRateString = req.getParameter("condition_rate");
         String forecastRateString = req.getParameter("forecast_rate");
@@ -76,58 +82,47 @@ public class AjaxController extends HttpServlet {
             try {
                 conditionRate = Integer.parseInt(conditionRateString);
             } catch (NumberFormatException e) {
-                errorWriter.addValidationError("condition_rate", "\"" + conditionRateString + "\" is not a valid number");
+                writer.addValidationError("condition_rate", "\"" + conditionRateString + "\" is not a valid number");
             }
         } else {
-            errorWriter.addValidationError("condition_rate", "condition rate not specified");
+            writer.addValidationError("condition_rate", "condition rate not specified");
         }
 
         if (forecastRateString!= null) {
             try {
                 forecastRate = Integer.parseInt(forecastRateString);
             } catch (NumberFormatException e) {
-                errorWriter.addValidationError("forecast_rate", "\"" + forecastRateString + "\" is not a valid number");
+                writer.addValidationError("forecast_rate", "\"" + forecastRateString + "\" is not a valid number");
             }
         } else {
-            errorWriter.addValidationError("forecast_rate", "forecast rate not specified");
+            writer.addValidationError("forecast_rate", "forecast rate not specified");
         }
 
         // if there was an error
-        if (errorWriter.hasErrors()) {
-            errorWriter.write();
-        } else {
-            configData.setConditionsRefreshInMinutes(conditionRate);
-            configData.setForecastsRefreshInMinutes(forecastRate);
-            configData.save();
+        if (!writer.hasErrors()) {
+            config.setConditionsRefreshInMinutes(conditionRate);
+            config.setForecastsRefreshInMinutes(forecastRate);
+            config.save();
 
-            retrieveAll(req, resp);
+            retrieveData(config, writer);
         }
     }
 
-    private void getAddDialog(HttpServletRequest req, HttpServletResponse resp) {
-        ConfigData configData = getConfigData(req);
-
+    private void retrieveUI(ConfigData configData, ResponseWriter writer) {
         try {
-            WeatherServiceUI wsui = configData.getWeatherService();
-            resp.setContentType("text/html");
-            wsui.writeAddDialog(resp.getWriter());
+            WeatherServiceUI ui = configData.getWeatherService().getUI();
+            writer.putString("adddialog", ui.getAddDialogHTML());
+            writer.putString("serviceoptions", ui.getServiceOptionHTML());
         } catch (WeatherServiceException e) {
-            // todo - handle with error that shows up in ui
-        } catch (IOException e) {
-            // Can't write response, just log
-            Logging.println("Can't write response from servlet", e);
+            writer.addError("Error getting weather service:"+e.getMessage());
         }
     }
 
-    private void retrieveAll(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ConfigData configData = getConfigData(req);
-        ResponseWriter writer = new ResponseWriter(resp);
 
+    private void retrieveData(ConfigData configData, ResponseWriter writer) throws IOException {
         writer.putInteger("conditionrefresh", configData.getConditionsRefreshInMinutes());
         writer.putInteger("forecastrefresh", configData.getForecastsRefreshInMinutes());
         writeLocations(writer, configData);
-
-        writer.write();
     }
 
     private void writeLocations(ResponseWriter writer, ConfigData configData) {

@@ -28,7 +28,7 @@ import com.controlj.addon.weather.data.ConditionsSource;
 /**
  * A WeatherService is used to look up weather information given some configuration data.
  */
-public interface WeatherService extends WeatherServiceUI
+public interface WeatherService
 {
    /**
     * Takes the given configuration data (for now, a zip code) and does whatever the service
@@ -61,4 +61,10 @@ public interface WeatherService extends WeatherServiceUI
     * @return the forecast information.
     */
    public ForecastSource[] getForecastSources(String zipCode, int forecastDays, boolean isMetric) throws WeatherServiceException;
+
+   /**
+    * Retrieves the object used to manage the interaction with the WeatherService's UI.
+    * @return the WeatherServiceUI object
+    */
+   public WeatherServiceUI getUI();
 }

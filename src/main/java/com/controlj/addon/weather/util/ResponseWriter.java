@@ -26,7 +26,15 @@ public class ResponseWriter {
         try {
             jsonRoot.put(fieldName, value);
         } catch (JSONException e) {
-            Logging.println("Error encoding json value", e);
+            Logging.println("Error encoding json int value", e);
+        }
+    }
+
+    public void putString(String fieldName, String value) {
+        try {
+            jsonRoot.put(fieldName, value);
+        } catch (JSONException e) {
+            Logging.println("Error encoding json string value of '"+value+"'", e);
         }
     }
 
@@ -51,6 +59,18 @@ public class ResponseWriter {
             JSONObject error = new JSONObject();
             error.put("errortype","validation");
             error.put("field", fieldName);
+            error.put("message", message);
+            errors.put(error);
+        } catch (JSONException e) {
+            Logging.println("Error trying to write out errors with JSON", e);
+        }
+    }
+
+    public void addError(String message) {
+        try {
+            JSONArray errors = getOrCreateArray(ERROR_LIST);
+            JSONObject error = new JSONObject();
+            error.put("errortype","general");
             error.put("message", message);
             errors.put(error);
         } catch (JSONException e) {

@@ -75,40 +75,38 @@ function handleResponseErrors(data) {
 }
 
 function handleData(data) {
-        $("#condition_rate").val(data.conditionrefresh)
-        $("#forecast_rate").val(data.forecastrefresh)
-        $("#locations tbody").empty()
-        for (var i=0; i<data.locations.length; i++) {
-            var next = data.locations[i]
-            var row = $("#locations tbody").append("<tr><td><button class='del'></button></td><td>"+next.path+"</td>"+
-            "<td>"+next.zip+"</td>"+
-            "<td>"+next.update+"</td>"+
-            "<td><button class='data'>Show Data</button></td></tr>").children().last()
-            row.data("row", i)
-        }
-        $("#locations button.del").button({text:false, icons:{primary: 'ui-icon-circle-minus'}})
-        $("#locations button.data").button()
+    $("#condition_rate").val(data.conditionrefresh)
+    $("#forecast_rate").val(data.forecastrefresh)
+    $("#locations tbody").empty()
+    for (var i=0; i<data.locations.length; i++) {
+        var next = data.locations[i]
+        var row = $("#locations tbody").append("<tr><td><button class='del'></button></td><td>"+next.path+"</td>"+
+        "<td>"+next.zip+"</td>"+
+        "<td>"+next.update+"</td>"+
+        "<td><button class='data'>Show Data</button></td></tr>").children().last()
+        row.data("row", i)
     }
+    $("#locations button.del").button({text:false, icons:{primary: 'ui-icon-circle-minus'}})
+    $("#locations button.data").button()
+}
+
+function handleUIResults(data) {
+    $("#adddialog").html(data.adddialog)
+    $("#serviceoptions").html(data.serviceoptions)
+}
 
 function initData() {
     $.get("ajaxcontroller", {action:'init'}, function(result) {
         if (!handleResponseErrors(result)) {
+            handleUIResults(result)
             handleData(result)
         }
     })
 }
 
-function initAddDialog() {
-    $.get("ajaxcontroller", {action:'adddialog'}, function(content){
-        $("#adddialog").html(content)
-    })
-
-}
-
 $(document).ready(function() {
     setupHandlers()
     initData()
-    initAddDialog()
     addDialog = $("#adddialog").dialog({
         autoOpen:false,
         title:'Add New Location',

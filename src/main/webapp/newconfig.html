@@ -22,38 +22,49 @@
         button.del { width: 20px; height: 20px; }
         #error {display:none;}
         .field-error {border:solid red 1px; }
-        .section {display:inline; border-radius: 8px;}
+        fieldset {display:inline; border-radius: 8px;}
+        .indent { padding-left:2em; }
+        .nobr {white-space: nowrap; vertical-align: baseline; }
+        label {float:left; text-align: right; width:150px; margin: 2px 5px 0px 0px;}
+        input {vertical-align: baseline;}
+        h2 {font-size:14px;}
     </style>
 </head>
 <body>
 <div>
     <span class="title">Weather</span>
-    <span class="subtitle">powered by NOAA's National Weather Service</span>
     <div id="error" class="ui-state-error ui-corner-all" style="padding: 0 .7em; float:right;">
         <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
         <div id="errortext"></div></p>
     </div>
 </div>
 <br/><br/>
+<fieldset>
 <form id="rates">
-<fieldset class="section">
-    <legend>Refresh Rates:</legend>
-    <table>
-        <tr>
-            <td class="right">Current Conditions:</td>
-            <td><input type="text" id="condition_rate" name="condition_rate" size="4" value=""/>&nbsp;minutes</td>
-        </tr>
-        <tr>
-            <td class="right">Forecast:</td>
-            <td><input type="text" id="forecast_rate" name="forecast_rate" size="4" value=""/>&nbsp;minutes</td>
-            <td>&nbsp;<button id="submitrates" type="button">Apply</button></td>
-        </tr>
-    </table>
-</fieldset>
-    <input type="hidden" name="action" value="postrates">
+    <legend>Service Configuration:</legend>
+    <p>pick service here</p>
+    <h2>Refresh Rates</h2>
+    <div class="indent">
+        <div class="nobr">
+            <label>Current Conditions:</label>
+            <input type="text" id="condition_rate" name="condition_rate" size="4" value=""/>
+            minutes
+        </div>
+        <div class="nobr">
+            <label>Forecast:</label>
+            <input type="text" id="forecast_rate" name="forecast_rate" size="4" value=""/>
+            minutes
+        </div>
+    </div>
+    <h2>Service Options</h2>
+    <div class="indent" id="serviceoptions">
+    </div>
+    <button style="float:right" id="submitrates" type="button">Apply</button>
+    <input type="hidden" name="action" value="postconfig">
 </form>
-<br/>
-<fieldset class="section">
+</fieldset>
+<br/><br/>
+<fieldset>
     <legend>Locations to Update:</legend>
     <table id="locations">
         <thead>

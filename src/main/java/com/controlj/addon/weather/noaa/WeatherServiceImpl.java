@@ -28,6 +28,7 @@ import com.controlj.addon.weather.data.ConditionsSource;
 import com.controlj.addon.weather.service.InvalidConfigurationDataException;
 import com.controlj.addon.weather.service.WeatherService;
 import com.controlj.addon.weather.service.WeatherServiceException;
+import com.controlj.addon.weather.service.WeatherServiceUI;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -53,6 +54,7 @@ public class WeatherServiceImpl implements WeatherService {
     private static final String WEATHER_STATIONS_URL = "http://www.weather.gov/xml/current_obs/index.xml";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final AtomicReference<Document> weatherStationsRef = new AtomicReference<Document>();
+    private WeatherServiceUI ui = new WeatherServiceUIImpl();
 
 
    @Override
@@ -99,6 +101,11 @@ public class WeatherServiceImpl implements WeatherService {
        }
        return result;
    }
+
+    @Override
+    public WeatherServiceUI getUI() {
+        return ui;
+    }
 
     public Document getForecastByZip(String zipCode, int numDays, boolean isMetric) throws WeatherServiceException {
         URI uri = getForecastURI(zipCode, numDays, isMetric);
@@ -187,19 +194,4 @@ public class WeatherServiceImpl implements WeatherService {
         return minId;
     }
 
-    @Override
-    public void writeAddDialog(PrintWriter writer) {
-        writer.print("<form>\n" +
-                "        <table>\n" +
-                "            <tr>\n" +
-                "                <td nowrap=\"true\">Location Path:&nbsp;</td>\n" +
-                "                <td><input type=\"text\" name=\"newpath\" id=\"newpath\" value=\"\"/></td>\n" +
-                "            </tr>\n" +
-                "            <tr>\n" +
-                "                <td>Zip Code:&nbsp;</td>\n" +
-                "                <td><input type=\"text\" name=\"newzip\" id=\"newzip\" value=\"\"/></td>\n" +
-                "            </tr>\n" +
-                "        </table>\n" +
-                "    </form>");
-    }
 }
