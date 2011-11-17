@@ -44,7 +44,7 @@ public class ConfigData
    private final List<WeatherConfigEntry> list = new ArrayList<WeatherConfigEntry>();
    private final SystemConnection systemConn;
 
-   private WeatherServices service = WeatherServices.nws; // the default is NWS
+   private WeatherServices service = WeatherServices.wbug; // the default is NWS
    private int conditionsRefreshInMinutes = 60;
    private int forecastsRefreshInMinutes = 120;
    private Map<String, String> serviceConfigData = Collections.emptyMap();
