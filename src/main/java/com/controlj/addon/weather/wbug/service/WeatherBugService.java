@@ -22,24 +22,13 @@
 
 package com.controlj.addon.weather.wbug.service;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.*;
 
-import com.controlj.addon.weather.service.WeatherServiceException;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIUtils;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
+import com.controlj.addon.weather.util.HTTPHelper;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
-import org.dom4j.io.SAXReader;
-import org.xml.sax.InputSource;
 
 /**
  * The WeatherBug service.
@@ -415,31 +404,10 @@ public class WeatherBugService {
      */
     private Document execute(String methodName, Map params) throws WeatherBugServiceException {
         params.put("ACode", aCode);
-        URI uri = buildURI(methodName, params);
         try {
-            SAXReader reader = new SAXReader();
-            return reader.read(uri.toURL());
+            return new HTTPHelper().readDocument("http", aCode + ".api.wxbug.net", -1, methodName + ".aspx", params);
         } catch (Exception e) {
             throw new WeatherBugServiceException(e);
-        }
-    }
-
-    private URI buildURI(String methodName, Map<?, ?> params) throws WeatherBugServiceException {
-        List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-        for (Map.Entry entry : params.entrySet()) {
-            try {
-                String key = encodeURLParameter(ObjectUtils.toString(entry.getKey()));
-                String value = encodeURLParameter(ObjectUtils.toString(entry.getValue()));
-                qparams.add(new BasicNameValuePair(key, value));
-            } catch (UnsupportedEncodingException e) {
-                throw new WeatherBugServiceException("Unable to encode parameter: " + entry.getKey(), e);
-            }
-        }
-
-        try {
-            return URIUtils.createURI("http", aCode + ".api.wxbug.net", -1, methodName + ".aspx", URLEncodedUtils.format(qparams, "UTF-8"), null);
-        } catch (URISyntaxException e) {
-            throw new WeatherBugServiceException("Internal error constructing URI", e);
         }
     }
 
