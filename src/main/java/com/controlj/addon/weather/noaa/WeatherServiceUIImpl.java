@@ -1,13 +1,11 @@
 package com.controlj.addon.weather.noaa;
 
 import com.controlj.addon.weather.config.ConfigData;
-import com.controlj.addon.weather.service.WeatherServiceUI;
 import com.controlj.addon.weather.service.WeatherServiceUIBase;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -54,11 +52,15 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
     }
 
     @Override
-    public String getServiceOptionHTML() {
-        return "Units:\n" +
+    public String getServiceConfigHTML() {
+        return super.getServiceConfigHTML() + "<br/>" +
+               "<h2>Service Options</h2>\n" +
+               "<div class=\"indent\">" +
+               "Units:\n" +
                "<input type=\"radio\" name=\"units\" value=\"imperial\" checked/>US Customary&nbsp;&nbsp;&nbsp;\n" +
                "<input type=\"radio\" name=\"units\" value=\"metric\" />Metric&nbsp;&nbsp;<br/>" +
-               "<label>Magic Number:&nbsp;</label><input type=\"text\" name=\"magicnumber\"/>";
+               "<label>Magic Number:&nbsp;</label><input type=\"text\" name=\"magicnumber\"/>+" +
+               "</div>\n";
     }
 
     @Override
@@ -66,6 +68,7 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         // super class handles the refresh rates
         super.updateConfiguration(configData, writer, req);
 
-        System.out.println("Units are:"+req.getParameter("units"));
+        updateConfigField(WeatherServiceImpl.CONFIG_KEY_UNITS, configData, writer, req);
+        updateIntegerConfigField(WeatherServiceImpl.CONFIG_KEY_MAGICNUMBER, configData, writer, req, 0, 50);
     }
 }

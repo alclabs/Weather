@@ -60,7 +60,7 @@ public class AjaxController extends HttpServlet {
         String action = req.getParameter(ACTION_PARAM_NAME);
 
         if (ACTION_POSTCONFIG.equals(action)) {
-            updateRates(configData, writer, req);
+            updateConfiguration(configData, writer, req);
         } else {
             String message = "Unknown action \"" + action + "\" specified in post for controller";
             writer.addError(message);
@@ -95,7 +95,7 @@ public class AjaxController extends HttpServlet {
        return data;
     }
 
-    private void updateRates(ConfigData configData, ResponseWriter writer, HttpServletRequest req) throws IOException {
+    private void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) throws IOException {
         try {
             WeatherServiceUI ui = configData.getWeatherService().getUI();
             ui.updateConfiguration(configData, writer, req);
@@ -114,7 +114,7 @@ public class AjaxController extends HttpServlet {
         try {
             WeatherServiceUI ui = configData.getWeatherService().getUI();
             writer.putString("adddialog", ui.getAddDialogHTML());
-            writer.putString("serviceoptions", ui.getServiceOptionHTML());
+            writer.putString("serviceconfig", ui.getServiceConfigHTML());
         } catch (WeatherServiceException e) {
             writer.addError("Error getting weather service:"+e.getMessage());
         }

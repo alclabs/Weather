@@ -58,7 +58,7 @@ function handleResponseErrors(data) {
             for (var i in errors) {
                 var error = errors[i]
                 if (error.errortype && error.errortype=="validation") {
-                    $("#"+error.field).toggleClass("field-error", true).attr("title", error.message)
+                    $('input[name="'+error.field+'"]').toggleClass("field-error", true).attr("title", error.message)
                 } else {
                     globalErrors = true;
                     $("#errortext").append("<div>"+error.message+"</div>")
@@ -77,7 +77,9 @@ function handleResponseErrors(data) {
 function handleData(data) {
     if (data.data) {
         for (var key in data.data) {
-            $("#"+key).val(data.data[key])
+            $('input[name="'+key+'"]').filter('*[type!="radio"]').val(data.data[key])
+            $('input[name="'+key+'"]').filter('*[type="radio"]').removeAttr("checked");
+            $('input[name="'+key+'"]').filter('*[type="radio"]').filter('*[value="'+data.data[key]+'"]').attr("checked","true");
         }
     }
     //$("#condition_rate").val(data.conditionrefresh)
@@ -99,7 +101,7 @@ function handleData(data) {
 
 function handleUIResults(data) {
     $("#adddialog").html(data.adddialog)
-    $("#serviceoptions").html(data.serviceoptions)
+    $("#serviceconfig").html(data.serviceconfig)
 }
 
 function initData() {

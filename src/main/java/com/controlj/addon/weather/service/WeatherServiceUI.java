@@ -16,6 +16,6 @@ public interface WeatherServiceUI {
     @NotNull String getServiceEntryHeaderName(String fieldName);
 
     String getAddDialogHTML();
-    String getServiceOptionHTML();
+    String getServiceConfigHTML();
     void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req);
 }
