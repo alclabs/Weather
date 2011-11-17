@@ -32,10 +32,10 @@ class StationSourceFactoryTest extends Specification {
     def "Find Closest Weather Station ID"() {
         setup:
             Document stations = getTestDocument(STATIONS)
-            service = new StationSourceFactory(stations);
+            service = new StationSourceFactory(Mock(Document));
 
         expect:
-            service.findClosestWeatherStationID(latitude, longitude) == station
+            service.findClosestWeatherStationID(stations, latitude, longitude) == station
 
         where:
         latitude | longitude | station
@@ -47,10 +47,10 @@ class StationSourceFactoryTest extends Specification {
     def "Find Station"() {
         setup:
             Document stations = getTestDocument(STATIONS)
-            service = new StationSourceFactory(stations);
+            service = new StationSourceFactory(Mock(Document));
 
         expect:
-            service.getStationSource(id).getName()== name
+            service.getStationSource(stations, id).getName()== name
 
         where:
         id     | name

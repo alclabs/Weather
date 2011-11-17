@@ -22,6 +22,8 @@
 
 package com.controlj.addon.weather.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -102,6 +104,26 @@ public class ConfigProperties
    public void setBooleanProperty(String key, boolean value)
    {
       properties.setProperty(key, String.valueOf(value));
+   }
+
+   public void setMap(Map<String, String> map, String keyPrefix)
+   {
+      if (keyPrefix == null) throw new NullPointerException();
+      for (Map.Entry<String, String> entry : map.entrySet())
+         setStringProperty(keyPrefix + entry.getKey(), entry.getValue());
+   }
+
+   public Map<String, String> getMap(String keyPrefix)
+   {
+      if (keyPrefix == null) throw new NullPointerException();
+      Map<String, String> map = new HashMap<String, String>();
+      for (Map.Entry<Object, Object> entry : properties.entrySet())
+      {
+         String key = entry.getKey().toString();
+         if (key.startsWith(keyPrefix))
+            map.put(key.substring(keyPrefix.length()), entry.getValue().toString());
+      }
+      return map;
    }
 }
 

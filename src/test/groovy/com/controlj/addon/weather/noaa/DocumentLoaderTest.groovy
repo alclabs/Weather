@@ -24,35 +24,44 @@ package com.controlj.addon.weather.noaa
 
 import spock.lang.Specification
 
-import org.dom4j.Document
-import static org.hamcrest.Matchers.closeTo
-
 @Mixin(NOAAUtilities)
+class DocumentLoaderTest extends Specification {
 
-class WeatherServiceImplTest extends Specification {
-
-    def service = new WeatherServiceImpl();
-    String todayString = WeatherServiceImpl.dateFormat.format(new Date())
+    def loader = new DocumentLoader();
+    String todayString = loader.dateFormat.format(new Date())
 
     def "Future Data URI"() {
         when:
-        URI uri = service.getForecastURI("30101", 5, false)
+        URI uri = loader.getForecastURI(34.02f, -84.62f, 5, false)
 
         then:
-        uri.query == "zipCodeList=30101&startDate=${todayString}&numDays=5&format=24+hourly&Unit=e"
+        uri.path  == "/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php"
+        uri.query == "lat=34.02&lon=-84.62&startDate=${todayString}&numDays=5&format=24+hourly&Unit=e"
         uri.host  == "graphical.weather.gov"
 
         when:
-        uri = service.getForecastURI("30144", 7, true)
+        uri = loader.getForecastURI(-34.02f, 84.62f, 7, true)
         then:
-        uri.query == "zipCodeList=30144&startDate=${todayString}&numDays=7&format=24+hourly&Unit=m"
+        uri.query == "lat=-34.02&lon=84.62&startDate=${todayString}&numDays=7&format=24+hourly&Unit=m"
     }
 
-    def "Get Latitude and Longitude from Zip Code"() {
-        setup:
-            Document forecast = getTestDocument(GOODFORECAST)
+    def "Current Observations URI"() {
+        given:
+        URI uri = loader.getCurrentObsURI("KXSS")
+
         expect:
-            ((double)service.getLatitudeFromForecast(forecast)) closeTo(34.02, 0.001)
-            ((double)service.getLongitudeFromForecast(forecast)) closeTo(-84.62, 0.001)
+        uri.path  == "/xml/current_obs/KXSS.xml"
+        uri.query == null
+        uri.host  == "weather.gov"
+    }
+
+    def "Zip Code URI"() {
+        given:
+        URI uri = loader.getZipcodeURI("30144")
+
+        expect:
+        uri.path  == "/forecasts/xml/sample_products/browser_interface/ndfdXMLclient.php"
+        uri.query == "listZipCodeList=30144"
+        uri.host  == "weather.gov"
     }
 }

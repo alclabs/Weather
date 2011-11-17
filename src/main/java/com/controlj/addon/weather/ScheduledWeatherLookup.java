@@ -115,7 +115,8 @@ public class ScheduledWeatherLookup implements ServletContextListener
       try
       {
          WeatherService weatherService = configData.getWeatherService();
-         conditionsSource = weatherService.getConditionsSource(entry.getStationSource(), entry.isMetric());
+         conditionsSource = weatherService.getConditionsSource(configData.getServiceConfigData(),
+                                                               entry.getStationSource(), entry.getServiceEntryData());
 
          String errorMessage = null;
          try
@@ -153,7 +154,8 @@ public class ScheduledWeatherLookup implements ServletContextListener
       try
       {
          WeatherService weatherService = configData.getWeatherService();
-         ForecastSource[] forecastSources = weatherService.getForecastSources(entry.getZipCode(), 7, entry.isMetric());
+         ForecastSource[] forecastSources = weatherService.getForecastSources(configData.getServiceConfigData(),
+                                                                              entry.getStationSource(), entry.getServiceEntryData());
 
          String errorMessage = null;
          try
