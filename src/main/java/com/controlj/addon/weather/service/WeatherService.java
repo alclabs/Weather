@@ -66,10 +66,16 @@ public interface WeatherService
     */
    public ForecastSource[] getForecastSources(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException;
 
-    /**
-    * Retrieves the object used to manage the interaction with the WeatherService's UI.
-    * @return the WeatherServiceUI object
+   /**
+    * Gets the map of default configuration values.
+    * @return map of default values.
     */
+   public Map<String, String>getDefaults();
+
+   /**
+   * Retrieves the object used to manage the interaction with the WeatherService's UI.
+   * @return the WeatherServiceUI object
+   */
    public WeatherServiceUI getUI();
     
 }

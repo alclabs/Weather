@@ -1,15 +1,19 @@
 package com.controlj.addon.weather.noaa;
 
+import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.service.WeatherServiceUI;
+import com.controlj.addon.weather.service.WeatherServiceUIBase;
+import com.controlj.addon.weather.util.ResponseWriter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.util.*;
 
 /**
  *
  */
-public class WeatherServiceUIImpl implements WeatherServiceUI {
+public class WeatherServiceUIImpl extends WeatherServiceUIBase {
     private final LinkedHashMap<String, String> fields = new LinkedHashMap<String, String>();
     private List<String> fieldList = new ArrayList<String>();
 
@@ -55,5 +59,13 @@ public class WeatherServiceUIImpl implements WeatherServiceUI {
                "<input type=\"radio\" name=\"units\" value=\"imperial\" checked/>US Customary&nbsp;&nbsp;&nbsp;\n" +
                "<input type=\"radio\" name=\"units\" value=\"metric\" />Metric&nbsp;&nbsp;<br/>" +
                "<label>Magic Number:&nbsp;</label><input type=\"text\" name=\"magicnumber\"/>";
+    }
+
+    @Override
+    public void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+        // super class handles the refresh rates
+        super.updateConfiguration(configData, writer, req);
+
+        System.out.println("Units are:"+req.getParameter("units"));
     }
 }

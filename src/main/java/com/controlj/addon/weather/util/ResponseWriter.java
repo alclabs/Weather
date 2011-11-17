@@ -44,9 +44,10 @@ public class ResponseWriter {
         this.jsonRoot = new JSONObject();
     }
 
-    public void putInteger(String fieldName, int value) {
+    public void putStringChild(String parentName, String fieldName, String value) {
         try {
-            jsonRoot.put(fieldName, value);
+            JSONObject child = getOrCreateObject(parentName);
+            child.put(fieldName, value);
         } catch (JSONException e) {
             Logging.println("Error encoding json int value", e);
         }
@@ -116,6 +117,17 @@ public class ResponseWriter {
         } else {
             result = new JSONArray();
             jsonRoot.put(arrayName, result);
+        }
+        return result;
+    }
+
+    private JSONObject getOrCreateObject(String childName) throws JSONException {
+        JSONObject result;
+        if (jsonRoot.has(childName)) {
+            result = (JSONObject) jsonRoot.get(childName);
+        } else {
+            result = new JSONObject();
+            jsonRoot.put(childName, result);
         }
         return result;
     }

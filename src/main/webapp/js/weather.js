@@ -75,16 +75,23 @@ function handleResponseErrors(data) {
 }
 
 function handleData(data) {
-    $("#condition_rate").val(data.conditionrefresh)
-    $("#forecast_rate").val(data.forecastrefresh)
+    if (data.data) {
+        for (var key in data.data) {
+            $("#"+key).val(data.data[key])
+        }
+    }
+    //$("#condition_rate").val(data.conditionrefresh)
+    //$("#forecast_rate").val(data.forecastrefresh)
     $("#locations tbody").empty()
-    for (var i=0; i<data.locations.length; i++) {
-        var next = data.locations[i]
-        var row = $("#locations tbody").append("<tr><td><button class='del'></button></td><td>"+next.path+"</td>"+
-        "<td>"+next.zip+"</td>"+
-        "<td>"+next.update+"</td>"+
-        "<td><button class='data'>Show Data</button></td></tr>").children().last()
-        row.data("row", i)
+    if (data.locations) {
+        for (var i=0; i<data.locations.length; i++) {
+            var next = data.locations[i]
+            var row = $("#locations tbody").append("<tr><td><button class='del'></button></td><td>"+next.path+"</td>"+
+            "<td>"+next.zip+"</td>"+
+            "<td>"+next.update+"</td>"+
+            "<td><button class='data'>Show Data</button></td></tr>").children().last()
+            row.data("row", i)
+        }
     }
     $("#locations button.del").button({text:false, icons:{primary: 'ui-icon-circle-minus'}})
     $("#locations button.data").button()

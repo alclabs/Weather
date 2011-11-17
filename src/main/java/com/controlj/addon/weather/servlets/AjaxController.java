@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -48,7 +49,8 @@ public class AjaxController extends HttpServlet {
     private static final String ACTION_INIT = "init";
     private static final String ACTION_UPDATE = "update";
     private static final String ACTION_POSTCONFIG = "postconfig";
-    private static final String ACTION_ADDDIALOG = "adddialog";
+
+    private static final String JSON_DATA = "data";
 
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -93,40 +95,18 @@ public class AjaxController extends HttpServlet {
        return data;
     }
 
-    private void updateRates(ConfigData config, ResponseWriter writer, HttpServletRequest req) throws IOException {
-
-        String conditionRateString = req.getParameter("condition_rate");
-        String forecastRateString = req.getParameter("forecast_rate");
-
-        int conditionRate = 0;
-        int forecastRate = 0;
-        if (conditionRateString != null) {
-            try {
-                conditionRate = Integer.parseInt(conditionRateString);
-            } catch (NumberFormatException e) {
-                writer.addValidationError("condition_rate", "\"" + conditionRateString + "\" is not a valid number");
-            }
-        } else {
-            writer.addValidationError("condition_rate", "condition rate not specified");
+    private void updateRates(ConfigData configData, ResponseWriter writer, HttpServletRequest req) throws IOException {
+        try {
+            WeatherServiceUI ui = configData.getWeatherService().getUI();
+            ui.updateConfiguration(configData, writer, req);
+        } catch (WeatherServiceException e) {
+            writer.addError("Error getting weather service:" + e.getMessage());
         }
 
-        if (forecastRateString!= null) {
-            try {
-                forecastRate = Integer.parseInt(forecastRateString);
-            } catch (NumberFormatException e) {
-                writer.addValidationError("forecast_rate", "\"" + forecastRateString + "\" is not a valid number");
-            }
-        } else {
-            writer.addValidationError("forecast_rate", "forecast rate not specified");
-        }
-
-        // if there was an error
+        // if there are no errors
         if (!writer.hasErrors()) {
-            config.setConditionsRefreshInMinutes(conditionRate);
-            config.setForecastsRefreshInMinutes(forecastRate);
-            config.save();
-
-            retrieveData(config, writer);
+            configData.save();
+            retrieveData(configData, writer);
         }
     }
 
@@ -142,8 +122,12 @@ public class AjaxController extends HttpServlet {
 
 
     private void retrieveData(ConfigData configData, ResponseWriter writer) throws IOException {
-        writer.putInteger("conditionrefresh", configData.getConditionsRefreshInMinutes());
-        writer.putInteger("forecastrefresh", configData.getForecastsRefreshInMinutes());
+        writer.putStringChild(JSON_DATA, "conditionrefresh", Integer.toString(configData.getConditionsRefreshInMinutes()));
+        writer.putStringChild(JSON_DATA, "forecastrefresh", Integer.toString(configData.getForecastsRefreshInMinutes()));
+        Map<String,String> data = configData.getServiceConfigData();
+        for (String key : data.keySet()) {
+            writer.putStringChild(JSON_DATA, key, data.get(key));
+        }
         writeLocations(writer, configData);
     }
 

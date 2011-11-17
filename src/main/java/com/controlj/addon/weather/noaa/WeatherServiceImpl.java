@@ -32,14 +32,20 @@ import com.controlj.addon.weather.service.WeatherServiceUI;
 import org.dom4j.Document;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
  */
 public class WeatherServiceImpl implements WeatherService {
+    static final String CONFIG_KEY_UNITS = "units";
+    static final String CONFIG_VALUE_UNITS_IMPERIAL = "imperial";
+    static final String CONFIG_VALUE_UNITS_METRIC = "metric";
+
     private final DocumentLoader documentLoader = new DocumentLoader();
     private WeatherServiceUI ui = new WeatherServiceUIImpl();
+
 
    @Override
    public StationSource resolveConfigurationToStation(String zipCode) throws InvalidConfigurationDataException, WeatherServiceException
@@ -71,6 +77,14 @@ public class WeatherServiceImpl implements WeatherService {
        }
        return result;
    }
+
+    @Override
+    public Map<String, String> getDefaults() {
+        Map<String, String> results = new HashMap<String, String>();
+        results.put(CONFIG_KEY_UNITS, CONFIG_VALUE_UNITS_IMPERIAL);
+
+        return results;
+    }
 
     @Override
     public WeatherServiceUI getUI() {
