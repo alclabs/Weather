@@ -135,7 +135,12 @@ $(document).ready(function() {
 
         buttons: {
             "OK" : function() {
-                alert('post data')
+                $.post("ajaxcontroller", $("#adddialog form").serialize(), function(result) {
+                    if (!handleResponseErrors(result)) {
+                        handleData(result)
+                        noErrors()
+                    }
+                })
                 $(this).dialog("close")
             },
             "Cancel" : function() {

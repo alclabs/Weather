@@ -1,7 +1,12 @@
 package com.controlj.addon.weather.noaa;
 
 import com.controlj.addon.weather.config.ConfigData;
+import com.controlj.addon.weather.config.WeatherConfigEntry;
+import com.controlj.addon.weather.data.StationSource;
+import com.controlj.addon.weather.service.InvalidConfigurationDataException;
+import com.controlj.addon.weather.service.WeatherServiceException;
 import com.controlj.addon.weather.service.WeatherServiceUIBase;
+import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,12 +17,15 @@ import java.util.*;
  *
  */
 public class WeatherServiceUIImpl extends WeatherServiceUIBase {
+    private static final String FIELD_ZIP ="zip";
+    private static final String FIELD_STATION = "station_name";
+
     private final LinkedHashMap<String, String> fields = new LinkedHashMap<String, String>();
     private List<String> fieldList = new ArrayList<String>();
 
     public WeatherServiceUIImpl() {
-        fields.put("zip", "Zip Code");
-        fields.put("station_name", "Station Name");
+        fields.put(FIELD_ZIP, "Zip Code");
+        fields.put(FIELD_STATION, "Station Name");
         fieldList = new ArrayList<String>(fields.keySet());
     }
 
@@ -41,13 +49,14 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
                 "    <table>\n" +
                 "        <tr>\n" +
                 "            <td nowrap=\"true\">Location Path:&nbsp;</td>\n" +
-                "            <td><input type=\"text\" name=\"newpath\" id=\"newpath\" value=\"\"/></td>\n" +
+                "            <td><input type=\"text\" name=\"path\" value=\"\"/></td>\n" +
                 "        </tr>\n" +
                 "        <tr>\n" +
                 "            <td>Zip Code:&nbsp;</td>\n" +
-                "            <td><input type=\"text\" name=\"newzip\" id=\"newzip\" value=\"\"/></td>\n" +
+                "            <td><input type=\"text\" name=\"zip\" value=\"\"/></td>\n" +
                 "        </tr>\n" +
                 "    </table>\n" +
+                "    <input type=\"hidden\" name=\"action\" value=\"addrow\"/>\n" +
                 "</form>";
     }
 
@@ -70,5 +79,28 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
 
         updateConfigField(WeatherServiceImpl.CONFIG_KEY_UNITS, configData, writer, req);
         updateIntegerConfigField(WeatherServiceImpl.CONFIG_KEY_MAGICNUMBER, configData, writer, req, 0, 50);
+    }
+
+    @Override
+    public void addRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+        String path = req.getParameter("path"); // todo - move to base class
+        String zip = req.getParameter(FIELD_ZIP);
+        try
+        {
+            StationSource stationSource = configData.getWeatherService().resolveConfigurationToStation(zip);
+            String stationName = stationSource.getName();
+            Map<String,String> data = new HashMap<String, String>();
+            data.put(FIELD_ZIP, zip);
+            data.put(FIELD_STATION, stationName);
+
+            configData.add(new WeatherConfigEntry(path, stationSource, data));
+        } catch (WeatherServiceException e) {
+            writer.addError("Can't get weather service");
+            Logging.println("Can't get weather service in noaa.WeatherServiceUIImpl");
+        } catch (InvalidConfigurationDataException e) {
+            writer.addError("Can't find station for zip code '"+zip+"'");
+            Logging.println("Can't find station for zip code '" + zip + "'", e);
+        }
+
     }
 }

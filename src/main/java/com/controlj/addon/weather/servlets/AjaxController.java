@@ -52,6 +52,7 @@ public class AjaxController extends HttpServlet {
     private static final String ACTION_UPDATE = "update";
     private static final String ACTION_POSTCONFIG = "postconfig";
     private static final String ACTION_DELETEROW = "deleterow";
+    private static final String ACTION_ADDROW = "addrow";
 
     private static final String JSON_DATA = "data";
 
@@ -66,6 +67,8 @@ public class AjaxController extends HttpServlet {
             updateConfiguration(configData, writer, req);
         } else if (ACTION_DELETEROW.equals(action)) {
             deleteRow(configData, writer, req);
+        } else if (ACTION_ADDROW.equals(action)) {
+            addRow(configData, writer, req);
         } else {
             String message = "Unknown action \"" + action + "\" specified in post for controller";
             writer.addError(message);
@@ -89,6 +92,17 @@ public class AjaxController extends HttpServlet {
             writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
             Logging.println("Error deleting row.  Invalid row number '"+rowString+"'", e);
         }
+    }
+
+    private void addRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+        try {
+            WeatherServiceUI ui = configData.getWeatherService().getUI();
+            ui.addRow(configData, writer, req);
+        } catch (WeatherServiceException e) {
+            writer.addError("Error getting weather service:" + e.getMessage());
+            Logging.println("Error getting weather service:" + e.getMessage(), e);
+        }
+
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -123,6 +137,7 @@ public class AjaxController extends HttpServlet {
             ui.updateConfiguration(configData, writer, req);
         } catch (WeatherServiceException e) {
             writer.addError("Error getting weather service:" + e.getMessage());
+            Logging.println("Error getting weather service:" + e.getMessage(), e);
         }
     }
 
@@ -167,7 +182,7 @@ public class AjaxController extends HttpServlet {
                 Map<String, String> serviceEntryData = location.getServiceEntryData();
                 int i=1;
                 for (String fieldName : ui.getServiceEntryFields()) {
-                    next[i] = serviceEntryData.get(fieldName);
+                    next[i++] = serviceEntryData.get(fieldName);
                 }
                 //next.put("zip", location.getZipCode()); // TODO: fix me!
 
