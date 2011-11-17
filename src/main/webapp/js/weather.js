@@ -4,7 +4,14 @@ var addDialog;
 function setupHandlers() {
     // Delete handler
     $("#locations").on('click', "button.del", function() {
-        alert("Delete:"+$(this).parents("tr").data("row"))
+        //alert("Delete:"+$(this).parents("tr").data("row"))
+        var num = $(this).parents("tr").data("row")
+        $.post("ajaxcontroller", {action:"deleterow", rownum:num}, function(result) {
+            if (!handleResponseErrors(result)) {
+                handleData(result)
+                noErrors()
+            }
+        })
     })
 
     // Show Data
@@ -82,16 +89,17 @@ function handleData(data) {
             $('input[name="'+key+'"]').filter('*[type="radio"]').filter('*[value="'+data.data[key]+'"]').attr("checked","true");
         }
     }
-    //$("#condition_rate").val(data.conditionrefresh)
-    //$("#forecast_rate").val(data.forecastrefresh)
     $("#locations tbody").empty()
     if (data.locations) {
         for (var i=0; i<data.locations.length; i++) {
             var next = data.locations[i]
-            var row = $("#locations tbody").append("<tr><td><button class='del'></button></td><td>"+next.path+"</td>"+
-            "<td>"+next.zip+"</td>"+
-            "<td>"+next.update+"</td>"+
-            "<td><button class='data'>Show Data</button></td></tr>").children().last()
+            var row = $("<tr></tr>")
+            row.append("<td><button class='del'></button></td>")
+            $.each(next, function(index, value) {
+                row.append("<td>"+value+"</td>")
+            })
+            row.append("<td><button class='data'>Show Data</button></td>");
+            $("#locations tbody").append(row)
             row.data("row", i)
         }
     }
@@ -102,6 +110,10 @@ function handleData(data) {
 function handleUIResults(data) {
     $("#adddialog").html(data.adddialog)
     $("#serviceconfig").html(data.serviceconfig)
+    $.each(data.entryheaders, function(index, value) {
+        $("#locations thead tr").append("<th>"+value+"</th>");
+    })
+    $("#locations thead tr").append("<th>Last Update</th>");
 }
 
 function initData() {

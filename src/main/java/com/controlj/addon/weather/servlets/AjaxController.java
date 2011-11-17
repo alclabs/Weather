@@ -46,9 +46,12 @@ import java.util.Map;
  */
 public class AjaxController extends HttpServlet {
     private static final String ACTION_PARAM_NAME = "action";
+    private static final String ROW_PARAM_NAME = "rownum";
+
     private static final String ACTION_INIT = "init";
     private static final String ACTION_UPDATE = "update";
     private static final String ACTION_POSTCONFIG = "postconfig";
+    private static final String ACTION_DELETEROW = "deleterow";
 
     private static final String JSON_DATA = "data";
 
@@ -61,12 +64,31 @@ public class AjaxController extends HttpServlet {
 
         if (ACTION_POSTCONFIG.equals(action)) {
             updateConfiguration(configData, writer, req);
+        } else if (ACTION_DELETEROW.equals(action)) {
+            deleteRow(configData, writer, req);
         } else {
             String message = "Unknown action \"" + action + "\" specified in post for controller";
             writer.addError(message);
             Logging.println("ERROR:"+message);
         }
+
+        // if there are no errors
+        if (!writer.hasErrors()) {
+            configData.save();
+            retrieveData(configData, writer);
+        }
         writer.write();
+    }
+
+    private void deleteRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+        String rowString = req.getParameter(ROW_PARAM_NAME);
+        try {
+            int rowNum = Integer.parseInt(rowString);
+            configData.delete(rowNum);
+        } catch (NumberFormatException e) {
+            writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
+            Logging.println("Error deleting row.  Invalid row number '"+rowString+"'", e);
+        }
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -102,12 +124,6 @@ public class AjaxController extends HttpServlet {
         } catch (WeatherServiceException e) {
             writer.addError("Error getting weather service:" + e.getMessage());
         }
-
-        // if there are no errors
-        if (!writer.hasErrors()) {
-            configData.save();
-            retrieveData(configData, writer);
-        }
     }
 
     private void retrieveUI(ConfigData configData, ResponseWriter writer) {
@@ -115,6 +131,11 @@ public class AjaxController extends HttpServlet {
             WeatherServiceUI ui = configData.getWeatherService().getUI();
             writer.putString("adddialog", ui.getAddDialogHTML());
             writer.putString("serviceconfig", ui.getServiceConfigHTML());
+            List<String> serviceEntryFields = ui.getServiceEntryFields();
+            for (String serviceEntryField : serviceEntryFields) {
+                writer.appendToArray("entryheaders", ui.getServiceEntryHeaderName(serviceEntryField));
+            }
+
         } catch (WeatherServiceException e) {
             writer.addError("Error getting weather service:"+e.getMessage());
         }
@@ -133,14 +154,27 @@ public class AjaxController extends HttpServlet {
 
     private void writeLocations(ResponseWriter writer, ConfigData configData) {
         List<WeatherConfigEntry> locations = configData.getList();
+        WeatherServiceUI ui;
+        try {
+            ui = configData.getWeatherService().getUI();
+            int entrySize = ui.getServiceEntryFields().size()+2; // add path and update time
 
-        for (WeatherConfigEntry location : locations) {
-            HashMap<String, Object> next = new HashMap<String, Object>(3);
-            next.put("path", location.getCpPath());
-            //next.put("zip", location.getZipCode()); // TODO: fix me!
-            next.put("update", location.getLastUpdate());
+            for (WeatherConfigEntry location : locations) {
+                String[] next = new String[entrySize];
 
-            writer.appendToArray("locations", next);
+                next[0] = location.getCpPath();
+                next[entrySize-1] = location.getLastUpdate();
+                Map<String, String> serviceEntryData = location.getServiceEntryData();
+                int i=1;
+                for (String fieldName : ui.getServiceEntryFields()) {
+                    next[i] = serviceEntryData.get(fieldName);
+                }
+                //next.put("zip", location.getZipCode()); // TODO: fix me!
+
+                writer.appendToArray("locations", next);
+            }
+        } catch (WeatherServiceException e) {
+            writer.addError("Error getting weather service:"+e.getMessage());
         }
     }
 

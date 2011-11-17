@@ -53,13 +53,13 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
 
     @Override
     public String getServiceConfigHTML() {
-        return super.getServiceConfigHTML() + "<br/>" +
+        return super.getServiceConfigHTML() +
                "<h2>Service Options</h2>\n" +
                "<div class=\"indent\">" +
                "Units:\n" +
                "<input type=\"radio\" name=\"units\" value=\"imperial\" checked/>US Customary&nbsp;&nbsp;&nbsp;\n" +
                "<input type=\"radio\" name=\"units\" value=\"metric\" />Metric&nbsp;&nbsp;<br/>" +
-               "<label>Magic Number:&nbsp;</label><input type=\"text\" name=\"magicnumber\"/>+" +
+               "<label>Magic Number:&nbsp;</label><input type=\"text\" name=\"magicnumber\"/>" +
                "</div>\n";
     }
 
