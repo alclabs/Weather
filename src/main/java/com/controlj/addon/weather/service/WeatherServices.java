@@ -27,7 +27,8 @@ package com.controlj.addon.weather.service;
  */
 public enum WeatherServices
 {
-   nws("National Weather Service", 15, 60);
+   nws("National Weather Service", 15, 60),
+   wbug("WeatherBug.com", 15, 60);
 
    private final String displayName;
    private final int minConditionsRefresh;

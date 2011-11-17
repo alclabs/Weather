@@ -19,21 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.controlj.addon.weather.service;
+package com.controlj.addon.weather.wbug;
 
-/**
- * Looks up a WeatherService by name.
- */
-public class WeatherServiceFactory
+import com.controlj.addon.weather.data.StationSource;
+import com.controlj.addon.weather.wbug.service.Station;
+
+public class StationSourceAdapter extends StationSource
 {
-   public WeatherService getService(WeatherServices service) throws WeatherServiceException
+   public StationSourceAdapter(Station station)
    {
-      switch (service)
-      {
-         case nws:  return new com.controlj.addon.weather.noaa.WeatherServiceImpl();
-         case wbug: return new com.controlj.addon.weather.wbug.WeatherServiceImpl();
-      }
-      throw new WeatherServiceException("No weather service named '"+service.getDisplayName()+ "' is available");
+      setId(station.getId());
+      setName(station.getName());
+      setLatitude(station.getLatitude().floatValue());
+      setLongitude(station.getLongitude().floatValue());
    }
 }
 
