@@ -22,99 +22,73 @@
 package com.controlj.addon.weather.noaa;
 
 import com.controlj.addon.weather.service.WeatherServiceException;
+import com.controlj.addon.weather.util.HTTPHelper;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DocumentLoader
 {
-   private static final String WEATHER_STATIONS_URL = "http://www.weather.gov/xml/current_obs/index.xml";
-
    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
    private final AtomicReference<Document> weatherStationsRef = new AtomicReference<Document>();
 
    public Document loadZipcodeDoc(String zipCode) throws WeatherServiceException
    {
-      return retrieveInfo(getZipcodeURI(zipCode));
+       Map<String, Object> params = new HashMap<String, Object>();
+       params.put("listZipCodeList", zipCode);
+       try {
+           return new HTTPHelper().readDocument("http", "weather.gov", -1, "/forecasts/xml/sample_products/browser_interface/ndfdXMLclient.php", params);
+       } catch (Exception e) {
+           throw new WeatherServiceException(e);
+       }
    }
 
    public Document getCurrentObs(String stationID) throws WeatherServiceException
    {
-      return retrieveInfo(getCurrentObsURI(stationID));
+       try {
+           return new HTTPHelper().readDocument("http", "weather.gov", -1, "/xml/current_obs/"+stationID+".xml", null);
+       } catch (Exception e) {
+           throw new WeatherServiceException(e);
+       }
    }
 
    public Document getForecast(float latitude, float longitude, int numDays, boolean isMetric) throws WeatherServiceException
    {
-       return retrieveInfo(getForecastURI(latitude, longitude, numDays, isMetric));
+       Map<String, Object> params = new HashMap<String, Object>();
+       params.put("lat", Float.toString(latitude));
+       params.put("lon", Float.toString(longitude));
+       params.put("startDate", dateFormat.format(new Date()));
+       params.put("numDays", Integer.toString(numDays));
+       params.put("format", "24 hourly");
+       params.put("Unit", isMetric ? "m":"e");
+       try {
+           return new HTTPHelper().readDocument("http", "graphical.weather.gov", -1, "/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php", params);
+       } catch (Exception e) {
+           throw new WeatherServiceException(e);
+       }
    }
 
    public Document getWeatherStationsDoc() throws WeatherServiceException {
       Document weatherStations = weatherStationsRef.get();
       if (weatherStations == null) {
            try {
-               weatherStations = retrieveInfo(new URI(WEATHER_STATIONS_URL));
+               weatherStations = new HTTPHelper().readDocument("http", "www.weather.gov", -1, "/xml/current_obs/index.xml", null);
                weatherStationsRef.set(weatherStations);
-           } catch (URISyntaxException e) {
-               throw new RuntimeException("Internal error constructing URI", e);
+           } catch (Exception e) {
+               throw new WeatherServiceException("Internal error constructing URI", e);
            }
        }
        return weatherStations;
-   }
-
-   private URI getZipcodeURI(String zipCode) {
-      List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-      qparams.add(new BasicNameValuePair("listZipCodeList", zipCode));
-
-      try {
-          return URIUtils.createURI("http", "weather.gov", -1, "/forecasts/xml/sample_products/browser_interface/ndfdXMLclient.php", URLEncodedUtils.format(qparams, "UTF-8"), null);
-      } catch (URISyntaxException e) {
-          throw new RuntimeException("Internal error constructing URI", e);
-      }
-   }
-
-   private Document retrieveInfo(URI uri) throws WeatherServiceException
-      {
-       SAXReader reader = new SAXReader();
-       try {
-           Document result = reader.read(uri.toURL());
-           return result;
-       } catch (Exception e) {
-           throw new WeatherServiceException(e);
-       }
-   }
-
-   private URI getCurrentObsURI(String stationID) {
-       try {
-           return URIUtils.createURI("http", "weather.gov", -1, "/xml/current_obs/"+stationID+".xml", null, null);
-       } catch (URISyntaxException e) {
-           throw new RuntimeException("Internal error constructing URI", e);
-       }
-   }
-
-   private URI getForecastURI(float latitude, float longitude, int numDays, boolean isMetric) {
-      List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-      qparams.add(new BasicNameValuePair("lat", Float.toString(latitude)));
-      qparams.add(new BasicNameValuePair("lon", Float.toString(longitude)));
-      qparams.add(new BasicNameValuePair("startDate", dateFormat.format(new Date())));
-      qparams.add(new BasicNameValuePair("numDays", Integer.toString(numDays)));
-      qparams.add(new BasicNameValuePair("format", "24 hourly"));
-      qparams.add(new BasicNameValuePair("Unit", isMetric ? "m":"e"));
-
-      try {
-          return URIUtils.createURI("http", "graphical.weather.gov", -1, "/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php", URLEncodedUtils.format(qparams, "UTF-8"), null);
-      } catch (URISyntaxException e) {
-          throw new RuntimeException("Internal error constructing URI", e);
-      }
    }
 }
