@@ -8,9 +8,13 @@ import com.controlj.addon.weather.service.WeatherServiceException;
 import com.controlj.addon.weather.service.WeatherServiceUIBase;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -45,31 +49,17 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
 
     @Override
     public String getAddDialogHTML() {
-        return  "<form>\n" +
-                "    <table>\n" +
-                "        <tr>\n" +
-                "            <td nowrap=\"true\">Location Path:&nbsp;</td>\n" +
-                "            <td><input type=\"text\" name=\"path\" value=\"\"/></td>\n" +
-                "        </tr>\n" +
-                "        <tr>\n" +
-                "            <td>Zip Code:&nbsp;</td>\n" +
-                "            <td><input type=\"text\" name=\"zip\" value=\"\"/></td>\n" +
-                "        </tr>\n" +
-                "    </table>\n" +
-                "    <input type=\"hidden\" name=\"action\" value=\"addrow\"/>\n" +
-                "</form>";
+        StringWriter result = new StringWriter();
+        copyHTMLTemplate(WeatherServiceUIImpl.class, "adddialog.html", result);
+        return result.getBuffer().toString();
     }
 
     @Override
     public String getServiceConfigHTML() {
-        return super.getServiceConfigHTML() +
-               "<h2>Service Options</h2>\n" +
-               "<div class=\"indent\">" +
-               "Units:\n" +
-               "<input type=\"radio\" name=\"units\" value=\"imperial\" checked/>US Customary&nbsp;&nbsp;&nbsp;\n" +
-               "<input type=\"radio\" name=\"units\" value=\"metric\" />Metric&nbsp;&nbsp;<br/>" +
-               "<label>Magic Number:&nbsp;</label><input type=\"text\" name=\"magicnumber\"/>" +
-               "</div>\n";
+        StringWriter result = new StringWriter();
+        result.append(super.getServiceConfigHTML());
+        copyHTMLTemplate(WeatherServiceUIImpl.class, "serviceconfig.html", result);
+        return result.getBuffer().toString();
     }
 
     @Override

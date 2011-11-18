@@ -4,9 +4,15 @@ import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.data.StationSource;
 import com.controlj.addon.weather.noaa.WeatherServiceImpl;
+import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
+import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 
 /**
  *
@@ -16,6 +22,10 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
 
     @Override
     public String getServiceConfigHTML() {
+        StringWriter result = new StringWriter();
+        copyHTMLTemplate(WeatherServiceUIBase.class, "baseserviceconfig.html", result);
+        return result.getBuffer().toString();
+        /*
         return "    <p>pick service here</p>\n" +
                 "    <h2>Refresh Rates</h2>\n" +
                 "    <div class=\"indent\">\n" +
@@ -30,6 +40,8 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
                 "            minutes\n" +
                 "        </div>\n" +
                 "    </div>";
+        */
+
     }
 
 
@@ -57,6 +69,15 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
             }
         } else {
             writer.addValidationError("forecastrefresh", "forecast rate not specified");
+        }
+    }
+
+    protected void copyHTMLTemplate(Class clazz, String templatename, Writer out) {
+        InputStream stream = clazz.getResourceAsStream(templatename);
+        try {
+            IOUtils.copy(stream, out);
+        } catch (IOException e) {
+            Logging.println("Error reading template html file", e);
         }
     }
 
