@@ -23,35 +23,61 @@ package com.controlj.addon.weather.data;
 
 public enum WeatherIcon
 {
+    Unknown(0, "Unknown"),
+    ClearSky(1, "Clear Sky"),
+    PartlyCloudy(2, "Partly Cloudy"),
+    MostlyCloudy(3, "Mostly Cloudy"),
+    CloudySky(4, "Cloudy Sky"),
+    Fog(5, "Fog"),
+    BadVisibility(6, "Bad Visibility"),
+    Windy(7, "Windy"),
+    Cold(8, "Cold"),
+    Hot(9, "Hot"),
+    Drizzle(10, "Drizzle"),
+    Rain(11, "Rain"),
+    RainShowers(12, "Rain Showers"),
+    Storms(13, "Storms"),
+    Thunderstorms(14, "Thunderstorms"),
+    Flurries(15, "Flurries"),
+    Snow(16, "Snow"),
+    SnowShowers(17, "SnowShowers"),
+    Blizzard(18, "Blizzard"),
+    FreezingDrizzle(19, "Freezing Drizzle"),
+    FreezingRain(20, "Freezing Rain"),
+    IcePellets(21, "Ice Pellets"),
+    WintryMix(22, "Wintry Mix");
+
+    /*
    Unknown(0, "Unknown"),
    ClearSky(1, "Clear Sky"),
-   FewClouds(2, "Few Clouds"),
+   FewClouds(2, "Few Clouds"),         // kill?
    PartlyCloudy(3, "Partly Cloudy"),
    MostlyCloudy(4, "Mostly Cloudy"),
    CloudySky(5, "Cloudy Sky"),
-   Fog(6, "Fog"),
-   CloudsAndFog(7, "Clouds And Fog"),
-   Dust(8, "Dust"),
-   Smoke(9, "Smoke"),
+   Fog(6, "Fog"),                      // kill?
+   CloudsAndFog(7, "Clouds And Fog"),  // kill?
+   Dust(8, "Dust"),                    // kill?
+   Smoke(9, "Smoke"),                  // kill?
    Windy(10, "Windy"),
-   Cold(11, "Cold"),
-   Hot(12, "Hot"),
+   Cold(11, "Cold"),                   // ???
+   Hot(12, "Hot"),                     // ???
    Rain(13, "Rain"),
    RainShowers(14, "Rain Showers"),
-   IsolatedShowers(15, "Isolated Showers"),
+   IsolatedShowers(15, "Isolated Showers"),  // kill?
    Thunderstorms(16, "Thunderstorms"),
-   IsolatedThunder(17, "Isolated Thunder"),
-   ScatteredThunderstorms(18, "Scattered Thunderstorms"),
+   IsolatedThunder(17, "Isolated Thunder"),  // kill?
+   ScatteredThunderstorms(18, "Scattered Thunderstorms"),  // kill?
    FreezingRain(19, "Freezing Rain"),
    RainSnowMix(20, "Rain Snow Mix"),
    Snow(21, "Snow"),
-   IcePellets(22, "Ice Pellets"),
-   RainIcePelletMix(23, "Rain Ice Pellet Mix"),
-   WintryMix(24, "Wintry Mix"),
-   Blizzard(25, "Blizzard"),
-   Tornadoes(26, "Tornadoes"),
-   Hurricane(27, "Hurricane"),
-   TropicalStorm(28, "Tropical Storm");
+   IcePellets(22, "Ice Pellets"),         // kill?
+   RainIcePelletMix(23, "Rain Ice Pellet Mix"),    // kill?
+   WintryMix(24, "Wintry Mix"),           // kill?
+   Blizzard(25, "Blizzard"),              // kill?
+   Tornadoes(26, "Tornadoes"),            // kill?
+   Hurricane(27, "Hurricane"),            // kill?
+   TropicalStorm(28, "Tropical Storm");   // kill?
+   */
 
    private final int value;
    private final String displayName;
@@ -72,4 +98,3 @@ public enum WeatherIcon
       return displayName;
    }
 }
-
