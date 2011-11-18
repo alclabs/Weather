@@ -29,6 +29,7 @@ import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.service.WeatherServiceException;
 import com.controlj.addon.weather.service.WeatherServiceUI;
+import com.controlj.addon.weather.service.WeatherServices;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.json.JSONArray;
@@ -64,9 +65,9 @@ public class AjaxController extends HttpServlet {
     private static final String JSON_STATION = "station";
     private static final String JSON_FORECAST = "forecast";
     private static final String JSON_FORECAST_HEADERS = "forecastheaders";
-    private static final String JSON_ICON = "icon";
-    private static final String JSON_FIELD = "field";
-    private static final String JSON_VALUE = "value";
+    private static final String JSON_ICON     = "icon";
+    private static final String JSON_FIELD    = "field";
+    private static final String JSON_VALUE    = "value";
 
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -84,7 +85,7 @@ public class AjaxController extends HttpServlet {
         } else {
             String message = "Unknown action \"" + action + "\" specified in post for controller";
             writer.addError(message);
-            Logging.println("ERROR:" + message);
+            Logging.println("ERROR:"+message);
         }
 
         // if there are no errors
@@ -130,10 +131,12 @@ public class AjaxController extends HttpServlet {
             StationSource stationSource = entry.getStationSource();
             if (stationSource != null) {
                 for (StationField field : StationField.values()) {
-                    Map<String, Object> row = new HashMap<String, Object>(2);
-                    row.put(JSON_FIELD, field.getName());
-                    row.put(JSON_VALUE, formatValue(field.getValue(stationSource)));
-                    writer.appendToArray(JSON_STATION, row);
+                    if (field.isSupported(stationSource)) {
+                        Map<String, Object> row = new HashMap<String, Object>(2);
+                        row.put(JSON_FIELD, field.getName());
+                        row.put(JSON_VALUE, formatValue(field.getValue(stationSource)));
+                        writer.appendToArray(JSON_STATION, row);
+                    }
                 }
             }
 
@@ -141,10 +144,12 @@ public class AjaxController extends HttpServlet {
             ConditionsSource conditionsSource = ScheduledWeatherLookup.updateConditionsData(configData, entry);
             if (conditionsSource != null) {
                 for (ConditionsField field : ConditionsField.values()) {
-                    Map<String, Object> row = new HashMap<String, Object>(2);
-                    row.put(JSON_FIELD, field.getName());
-                    row.put(JSON_VALUE, formatValue(field.getValue(conditionsSource)));
-                    writer.appendToArray(JSON_CURRENT, row);
+                    if (field.isSupported(conditionsSource)) {
+                        Map<String, Object> row = new HashMap<String, Object>(2);
+                        row.put(JSON_FIELD, field.getName());
+                        row.put(JSON_VALUE, formatValue(field.getValue(conditionsSource)));
+                        writer.appendToArray(JSON_CURRENT, row);
+                    }
                 }
             }
 
@@ -152,18 +157,20 @@ public class AjaxController extends HttpServlet {
             ForecastSource[] forecastSources = ScheduledWeatherLookup.updateForecastsData(configData, entry);
             if (forecastSources != null) {
                 writer.appendToArray(JSON_FORECAST_HEADERS, "Field");
-                for (int i = 0; i < forecastSources.length; i++) {
-                    writer.appendToArray(JSON_FORECAST_HEADERS, "Day " + i + " Value");
+                for (int i=0; i<forecastSources.length; i++) {
+                    writer.appendToArray(JSON_FORECAST_HEADERS, "Day "+i+ " Value");
                 }
 
                 for (ForecastField field : ForecastField.values()) {
-                    String row[] = new String[forecastSources.length + 1];
-                    row[0] = field.getName('?');
-                    int i = 1;
-                    for (ForecastSource forecastSource : forecastSources) {
-                        row[i++] = formatValue(field.getValue(forecastSource));
+                    if (field.isSupported(forecastSources[0])) {
+                        String row[] = new String[forecastSources.length + 1];
+                        row[0] = field.getName('?');
+                        int i=1;
+                        for (ForecastSource forecastSource : forecastSources) {
+                            row[i++] = formatValue(field.getValue(forecastSource));
+                        }
+                        writer.appendToArray(JSON_FORECAST, row);
                     }
-                    writer.appendToArray(JSON_FORECAST, row);
                 }
             }
 
@@ -176,11 +183,11 @@ public class AjaxController extends HttpServlet {
             }
 
         } catch (NumberFormatException e) {
-            writer.addError("Error deleting row.  Invalid row number '" + rowString + "'");
-            Logging.println("Error deleting row.  Invalid row number '" + rowString + "'", e);
+            writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
+            Logging.println("Error deleting row.  Invalid row number '"+rowString+"'", e);
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather service:" + e.getMessage());
-            Logging.println("Error getting weather service:" + e.getMessage(), e);
+                writer.addError("Error getting weather service:" + e.getMessage());
+                Logging.println("Error getting weather service:" + e.getMessage(), e);
         }
     }
 
@@ -200,8 +207,8 @@ public class AjaxController extends HttpServlet {
             int rowNum = Integer.parseInt(rowString);
             configData.delete(rowNum);
         } catch (NumberFormatException e) {
-            writer.addError("Error deleting row.  Invalid row number '" + rowString + "'");
-            Logging.println("Error deleting row.  Invalid row number '" + rowString + "'", e);
+            writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
+            Logging.println("Error deleting row.  Invalid row number '"+rowString+"'", e);
         }
     }
 
@@ -216,11 +223,12 @@ public class AjaxController extends HttpServlet {
 
     }
 
-    private ConfigData getConfigData(HttpServletRequest request) {
-        ConfigData data = (ConfigData) request.getAttribute("config_data");
-        if (data == null)
-            data = ConfigDataFactory.loadConfigData();
-        return data;
+    private ConfigData getConfigData(HttpServletRequest request)
+    {
+       ConfigData data = (ConfigData) request.getAttribute("config_data");
+       if (data == null)
+          data = ConfigDataFactory.loadConfigData();
+       return data;
     }
 
     private void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) throws IOException {
@@ -238,21 +246,31 @@ public class AjaxController extends HttpServlet {
             WeatherServiceUI ui = configData.getWeatherService().getUI();
             writer.putString("adddialog", ui.getAddDialogHTML());
             writer.putString("serviceconfig", ui.getServiceConfigHTML());
+
+            for (WeatherServices service : WeatherServices.values()) {
+                Map<String, Object> row = new HashMap<String, Object>(2);
+                row.put("key", service.name());
+                row.put("display", service.getDisplayName());
+                writer.appendToArray("services", row);
+            }
+
             List<String> serviceEntryFields = ui.getServiceEntryFields();
             for (String serviceEntryField : serviceEntryFields) {
                 writer.appendToArray("entryheaders", ui.getServiceEntryHeaderName(serviceEntryField));
             }
 
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather service:" + e.getMessage());
+            writer.addError("Error getting weather service:"+e.getMessage());
         }
     }
 
 
     private void retrieveData(ConfigData configData, ResponseWriter writer) throws IOException {
+        WeatherServices service = configData.getWeatherServiceEnum();
+        writer.putString("currentservice", service.name());
         writer.putStringChild(JSON_DATA, "conditionrefresh", Integer.toString(configData.getConditionsRefreshInMinutes()));
         writer.putStringChild(JSON_DATA, "forecastrefresh", Integer.toString(configData.getForecastsRefreshInMinutes()));
-        Map<String, String> data = configData.getServiceConfigData();
+        Map<String,String> data = configData.getServiceConfigData();
         for (String key : data.keySet()) {
             writer.putStringChild(JSON_DATA, key, data.get(key));
         }
@@ -264,15 +282,15 @@ public class AjaxController extends HttpServlet {
         WeatherServiceUI ui;
         try {
             ui = configData.getWeatherService().getUI();
-            int entrySize = ui.getServiceEntryFields().size() + 2; // add path and update time
+            int entrySize = ui.getServiceEntryFields().size()+2; // add path and update time
 
             for (WeatherConfigEntry location : locations) {
                 String[] next = new String[entrySize];
 
                 next[0] = location.getCpPath();
-                next[entrySize - 1] = location.getLastUpdate();
+                next[entrySize-1] = location.getLastUpdate();
                 Map<String, String> serviceEntryData = location.getServiceEntryData();
-                int i = 1;
+                int i=1;
                 for (String fieldName : ui.getServiceEntryFields()) {
                     next[i++] = serviceEntryData.get(fieldName);
                 }
@@ -281,7 +299,7 @@ public class AjaxController extends HttpServlet {
                 writer.appendToArray("locations", next);
             }
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather service:" + e.getMessage());
+            writer.addError("Error getting weather service:"+e.getMessage());
         }
     }
 

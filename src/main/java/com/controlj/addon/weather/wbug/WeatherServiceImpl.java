@@ -24,6 +24,7 @@ package com.controlj.addon.weather.wbug;
 import com.controlj.addon.weather.data.ConditionsSource;
 import com.controlj.addon.weather.data.ForecastSource;
 import com.controlj.addon.weather.data.StationSource;
+import com.controlj.addon.weather.noaa.*;
 import com.controlj.addon.weather.service.InvalidConfigurationDataException;
 import com.controlj.addon.weather.service.WeatherService;
 import com.controlj.addon.weather.service.WeatherServiceException;
@@ -37,7 +38,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class WeatherServiceImpl implements WeatherService
 {
+   static final String CONFIG_KEY_UNITS = "units";
+   static final String CONFIG_VALUE_UNITS_IMPERIAL = "imperial";
+   static final String CONFIG_VALUE_UNITS_METRIC = "metric";
+
    private static final AtomicReference<String> LICENSE_KEY = new AtomicReference<String>();
+   private WeatherServiceUI ui = new WeatherServiceUIImpl();
 
    @Override
    public StationSource resolveConfigurationToStation(String zipCode) throws InvalidConfigurationDataException, WeatherServiceException
@@ -59,7 +65,7 @@ public class WeatherServiceImpl implements WeatherService
    @Override
    public ConditionsSource getConditionsSource(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException
    {
-      boolean isMetric = "Metric".equals(entryData.get("units"));
+      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(entryData.get(CONFIG_KEY_UNITS));
       try
       {
          LiveWeather liveWeather = getService().getLiveWeatherByStationID(stationSource.getId(), isMetric ? 1 : 0);
@@ -74,7 +80,7 @@ public class WeatherServiceImpl implements WeatherService
    @Override
    public ForecastSource[] getForecastSources(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException
    {
-      boolean isMetric = "Metric".equals(entryData.get("units"));
+      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(entryData.get(CONFIG_KEY_UNITS));
       Forecasts forecasts;
       try
       {
@@ -100,7 +106,7 @@ public class WeatherServiceImpl implements WeatherService
 
    @Override public WeatherServiceUI getUI()
    {
-      return null;
+      return ui;
    }
 
    private WeatherBugService getService() throws WeatherServiceException
