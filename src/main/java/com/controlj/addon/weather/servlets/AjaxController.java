@@ -22,9 +22,11 @@
 
 package com.controlj.addon.weather.servlets;
 
+import com.controlj.addon.weather.ScheduledWeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
+import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.service.WeatherServiceException;
 import com.controlj.addon.weather.service.WeatherServiceUI;
 import com.controlj.addon.weather.util.Logging;
@@ -37,6 +39,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +53,20 @@ public class AjaxController extends HttpServlet {
 
     private static final String ACTION_INIT = "init";
     private static final String ACTION_UPDATE = "update";
+    private static final String ACTION_SHOWDATA = "showdata";
     private static final String ACTION_POSTCONFIG = "postconfig";
     private static final String ACTION_DELETEROW = "deleterow";
     private static final String ACTION_ADDROW = "addrow";
 
     private static final String JSON_DATA = "data";
+    private static final String JSON_NAME = "name";
+    private static final String JSON_CURRENT = "current";
+    private static final String JSON_STATION = "station";
+    private static final String JSON_FORECAST = "forecast";
+    private static final String JSON_FORECAST_HEADERS = "forecastheaders";
+    private static final String JSON_ICON     = "icon";
+    private static final String JSON_FIELD    = "field";
+    private static final String JSON_VALUE    = "value";
 
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -83,6 +95,105 @@ public class AjaxController extends HttpServlet {
         writer.write();
     }
 
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ConfigData configData = getConfigData(req);
+        ResponseWriter writer = new ResponseWriter(resp);
+
+        String action = req.getParameter(ACTION_PARAM_NAME);
+        if (ACTION_INIT.equals(action)) {
+            retrieveData(configData, writer);
+            retrieveUI(configData, writer);
+        } else if (ACTION_UPDATE.equals(action)) {
+            retrieveData(configData, writer);
+        } else if (ACTION_SHOWDATA.equals(action)) {
+            showData(configData, writer, req);
+        } else {
+            String message = "Unknown action \"" + action + "\" specified for controller";
+            writer.addError(message);
+            Logging.println("ERROR:" + message);
+        }
+        writer.write();
+    }
+
+    private void showData(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+        String rowString = req.getParameter(ROW_PARAM_NAME);
+        try {
+            int rowNum = Integer.parseInt(rowString);
+            WeatherConfigEntry entry = configData.getList().get(rowNum);
+
+            // display name
+            WeatherServiceUI ui = configData.getWeatherService().getUI();
+            String displayName = ui.getEntryDisplayName(entry);
+            writer.putString(JSON_NAME, displayName);
+
+            // station data
+            StationSource stationSource = entry.getStationSource();
+            if (stationSource != null) {
+                for (StationField field : StationField.values()) {
+                    Map row = new HashMap(2);
+                    row.put(JSON_FIELD, field.getName());
+                    row.put(JSON_VALUE, formatValue(field.getValue(stationSource)));
+                    writer.appendToArray(JSON_STATION, row);
+                }
+            }
+
+            // current conditions
+            ConditionsSource conditionsSource = ScheduledWeatherLookup.updateConditionsData(configData, entry);
+            if (conditionsSource != null) {
+                for (ConditionsField field : ConditionsField.values()) {
+                    Map row = new HashMap(2);
+                    row.put(JSON_FIELD, field.getName());
+                    row.put(JSON_VALUE, formatValue(field.getValue(conditionsSource)));
+                    writer.appendToArray(JSON_CURRENT, row);
+                }
+            }
+
+            // forecast data
+            ForecastSource[] forecastSources = ScheduledWeatherLookup.updateForecastsData(configData, entry);
+            if (forecastSources != null) {
+                writer.appendToArray(JSON_FORECAST_HEADERS, "Field");
+                for (int i=0; i<forecastSources.length; i++) {
+                    writer.appendToArray(JSON_FORECAST_HEADERS, "Day "+i+ " Value");
+                }
+
+                for (ForecastField field : ForecastField.values()) {
+                    String row[] = new String[forecastSources.length + 1];
+                    row[0] = field.getName('?');
+                    int i=1;
+                    for (ForecastSource forecastSource : forecastSources) {
+                        row[i++] = formatValue(field.getValue(forecastSource));
+                    }
+                    writer.appendToArray(JSON_FORECAST, row);
+                }
+            }
+
+            // icon data
+            for (WeatherIcon icon : WeatherIcon.values()) {
+                Map row = new HashMap(2);
+                row.put(JSON_FIELD, icon.getDisplayName());
+                row.put(JSON_VALUE, icon.getValue());
+                writer.appendToArray(JSON_ICON, row);
+            }
+
+        } catch (NumberFormatException e) {
+            writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
+            Logging.println("Error deleting row.  Invalid row number '"+rowString+"'", e);
+        } catch (WeatherServiceException e) {
+                writer.addError("Error getting weather service:" + e.getMessage());
+                Logging.println("Error getting weather service:" + e.getMessage(), e);
+        }
+    }
+
+    private String formatValue(Object value) {
+        //todo - safer formatting
+        if (value == null) {
+            return "-";
+        } else {
+            return value instanceof Date ? PrimitiveServletBase.timeFormat.format(value) : value.toString();
+        }
+    }
+
+
     private void deleteRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         String rowString = req.getParameter(ROW_PARAM_NAME);
         try {
@@ -103,24 +214,6 @@ public class AjaxController extends HttpServlet {
             Logging.println("Error getting weather service:" + e.getMessage(), e);
         }
 
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ConfigData configData = getConfigData(req);
-        ResponseWriter writer = new ResponseWriter(resp);
-
-        String action = req.getParameter(ACTION_PARAM_NAME);
-        if (ACTION_INIT.equals(action)) {
-            retrieveData(configData, writer);
-            retrieveUI(configData, writer);
-        } else if (ACTION_UPDATE.equals(action)) {
-            retrieveData(configData, writer);
-        } else {
-            String message = "Unknown action \"" + action + "\" specified for controller";
-            writer.addError(message);
-            Logging.println("ERROR:"+message);
-        }
-        writer.write();
     }
 
     private ConfigData getConfigData(HttpServletRequest request)
