@@ -108,9 +108,13 @@ function handleData(data) {
             row.data("row", i)
         }
     }
+    if (data.currentservice) {
+        $('select[name="service"] option[value="'+data.currentservice+'"]').attr("selected","selected")
+    }
     $("#locations button.del").button({text:false, icons:{primary: 'ui-icon-circle-minus'}})
     $("#locations button.data").button()
     $("#resultdata").css("display","none");
+
 }
 
 /*
@@ -161,6 +165,11 @@ function handleUIResults(data) {
         $("#locations thead tr").append("<th>"+value+"</th>");
     })
     $("#locations thead tr").append("<th>Last Update</th>");
+    if (data.services) {
+        $.each(data.services, function(index, value) {
+            $('select[name="service"]').append('<option value="'+value.key+'">'+value.display+'</option>')
+        })
+    }
 }
 
 function initData() {
@@ -188,9 +197,11 @@ $(document).ready(function() {
                         noErrors()
                     }
                 })
+                $('#adddialog form input[type!="hidden"]').val("")
                 $(this).dialog("close")
             },
             "Cancel" : function() {
+                $('#adddialog form input[type!="hidden"]').val("")
                 $(this).dialog("close")
             }
         }

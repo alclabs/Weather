@@ -29,6 +29,7 @@ import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.service.WeatherServiceException;
 import com.controlj.addon.weather.service.WeatherServiceUI;
+import com.controlj.addon.weather.service.WeatherServices;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.json.JSONArray;
@@ -239,6 +240,15 @@ public class AjaxController extends HttpServlet {
             WeatherServiceUI ui = configData.getWeatherService().getUI();
             writer.putString("adddialog", ui.getAddDialogHTML());
             writer.putString("serviceconfig", ui.getServiceConfigHTML());
+
+            for (WeatherServices service : WeatherServices.values()) {
+                Map row = new HashMap(2);
+
+                row.put("key", service.name());
+                row.put("display", service.getDisplayName());
+                writer.appendToArray("services", row);
+            }
+
             List<String> serviceEntryFields = ui.getServiceEntryFields();
             for (String serviceEntryField : serviceEntryFields) {
                 writer.appendToArray("entryheaders", ui.getServiceEntryHeaderName(serviceEntryField));
@@ -251,6 +261,8 @@ public class AjaxController extends HttpServlet {
 
 
     private void retrieveData(ConfigData configData, ResponseWriter writer) throws IOException {
+        WeatherServices service = configData.getWeatherServiceEnum();
+        writer.putString("currentservice", service.name());
         writer.putStringChild(JSON_DATA, "conditionrefresh", Integer.toString(configData.getConditionsRefreshInMinutes()));
         writer.putStringChild(JSON_DATA, "forecastrefresh", Integer.toString(configData.getForecastsRefreshInMinutes()));
         Map<String,String> data = configData.getServiceConfigData();

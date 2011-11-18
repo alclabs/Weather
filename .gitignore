@@ -3,6 +3,7 @@
 *.ipr
 *.iws
 
+src/main/resources/com/controlj/addon/weather/wbug/wbug-key.txt
 out/
 build/
 build.options
