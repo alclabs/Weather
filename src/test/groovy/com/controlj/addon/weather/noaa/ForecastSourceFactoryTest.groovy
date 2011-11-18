@@ -101,7 +101,7 @@ class ForecastSourceFactoryTest extends Specification {
             List<WeatherIcon> icons = factory.icons
         then:
             icons.size() == 7
-            icons == [FewClouds, FewClouds, FewClouds, IsolatedShowers, PartlyCloudy, PartlyCloudy, PartlyCloudy]
+            icons == [PartlyCloudy, PartlyCloudy, PartlyCloudy, Storms, PartlyCloudy, PartlyCloudy, PartlyCloudy]
     }
 
 }
