@@ -131,10 +131,12 @@ public class AjaxController extends HttpServlet {
             StationSource stationSource = entry.getStationSource();
             if (stationSource != null) {
                 for (StationField field : StationField.values()) {
-                    Map row = new HashMap(2);
-                    row.put(JSON_FIELD, field.getName());
-                    row.put(JSON_VALUE, formatValue(field.getValue(stationSource)));
-                    writer.appendToArray(JSON_STATION, row);
+                    if (field.isSupported(stationSource)) {
+                        Map row = new HashMap(2);
+                        row.put(JSON_FIELD, field.getName());
+                        row.put(JSON_VALUE, formatValue(field.getValue(stationSource)));
+                        writer.appendToArray(JSON_STATION, row);
+                    }
                 }
             }
 
@@ -142,10 +144,12 @@ public class AjaxController extends HttpServlet {
             ConditionsSource conditionsSource = ScheduledWeatherLookup.updateConditionsData(configData, entry);
             if (conditionsSource != null) {
                 for (ConditionsField field : ConditionsField.values()) {
-                    Map row = new HashMap(2);
-                    row.put(JSON_FIELD, field.getName());
-                    row.put(JSON_VALUE, formatValue(field.getValue(conditionsSource)));
-                    writer.appendToArray(JSON_CURRENT, row);
+                    if (field.isSupported(conditionsSource)) {
+                        Map row = new HashMap(2);
+                        row.put(JSON_FIELD, field.getName());
+                        row.put(JSON_VALUE, formatValue(field.getValue(conditionsSource)));
+                        writer.appendToArray(JSON_CURRENT, row);
+                    }
                 }
             }
 
@@ -158,13 +162,15 @@ public class AjaxController extends HttpServlet {
                 }
 
                 for (ForecastField field : ForecastField.values()) {
-                    String row[] = new String[forecastSources.length + 1];
-                    row[0] = field.getName('?');
-                    int i=1;
-                    for (ForecastSource forecastSource : forecastSources) {
-                        row[i++] = formatValue(field.getValue(forecastSource));
+                    if (field.isSupported(forecastSources[0])) {
+                        String row[] = new String[forecastSources.length + 1];
+                        row[0] = field.getName('?');
+                        int i=1;
+                        for (ForecastSource forecastSource : forecastSources) {
+                            row[i++] = formatValue(field.getValue(forecastSource));
+                        }
+                        writer.appendToArray(JSON_FORECAST, row);
                     }
-                    writer.appendToArray(JSON_FORECAST, row);
                 }
             }
 
