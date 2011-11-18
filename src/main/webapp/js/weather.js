@@ -4,7 +4,6 @@ var addDialog;
 function setupHandlers() {
     // Delete handler
     $("#locations").on('click', "button.del", function() {
-        //alert("Delete:"+$(this).parents("tr").data("row"))
         var num = $(this).parents("tr").data("row")
         $.post("ajaxcontroller", {action:"deleterow", rownum:num}, function(result) {
             if (!handleResponseErrors(result)) {
@@ -16,7 +15,13 @@ function setupHandlers() {
 
     // Show Data
     $("#locations").on('click', "button.data", function() {
-        alert("Show data for:"+$(this).parents("tr").data("row"))
+        var num = $(this).parents("tr").data("row")
+        $.get("ajaxcontroller", {action:"showdata", rownum:num}, function(result) {
+            if (!handleResponseErrors(result)) {
+                handleResultData(result)
+                noErrors()
+            }
+        })
     })
 
     // add location button
@@ -94,17 +99,59 @@ function handleData(data) {
         for (var i=0; i<data.locations.length; i++) {
             var next = data.locations[i]
             var row = $("<tr></tr>")
-            row.append("<td><button class='del'></button></td>")
+            row.append("<td><button class='del' type='button'></button></td>")
             $.each(next, function(index, value) {
                 row.append("<td>"+value+"</td>")
             })
-            row.append("<td><button class='data'>Show Data</button></td>");
+            row.append("<td><button class='data' type='button'>Show Data</button></td>");
             $("#locations tbody").append(row)
             row.data("row", i)
         }
     }
     $("#locations button.del").button({text:false, icons:{primary: 'ui-icon-circle-minus'}})
     $("#locations button.data").button()
+    $("#resultdata").css("display","none");
+}
+
+/*
+Handles results of a showdata request.  This has a block of html content under
+data.resultdata.
+ */
+function handleResultData(data) {
+    if (data.name) {
+        $("#resultname").text(data.name)
+    }
+    if (data.station) {
+        $.each(data.station, function(index, value) {
+            $("#stationdata tbody").append("<tr><td>"+value.field+"</td><td>"+value.value+"</td></tr>")
+        })
+    }
+    if (data.current) {
+        $.each(data.current, function(index, value) {
+            $("#currentdata tbody").append("<tr><td>"+value.field+"</td><td>"+value.value+"</td></tr>")
+        })
+    }
+    if (data.forecastheaders) {
+        $.each(data.forecastheaders, function(index, name) {
+            $("#forecastdata thead tr").append("<th>"+name+"</th>")
+        })
+    }
+    if (data.forecast) {
+        $.each(data.forecast, function(index, rowData) {
+            var row = $("<tr></tr>")
+            $.each(rowData, function(index, name) {
+                row.append("<td>"+name+"</td>")
+            })
+            $("#forecastdata tbody").append(row)
+        })
+    }
+    if (data.icon) {
+        $.each(data.icon, function(index, name) {
+            $("#icondata tbody").append("<tr><td>"+name.field+"</td><td>"+name.value+"</td></tr>")
+        })
+    }
+
+    $("#resultdata").css("display","block")
 }
 
 function handleUIResults(data) {

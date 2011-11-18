@@ -73,6 +73,12 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
     }
 
     @Override
+    public String getEntryDisplayName(WeatherConfigEntry entry) {
+        String zip = entry.getServiceEntryData().get(FIELD_ZIP);
+        return zip;
+    }
+
+    @Override
     public void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         // super class handles the refresh rates
         super.updateConfiguration(configData, writer, req);

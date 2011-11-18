@@ -1,6 +1,8 @@
 package com.controlj.addon.weather.service;
 
 import com.controlj.addon.weather.config.ConfigData;
+import com.controlj.addon.weather.config.WeatherConfigEntry;
+import com.controlj.addon.weather.data.StationSource;
 import com.controlj.addon.weather.noaa.WeatherServiceImpl;
 import com.controlj.addon.weather.util.ResponseWriter;
 
@@ -29,6 +31,7 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
                 "        </div>\n" +
                 "    </div>";
     }
+
 
     @Override
     public void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {

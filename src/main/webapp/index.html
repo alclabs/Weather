@@ -50,6 +50,10 @@
         label {float:left; text-align: right; width:150px; margin: 2px 5px 0px 0px;}
         input {vertical-align: baseline;}
         h2 {font-size:14px;}
+        h4 {padding-bottom: 0px; margin-bottom: 0px;}
+        .note {font-size: smaller; font-style: italic; margin-bottom: 5px;}
+        #forecastdata td:first-child { font-weight:bold; white-space: nowrap;}
+
     </style>
 </head>
 <body>
@@ -86,6 +90,54 @@
     </table>
     <button id="addlocation">Add...</button>
 </fieldset>
+<br/>
+<div id="resultdata">
+    <h3>Results of reading weather data for <span id="resultname"></span></h3>
+    <h4>Station Data</h4>
+    <table id="stationdata">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h4>Current Conditions</h4>
+    <div class="note">Note: wc_updateStamp and wc_observationStamp are the number of 10 minute intervals between
+    midnight Jan 1, 1970 GMT and the update or observation time</div>
+    <table id="currentdata">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h4>Forecast</h4>
+    <div class="note">Replace the ? in the field with the day number to get the actual field name</div>
+    <table id="forecastdata">
+        <thead>
+            <tr></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h4>Weather Icons</h4>
+    <div class="note">All possible icon names and values</div>
+    <table id="icondata">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
 <div id="adddialog" style="display:none">
 </div>
 </body>

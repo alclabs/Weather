@@ -1,6 +1,7 @@
 package com.controlj.addon.weather.service;
 
 import com.controlj.addon.weather.config.ConfigData;
+import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,7 @@ public interface WeatherServiceUI {
 
     String getAddDialogHTML();
     String getServiceConfigHTML();
+    String getEntryDisplayName(WeatherConfigEntry entry);
     void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req);
     void addRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req);
 }
