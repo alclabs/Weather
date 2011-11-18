@@ -36,3 +36,21 @@ dependencies {
 war {
    classpath = classpath - configurations.groovy
 }
+
+def wbug_file = file('src/main/resources/com/controlj/addon/weather/wbug/wbug-key.txt')
+def wbug_key = 'wbugkey'
+task genwbugkey {
+    inputs.property('wbugkey', { project.hasProperty(wbug_key) ? project.getProperty(wbug_key) : new Date()})
+    outputs.file wbug_file
+} << {
+    if (project.hasProperty(wbug_key)) {
+        wbug_file.text = getProperty(wbug_key)
+    } else println ("ERROR: must set $wbug_key property to build")
+}
+
+processResources.dependsOn genwbugkey
+
+task wbugClean(type: Delete) {
+    delete wbug_file
+}
+clean.dependsOn wbugClean
