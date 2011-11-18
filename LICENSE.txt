@@ -1,0 +1,106 @@
+Copyright (c) 2011 Automated Logic Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+Several libraries and tools are used in this product.
+Copyright and license information for each is included below:
+
+-------------------------------------------------------------------------------
+httpclient package
+-------------------------------------------------------------------------------
+Copyright 2005-2011 Apache Software Foundation.
+Website: http://hc.apache.org/
+License: http://www.apache.org/licenses/
+
+-------------------------------------------------------------------------------
+commons-lang package
+-------------------------------------------------------------------------------
+Copyright 2005-2011 Apache Software Foundation.
+Website: http://commons.apache.org/lang/
+License: http://www.apache.org/licenses/
+
+-------------------------------------------------------------------------------
+dom4j package
+-------------------------------------------------------------------------------
+Copyright 2001-2010.
+Website: http://dom4j.sourceforge.net/dom4j-1.6.1/
+License: http://dom4j.sourceforge.net/dom4j-1.6.1/license.html
+
+-------------------------------------------------------------------------------
+json package
+-------------------------------------------------------------------------------
+Copyright 2002 JSON.org
+Website: http://json.org/java/
+License: http://www.json.org/license.html
+
+-------------------------------------------------------------------------------
+addonsupport-api-addon package
+-------------------------------------------------------------------------------
+Copyright 2007-2010 Automated Logic Corporation
+Website: http://alcshare.com
+License: http://repo.alcshare.com/licenses/addon-license-1.html
+
+-------------------------------------------------------------------------------
+jaxen & saxpath packages
+-------------------------------------------------------------------------------
+Copyright 2001-2010, Codehaus
+Website: http://jaxen.codehaus.org/index.html
+License: http://jaxen.codehaus.org/faq.html
+
+-------------------------------------------------------------------------------
+gradle tool
+-------------------------------------------------------------------------------
+Copyright 2007-2011 the original author or authors
+Website: http://gradle.org
+License: Apache version 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
+
+-------------------------------------------------------------------------------
+groovy packages
+-------------------------------------------------------------------------------
+Website: http://groovy.codehaus.org/
+License: Apache version 2.0 - http://groovy.codehaus.org/License+Information
+
+-------------------------------------------------------------------------------
+spock packages
+-------------------------------------------------------------------------------
+Website: http://code.google.com/p/spock/
+License: Apache version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+
+-------------------------------------------------------------------------------
+cglib-nodep packages
+-------------------------------------------------------------------------------
+Copyright 2002-2004, cglib
+Website: http://cglib.sourceforge.net/
+License: "Free software" - http://www.apache.org/foundation/license-faq.html
+
+-------------------------------------------------------------------------------
+commons-io packages
+-------------------------------------------------------------------------------
+Copyright 2002-2011 The Apache Software Foundation.
+Website: http://commons.apache.org/io/
+License: Apache version 2.0 - http://commons.apache.org/io/license.html
+
+-------------------------------------------------------------------------------
+hamcrest-all packages
+-------------------------------------------------------------------------------
+Website: http://code.google.com/p/hamcrest/
+License: BSD 2-Clause License - http://www.opensource.org/licenses/bsd-license.php
+

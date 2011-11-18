@@ -73,10 +73,10 @@ public class WeatherIconMapper
       map.put("m_nskc", WeatherIcon.ClearSky);
 
       // Few Clouds
-      map.put("few", WeatherIcon.FewClouds);
-      map.put("nfew", WeatherIcon.FewClouds);
-      map.put("m_few", WeatherIcon.FewClouds);
-      map.put("m_nfew", WeatherIcon.FewClouds);
+      map.put("few", WeatherIcon.PartlyCloudy);
+      map.put("nfew", WeatherIcon.PartlyCloudy);
+      map.put("m_few", WeatherIcon.PartlyCloudy);
+      map.put("m_nfew", WeatherIcon.PartlyCloudy);
 
       // Partly Cloudy
       map.put("sct", WeatherIcon.PartlyCloudy);
@@ -103,22 +103,22 @@ public class WeatherIconMapper
       map.put("m_nfg", WeatherIcon.Fog);
 
       // Clouds And Fog
-      map.put("sctfg", WeatherIcon.CloudsAndFog);
-      map.put("nbknfg", WeatherIcon.CloudsAndFog);
-      map.put("m_sctfg", WeatherIcon.CloudsAndFog);
-      map.put("m_nbknfg", WeatherIcon.CloudsAndFog);
+      map.put("sctfg", WeatherIcon.Fog);
+      map.put("nbknfg", WeatherIcon.Fog);
+      map.put("m_sctfg", WeatherIcon.Fog);
+      map.put("m_nbknfg", WeatherIcon.Fog);
 
       // Dust
-      map.put("du", WeatherIcon.Dust);
-      map.put("ndu", WeatherIcon.Dust);
-      map.put("m_du", WeatherIcon.Dust);
-      map.put("m_ndu", WeatherIcon.Dust);
+      map.put("du", WeatherIcon.BadVisibility);
+      map.put("ndu", WeatherIcon.BadVisibility);
+      map.put("m_du", WeatherIcon.BadVisibility);
+      map.put("m_ndu", WeatherIcon.BadVisibility);
 
       // Smoke
-      map.put("fu", WeatherIcon.Smoke);
-      map.put("nfu", WeatherIcon.Smoke);
-      map.put("m_fu", WeatherIcon.Smoke);
-      map.put("m_nfu", WeatherIcon.Smoke);
+      map.put("fu", WeatherIcon.BadVisibility);
+      map.put("nfu", WeatherIcon.BadVisibility);
+      map.put("m_fu", WeatherIcon.BadVisibility);
+      map.put("m_nfu", WeatherIcon.BadVisibility);
 
       // Windy
       map.put("wind", WeatherIcon.Windy);
@@ -147,10 +147,10 @@ public class WeatherIconMapper
       map.put("m_nshra", WeatherIcon.RainShowers);
 
       // Isolated Showers
-      map.put("hi_shwrs", WeatherIcon.IsolatedShowers);
-      map.put("hi_nshwrs", WeatherIcon.IsolatedShowers);
-      map.put("m_hi_shwrs", WeatherIcon.IsolatedShowers);
-      map.put("m_hi_nshwrs", WeatherIcon.IsolatedShowers);
+      map.put("hi_shwrs", WeatherIcon.Storms);
+      map.put("hi_nshwrs", WeatherIcon.Storms);
+      map.put("m_hi_shwrs", WeatherIcon.Storms);
+      map.put("m_hi_nshwrs", WeatherIcon.Storms);
 
       // Thunderstorms
       map.put("tsra", WeatherIcon.Thunderstorms);
@@ -159,16 +159,16 @@ public class WeatherIconMapper
       map.put("m_ntsra", WeatherIcon.Thunderstorms);
 
       // Isolated Thunder
-      map.put("hi_tsra", WeatherIcon.IsolatedThunder);
-      map.put("hi_ntsra", WeatherIcon.IsolatedThunder);
-      map.put("m_hi_tsra", WeatherIcon.IsolatedThunder);
-      map.put("m_hi_ntsra", WeatherIcon.IsolatedThunder);
+      map.put("hi_tsra", WeatherIcon.Thunderstorms);
+      map.put("hi_ntsra", WeatherIcon.Thunderstorms);
+      map.put("m_hi_tsra", WeatherIcon.Thunderstorms);
+      map.put("m_hi_ntsra", WeatherIcon.Thunderstorms);
 
       // Scattered Thunderstorms
-      map.put("scttsra", WeatherIcon.ScatteredThunderstorms);
-      map.put("nscttsra", WeatherIcon.ScatteredThunderstorms);
-      map.put("m_scttsra", WeatherIcon.ScatteredThunderstorms);
-      map.put("m_nscttsra", WeatherIcon.ScatteredThunderstorms);
+      map.put("scttsra", WeatherIcon.Thunderstorms);
+      map.put("nscttsra", WeatherIcon.Thunderstorms);
+      map.put("m_scttsra", WeatherIcon.Thunderstorms);
+      map.put("m_nscttsra", WeatherIcon.Thunderstorms);
 
       // Freezing Rain
       map.put("fzra", WeatherIcon.FreezingRain);
@@ -177,10 +177,10 @@ public class WeatherIconMapper
       map.put("m_nfzra", WeatherIcon.FreezingRain);
 
       // Rain Snow Mix
-      map.put("rasn", WeatherIcon.RainSnowMix);
-      map.put("nrasn", WeatherIcon.RainSnowMix);
-      map.put("m_rasn", WeatherIcon.RainSnowMix);
-      map.put("m_nrasn", WeatherIcon.RainSnowMix);
+      map.put("rasn", WeatherIcon.WintryMix);
+      map.put("nrasn", WeatherIcon.WintryMix);
+      map.put("m_rasn", WeatherIcon.WintryMix);
+      map.put("m_nrasn", WeatherIcon.WintryMix);
 
       // Snow
       map.put("sn", WeatherIcon.Snow);
@@ -195,10 +195,10 @@ public class WeatherIconMapper
       map.put("m_nip", WeatherIcon.IcePellets);
 
       // Rain Ice Pellet Mix
-      map.put("raip", WeatherIcon.RainIcePelletMix);
-      map.put("nraip", WeatherIcon.RainIcePelletMix);
-      map.put("m_raip", WeatherIcon.RainIcePelletMix);
-      map.put("m_nraip", WeatherIcon.RainIcePelletMix);
+      map.put("raip", WeatherIcon.WintryMix);
+      map.put("nraip", WeatherIcon.WintryMix);
+      map.put("m_raip", WeatherIcon.WintryMix);
+      map.put("m_nraip", WeatherIcon.WintryMix);
 
       // Wintry Mix
       map.put("mix", WeatherIcon.WintryMix);
@@ -212,18 +212,18 @@ public class WeatherIconMapper
 
 
       // Tornadoes
-      map.put("tor", WeatherIcon.Tornadoes);
-      map.put("ntor", WeatherIcon.Tornadoes);
-      map.put("m_tor", WeatherIcon.Tornadoes);
-      map.put("m_ntor", WeatherIcon.Tornadoes);
+      map.put("tor", WeatherIcon.Storms);
+      map.put("ntor", WeatherIcon.Storms);
+      map.put("m_tor", WeatherIcon.Storms);
+      map.put("m_ntor", WeatherIcon.Storms);
 
       // Hurricane
-      map.put("hurr", WeatherIcon.Hurricane);
-      map.put("m_hurr", WeatherIcon.Hurricane);
+      map.put("hurr", WeatherIcon.Storms);
+      map.put("m_hurr", WeatherIcon.Storms);
 
       // Tropical Storm
-      map.put("tropstorm", WeatherIcon.TropicalStorm);
-      map.put("m_wave", WeatherIcon.TropicalStorm);
+      map.put("tropstorm", WeatherIcon.Storms);
+      map.put("m_wave", WeatherIcon.Storms);
 
       return map;
    }
