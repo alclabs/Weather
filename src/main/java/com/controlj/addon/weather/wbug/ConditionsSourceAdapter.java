@@ -30,81 +30,55 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class ConditionsSourceAdapter implements ConditionsSource
-{
-   private final LiveWeather liveWeather;
-   private final Date updateTime;
+public class ConditionsSourceAdapter extends ConditionsSource {
+    private final LiveWeather liveWeather;
 
-   public ConditionsSourceAdapter(LiveWeather liveWeather)
-   {
-      this.liveWeather = liveWeather;
-      updateTime = new Date();
-   }
+    public ConditionsSourceAdapter(LiveWeather liveWeather) {
+        this.liveWeather = liveWeather;
+    }
 
-   @Override public Date getUpdateTime()
-   {
-      return updateTime;
-   }
+    @Override public Float getTemperature() {
+        return toFloatNullSafe(liveWeather.getTemperature());
+    }
 
-   @Override public Float getTemperature()
-   {
-      return toFloatNullSafe(liveWeather.getTemperature());
-   }
+    @Override public Float getHumidity() {
+        return toFloatNullSafe(liveWeather.getHumidity());
+    }
 
-   @Override public Float getHumidity()
-   {
-      return toFloatNullSafe(liveWeather.getHumidity());
-   }
+    @Override public Float getPressure() {
+        return toFloatNullSafe(liveWeather.getPressure());
+    }
 
-   @Override public Float getPressure()
-   {
-      return toFloatNullSafe(liveWeather.getPressure());
-   }
+    @Override public String getCurrentCondition() {
+        return liveWeather.getCurrentCondition();
+    }
 
-   @Override public String getCurrentCondition()
-   {
-      return liveWeather.getCurrentCondition();
-   }
+    @Override public Float getDewPoint() {
+        return toFloatNullSafe(liveWeather.getDewPoint());
+    }
 
-   @Override public Float getDewPoint()
-   {
-      return toFloatNullSafe(liveWeather.getDewPoint());
-   }
+    @Override public Float getWindSpeed() {
+        return toFloatNullSafe(liveWeather.getWindSpeed());
+    }
 
-   @Override public Float getWindSpeed()
-   {
-      return toFloatNullSafe(liveWeather.getWindSpeed());
-   }
+    @Override public String getWindDirection() {
+        return liveWeather.getWindDirection();
+    }
 
-   @Override public String getWindDirection()
-   {
-      return liveWeather.getWindDirection();
-   }
+    @Override public Date getObservationTime() {
+        return toDateNullSafe(liveWeather.getObservationTime());
+    }
 
-   @Override public Integer getWindDegrees()
-   {
-      throw new UnsupportedOperationException();
-   }
+    @Override public WeatherIcon getIcon() {
+        URL iconURL = liveWeather.getCurrentConditionIconURL();
+        return new WeatherIconMapper().mapIconURL(iconURL.getPath());
+    }
 
-   @Override public Date getObservationTime()
-   {
-      return toDateNullSafe(liveWeather.getObservationTime());
-   }
+    private Float toFloatNullSafe(BigDecimal value) {
+        return value != null ? value.floatValue() : null;
+    }
 
-   @Override public WeatherIcon getIcon()
-   {
-      URL iconURL = liveWeather.getCurrentConditionIconURL();
-      return new WeatherIconMapper().mapIconURL(iconURL.getPath());
-   }
-
-   private Float toFloatNullSafe(BigDecimal value)
-   {
-      return value != null ? value.floatValue() : null;
-   }
-
-   private Date toDateNullSafe(Timestamp value)
-   {
-      return value != null ? new Date(value.getTime()) : null;
-   }
+    private Date toDateNullSafe(Timestamp value) {
+        return value != null ? new Date(value.getTime()) : null;
+    }
 }
-

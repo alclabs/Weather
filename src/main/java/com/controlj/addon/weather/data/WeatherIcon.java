@@ -21,8 +21,7 @@
  */
 package com.controlj.addon.weather.data;
 
-public enum WeatherIcon
-{
+public enum WeatherIcon {
     Unknown(0, "Unknown"),
     ClearSky(1, "Clear Sky"),
     PartlyCloudy(2, "Partly Cloudy"),
@@ -50,51 +49,48 @@ public enum WeatherIcon
     /*
    Unknown(0, "Unknown"),
    ClearSky(1, "Clear Sky"),
-   FewClouds(2, "Few Clouds"),         // kill?
+   FewClouds(2, "Few Clouds"),
    PartlyCloudy(3, "Partly Cloudy"),
    MostlyCloudy(4, "Mostly Cloudy"),
    CloudySky(5, "Cloudy Sky"),
-   Fog(6, "Fog"),                      // kill?
-   CloudsAndFog(7, "Clouds And Fog"),  // kill?
-   Dust(8, "Dust"),                    // kill?
-   Smoke(9, "Smoke"),                  // kill?
+   Fog(6, "Fog"),
+   CloudsAndFog(7, "Clouds And Fog"),
+   Dust(8, "Dust"),
+   Smoke(9, "Smoke"),
    Windy(10, "Windy"),
-   Cold(11, "Cold"),                   // ???
-   Hot(12, "Hot"),                     // ???
+   Cold(11, "Cold"),
+   Hot(12, "Hot"),
    Rain(13, "Rain"),
    RainShowers(14, "Rain Showers"),
-   IsolatedShowers(15, "Isolated Showers"),  // kill?
+   IsolatedShowers(15, "Isolated Showers"),
    Thunderstorms(16, "Thunderstorms"),
-   IsolatedThunder(17, "Isolated Thunder"),  // kill?
-   ScatteredThunderstorms(18, "Scattered Thunderstorms"),  // kill?
+   IsolatedThunder(17, "Isolated Thunder"),
+   ScatteredThunderstorms(18, "Scattered Thunderstorms"),
    FreezingRain(19, "Freezing Rain"),
    RainSnowMix(20, "Rain Snow Mix"),
    Snow(21, "Snow"),
-   IcePellets(22, "Ice Pellets"),         // kill?
-   RainIcePelletMix(23, "Rain Ice Pellet Mix"),    // kill?
-   WintryMix(24, "Wintry Mix"),           // kill?
-   Blizzard(25, "Blizzard"),              // kill?
-   Tornadoes(26, "Tornadoes"),            // kill?
-   Hurricane(27, "Hurricane"),            // kill?
-   TropicalStorm(28, "Tropical Storm");   // kill?
+   IcePellets(22, "Ice Pellets"),
+   RainIcePelletMix(23, "Rain Ice Pellet Mix"),
+   WintryMix(24, "Wintry Mix"),
+   Blizzard(25, "Blizzard"),
+   Tornadoes(26, "Tornadoes"),
+   Hurricane(27, "Hurricane"),
+   TropicalStorm(28, "Tropical Storm");
    */
 
-   private final int value;
-   private final String displayName;
+    private final int value;
+    private final String displayName;
 
-   WeatherIcon(int value, String displayName)
-   {
-      this.value = value;
-      this.displayName = displayName;
-   }
+    WeatherIcon(int value, String displayName) {
+        this.value = value;
+        this.displayName = displayName;
+    }
 
-   public int getValue()
-   {
-      return value;
-   }
+    public int getValue() {
+        return value;
+    }
 
-   public String getDisplayName()
-   {
-      return displayName;
-   }
+    public String getDisplayName() {
+        return displayName;
+    }
 }
