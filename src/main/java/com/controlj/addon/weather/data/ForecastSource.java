@@ -26,54 +26,73 @@ import java.util.Date;
 /**
  * The data source for Forecast information.  Instances of this are returned by the WeatherService.
  */
-public interface ForecastSource
-{
-   /**
-    * Returns when this source was read from the service.
-    *
-    * @return when this source was read from the service.
-    */
-   Date getUpdateTime();
+public abstract class ForecastSource {
+    private final Date updateTime;
 
-   /**
-    * Returns the title (the name of a day).
-    *
-    * @return the title.
-    */
-   String getTitle();
+    protected ForecastSource() {
+        updateTime = new Date();
+    }
 
-   /**
-    * Returns the expected highest temperature.
-    *
-    * @return the expected highest temperature.
-    */
-   Float getHighestTemperature();
+    /**
+     * Returns when this source was read from the service.
+     *
+     * @return when this source was read from the service.
+     */
+    public Date getUpdateTime() {
+        return updateTime;
+    }
 
-   /**
-    * Returns the expected lowest temperature.
-    *
-    * @return the expected lowest temperature.
-    */
-   Float getLowestTemperature();
+    /**
+     * Returns the title (the name of a day).
+     *
+     * @return the title.
+     */
+    public String getTitle() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the prediction text.
-    *
-    * @return the prediction text.
-    */
-   String getPrediction();
+    /**
+     * Returns the expected highest temperature.
+     *
+     * @return the expected highest temperature.
+     */
+    public Float getHighestTemperature() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the probability of precipitation.
-    *
-    * @return the probability of precipitation.
-    */
-   Float getProbPrecipitation();
+    /**
+     * Returns the expected lowest temperature.
+     *
+     * @return the expected lowest temperature.
+     */
+    public Float getLowestTemperature() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the enumeration of the icon.
-    *
-    * @return the enumeration of the icon.
-    */
-   WeatherIcon getIcon();
+    /**
+     * Returns the prediction text.
+     *
+     * @return the prediction text.
+     */
+    public String getPrediction() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the probability of precipitation.
+     *
+     * @return the probability of precipitation.
+     */
+    public Float getProbPrecipitation() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the enumeration of the icon.
+     *
+     * @return the enumeration of the icon.
+     */
+    public WeatherIcon getIcon() {
+        throw new UnsupportedOperationException();
+    }
 }

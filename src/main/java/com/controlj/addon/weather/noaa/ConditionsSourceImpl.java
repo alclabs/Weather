@@ -26,127 +26,95 @@ import com.controlj.addon.weather.data.WeatherIcon;
 
 import java.util.Date;
 
-public class ConditionsSourceImpl implements ConditionsSource
-{
-   private Date updateTime;
-   private Float temperature;
-   private Float humidity;
-   private Float pressure;
-   private String currentCondition;
-   private Float dewPoint;
-   private Float windSpeed;
-   private String windDirection;
-   private Integer windDegrees;
-   private Date observationTime;
-   private WeatherIcon icon;
+public class ConditionsSourceImpl extends ConditionsSource {
+    private Float temperature;
+    private Float humidity;
+    private Float pressure;
+    private String currentCondition;
+    private Float dewPoint;
+    private Float windSpeed;
+    private String windDirection;
+    private Integer windDegrees;
+    private Date observationTime;
+    private WeatherIcon icon;
 
-   @Override public Date getUpdateTime()
-   {
-      return updateTime;
-   }
+    @Override public Float getTemperature() {
+        return temperature;
+    }
 
-   public void setUpdateTime(Date updateTime)
-   {
-      this.updateTime = updateTime;
-   }
+    public void setTemperature(Float temperature) {
+        this.temperature = temperature;
+    }
 
-   @Override public Float getTemperature()
-   {
-      return temperature;
-   }
+    @Override public Float getHumidity() {
+        return humidity;
+    }
 
-   public void setTemperature(Float temperature)
-   {
-      this.temperature = temperature;
-   }
+    public void setHumidity(Float humidity) {
+        this.humidity = humidity;
+    }
 
-   @Override public Float getHumidity()
-   {
-      return humidity;
-   }
+    @Override public Float getPressure() {
+        return pressure;
+    }
 
-   public void setHumidity(Float humidity)
-   {
-      this.humidity = humidity;
-   }
+    public void setPressure(Float pressure) {
+        this.pressure = pressure;
+    }
 
-   @Override public Float getPressure()
-   {
-      return pressure;
-   }
+    @Override public String getCurrentCondition() {
+        return currentCondition;
+    }
 
-   public void setPressure(Float pressure)
-   {
-      this.pressure = pressure;
-   }
+    public void setCurrentCondition(String currentCondition) {
+        this.currentCondition = currentCondition;
+    }
 
-   @Override public String getCurrentCondition()
-   {
-      return currentCondition;
-   }
+    @Override public Float getDewPoint() {
+        return dewPoint;
+    }
 
-   public void setCurrentCondition(String currentCondition)
-   {
-      this.currentCondition = currentCondition;
-   }
+    public void setDewPoint(Float dewPoint) {
+        this.dewPoint = dewPoint;
+    }
 
-   @Override public Float getDewPoint()
-   {
-      return dewPoint;
-   }
+    @Override public Float getWindSpeed() {
+        return windSpeed;
+    }
 
-   public void setDewPoint(Float dewPoint)
-   {
-      this.dewPoint = dewPoint;
-   }
+    public void setWindSpeed(Float windSpeed) {
+        this.windSpeed = windSpeed;
+    }
 
-   @Override public Float getWindSpeed()
-   {
-      return windSpeed;
-   }
+    @Override public String getWindDirection() {
+        return windDirection;
+    }
 
-   public void setWindSpeed(Float windSpeed)
-   {
-      this.windSpeed = windSpeed;
-   }
+    public void setWindDirection(String windDirection) {
+        this.windDirection = windDirection;
+    }
 
-   @Override public String getWindDirection()
-   {
-      return windDirection;
-   }
+    public Integer getWindDegrees() {
+        return windDegrees;
+    }
 
-   public void setWindDirection(String windDirection)
-   {
-      this.windDirection = windDirection;
-   }
+    public void setWindDegrees(Integer windDegrees) {
+        this.windDegrees = windDegrees;
+    }
 
-   public Integer getWindDegrees()
-   {
-      return windDegrees;
-   }
+    @Override public Date getObservationTime() {
+        return observationTime;
+    }
 
-   public void setWindDegrees(Integer windDegrees)
-   {
-      this.windDegrees = windDegrees;
-   }
+    public void setObservationTime(Date observationTime) {
+        this.observationTime = observationTime;
+    }
 
-   @Override public Date getObservationTime()
-   {
-      return observationTime;
-   }
+    public WeatherIcon getIcon() {
+        return icon;
+    }
 
-   public void setObservationTime(Date observationTime)
-   {
-      this.observationTime = observationTime;
-   }
-
-   public WeatherIcon getIcon()
-   {
-      return icon;
-   }
-
-   public void setIcon(WeatherIcon icon)
-   {
-      this.icon = icon;
-   }
+    public void setIcon(WeatherIcon icon) {
+        this.icon = icon;
+    }
 }

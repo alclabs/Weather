@@ -26,82 +26,109 @@ import java.util.Date;
 /**
  * The data source for Weather information.  Instances of this are returned by the WeatherService.
  */
-public interface ConditionsSource
-{
-   /**
-    * Returns when this source was read from the service.
-    *
-    * @return when this source was read from the service.
-    */
-   Date getUpdateTime();
+public abstract class ConditionsSource {
+    private final Date updateTime;
 
-   /**
-    * Returns the current temperature.
-    *
-    * @return the current temperature.
-    */
-   Float getTemperature();
+    protected ConditionsSource() {
+        updateTime = new Date();
+    }
 
-   /**
-    * Returns the current relative humidity.
-    *
-    * @return the current relative humidity.
-    */
-   Float getHumidity();
+    /**
+     * Returns when this source was read from the service.
+     *
+     * @return when this source was read from the service.
+     */
+    public Date getUpdateTime() {
+        return updateTime;
+    }
 
-   /**
-    * Returns the current barometric pressure.
-    *
-    * @return the current barometric pressure.
-    */
-   Float getPressure();
+    /**
+     * Returns the current temperature.
+     *
+     * @return the current temperature.
+     */
+    public Float getTemperature() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the current weather condition.
-    *
-    * @return the current weather condition.
-    */
-   String getCurrentCondition();
+    /**
+     * Returns the current relative humidity.
+     *
+     * @return the current relative humidity.
+     */
+    public Float getHumidity() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the temperature to which the air must be cooled to condense.
-    *
-    * @return the temperature to which the air must be cooled to condense.
-    */
-   Float getDewPoint();
+    /**
+     * Returns the current barometric pressure.
+     *
+     * @return the current barometric pressure.
+     */
+    public Float getPressure() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the current wind speed.
-    *
-    * @return the current wind speed.
-    */
-   Float getWindSpeed();
+    /**
+     * Returns the current weather condition.
+     *
+     * @return the current weather condition.
+     */
+    public String getCurrentCondition() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the current cardinal direction of the wind.
-    *
-    * @return the current cardinal direction of the wind.
-    */
-   String getWindDirection();
+    /**
+     * Returns the temperature to which the air must be cooled to condense.
+     *
+     * @return the temperature to which the air must be cooled to condense.
+     */
+    public Float getDewPoint() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the current cardinal direction of the wind.
-    *
-    * @return the current cardinal direction of the wind.
-    */
-   Integer getWindDegrees();
+    /**
+     * Returns the current wind speed.
+     *
+     * @return the current wind speed.
+     */
+    public Float getWindSpeed() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the observation time.
-    *
-    * @return the observation time.
-    */
-   Date getObservationTime();
+    /**
+     * Returns the current cardinal direction of the wind.
+     *
+     * @return the current cardinal direction of the wind.
+     */
+    public String getWindDirection() {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Returns the enumeration of the icon.
-    *
-    * @return the enumeration of the icon.
-    */
-   WeatherIcon getIcon();
+    /**
+     * Returns the current cardinal direction of the wind.
+     *
+     * @return the current cardinal direction of the wind.
+     */
+    public Integer getWindDegrees() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the observation time.
+     *
+     * @return the observation time.
+     */
+    public Date getObservationTime() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the enumeration of the icon.
+     *
+     * @return the enumeration of the icon.
+     */
+    public WeatherIcon getIcon() {
+        throw new UnsupportedOperationException();
+    }
 }

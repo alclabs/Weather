@@ -28,55 +28,35 @@ import com.controlj.addon.weather.wbug.service.Forecast;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ForecastSourceAdapter implements ForecastSource
-{
-   private final Forecast forecast;
-   private final Date updateTime;
+public class ForecastSourceAdapter extends ForecastSource {
+    private final Forecast forecast;
 
-   public ForecastSourceAdapter(Forecast forecast)
-   {
-      this.forecast = forecast;
-      updateTime = new Date();
-   }
+    public ForecastSourceAdapter(Forecast forecast) {
+        this.forecast = forecast;
+    }
 
-   @Override public Date getUpdateTime()
-   {
-      return updateTime;
-   }
+    @Override public String getTitle() {
+        return forecast.getTitle();
+    }
 
-   @Override public String getTitle()
-   {
-      return forecast.getTitle();
-   }
+    @Override public Float getHighestTemperature() {
+        return toFloatNullSafe(forecast.getHighestTemperature());
+    }
 
-   @Override public Float getHighestTemperature()
-   {
-      return toFloatNullSafe(forecast.getHighestTemperature());
-   }
+    @Override public Float getLowestTemperature() {
+        return toFloatNullSafe(forecast.getLowestTemperature());
+    }
 
-   @Override public Float getLowestTemperature()
-   {
-      return toFloatNullSafe(forecast.getLowestTemperature());
-   }
+    @Override public String getPrediction() {
+        return forecast.getShortPrediction();
+    }
 
-   @Override public String getPrediction()
-   {
-      return forecast.getShortPrediction();
-   }
+    @Override public WeatherIcon getIcon() {
+        return new WeatherIconMapper().mapIconURL(forecast.getIconName());
+    }
 
-   @Override public Float getProbPrecipitation()
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override public WeatherIcon getIcon()
-   {
-      return new WeatherIconMapper().mapIconURL(forecast.getIconName());
-   }
-
-   private Float toFloatNullSafe(BigDecimal value)
-   {
-      return value != null ? value.floatValue() : null;
-   }
+    private Float toFloatNullSafe(BigDecimal value) {
+        return value != null ? value.floatValue() : null;
+    }
 }
 

@@ -32,25 +32,19 @@ import java.util.Date;
 /**
  *
  */
-public class ForecastSourceImpl implements ForecastSource {
-    private final Date updateTime;
+public class ForecastSourceImpl extends ForecastSource {
     private final String day;
     private final Float high, low, probPrecip;
     private final String weatherDescription;
     private final WeatherIcon icon;
 
     public ForecastSourceImpl(@Nullable Float high, @Nullable Float low, @Nullable Float probPrecip, @NotNull String day, @Nullable String weatherDescription, WeatherIcon icon) {
-        this.updateTime = new Date();
         this.high = high;
         this.low = low;
         this.probPrecip = probPrecip;
         this.day = day;
         this.weatherDescription = weatherDescription;
         this.icon = icon;
-    }
-
-    @Override public Date getUpdateTime() {
-       return updateTime;
     }
 
     @Override public String getTitle() {
@@ -77,8 +71,7 @@ public class ForecastSourceImpl implements ForecastSource {
         return probPrecip;
     }
 
-   @Override public WeatherIcon getIcon()
-   {
-      return icon;
-   }
+    @Override public WeatherIcon getIcon() {
+        return icon;
+    }
 }
