@@ -27,9 +27,7 @@ import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.data.*;
-import com.controlj.addon.weather.service.WeatherServiceException;
-import com.controlj.addon.weather.service.WeatherServiceUI;
-import com.controlj.addon.weather.service.WeatherServices;
+import com.controlj.addon.weather.service.*;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.json.JSONArray;
@@ -51,6 +49,7 @@ import java.util.Map;
 public class AjaxController extends HttpServlet {
     private static final String ACTION_PARAM_NAME = "action";
     private static final String ROW_PARAM_NAME = "rownum";
+    private static final String PARAM_SERVICE = "service";
 
     private static final String ACTION_INIT = "init";
     private static final String ACTION_UPDATE = "update";
@@ -58,6 +57,7 @@ public class AjaxController extends HttpServlet {
     private static final String ACTION_POSTCONFIG = "postconfig";
     private static final String ACTION_DELETEROW = "deleterow";
     private static final String ACTION_ADDROW = "addrow";
+    private static final String ACTION_CHANGESERVICE = "changeservice";
 
     private static final String JSON_DATA = "data";
     private static final String JSON_NAME = "name";
@@ -71,17 +71,21 @@ public class AjaxController extends HttpServlet {
 
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        boolean saveConfig = true;
         ConfigData configData = getConfigData(req);
         ResponseWriter writer = new ResponseWriter(resp);
 
         String action = req.getParameter(ACTION_PARAM_NAME);
 
         if (ACTION_POSTCONFIG.equals(action)) {
-            updateConfiguration(configData, writer, req);
+            configData = updateOrCreateConfiguration(configData, writer, req);
         } else if (ACTION_DELETEROW.equals(action)) {
             deleteRow(configData, writer, req);
         } else if (ACTION_ADDROW.equals(action)) {
             addRow(configData, writer, req);
+        } else if (ACTION_CHANGESERVICE.equals(action)) {
+            configData = changeService(writer, req);
+            saveConfig = false;
         } else {
             String message = "Unknown action \"" + action + "\" specified in post for controller";
             writer.addError(message);
@@ -90,7 +94,8 @@ public class AjaxController extends HttpServlet {
 
         // if there are no errors
         if (!writer.hasErrors()) {
-            configData.save();
+            if (saveConfig)
+                configData.save();
             retrieveData(configData, writer);
         }
         writer.write();
@@ -116,6 +121,21 @@ public class AjaxController extends HttpServlet {
         writer.write();
     }
 
+    private ConfigData changeService(ResponseWriter writer, HttpServletRequest req) throws IOException {
+        WeatherServices serviceEnum = WeatherServiceUIBase.getSpecifiedService(req);
+        ConfigData configData = ConfigDataFactory.create(serviceEnum);
+
+        try {
+            WeatherService weatherService = configData.getWeatherService();
+            retrieveUI(weatherService.getUI(), writer);
+            retrieveData(configData, writer);
+        } catch (WeatherServiceException e) {
+            writer.addError("Error getting weather service:" + e.getMessage());
+            Logging.println("Error getting weather service:" + e.getMessage(), e);
+        }
+        return configData;
+    }
+
     private void showData(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         String rowString = req.getParameter(ROW_PARAM_NAME);
         try {
@@ -132,7 +152,7 @@ public class AjaxController extends HttpServlet {
             if (stationSource != null) {
                 for (StationField field : StationField.values()) {
                     if (field.isSupported(stationSource)) {
-                        Map row = new HashMap(2);
+                        Map<String, Object> row = new HashMap<String, Object>(2);
                         row.put(JSON_FIELD, field.getName());
                         row.put(JSON_VALUE, formatValue(field.getValue(stationSource)));
                         writer.appendToArray(JSON_STATION, row);
@@ -145,7 +165,7 @@ public class AjaxController extends HttpServlet {
             if (conditionsSource != null) {
                 for (ConditionsField field : ConditionsField.values()) {
                     if (field.isSupported(conditionsSource)) {
-                        Map row = new HashMap(2);
+                        Map<String, Object> row = new HashMap<String, Object>(2);
                         row.put(JSON_FIELD, field.getName());
                         row.put(JSON_VALUE, formatValue(field.getValue(conditionsSource)));
                         writer.appendToArray(JSON_CURRENT, row);
@@ -176,7 +196,7 @@ public class AjaxController extends HttpServlet {
 
             // icon data
             for (WeatherIcon icon : WeatherIcon.values()) {
-                Map row = new HashMap(2);
+                Map<String, Object> row = new HashMap<String, Object>(2);
                 row.put(JSON_FIELD, icon.getDisplayName());
                 row.put(JSON_VALUE, icon.getValue());
                 writer.appendToArray(JSON_ICON, row);
@@ -231,38 +251,62 @@ public class AjaxController extends HttpServlet {
        return data;
     }
 
-    private void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) throws IOException {
+    /*
+     Typically this just updates the values in the provided configData.  However, when the weather
+         service is changed, it has to create a new configData using the defaults from the
+         new weather service.
+     */
+    private ConfigData updateOrCreateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) throws IOException {
+        WeatherServices serviceEnum = WeatherServiceUIBase.getSpecifiedService(req);
+
+        if (!configData.getWeatherServiceEnum().equals(serviceEnum)) {
+            configData = ConfigDataFactory.create(serviceEnum);
+        }
+
         try {
-            WeatherServiceUI ui = configData.getWeatherService().getUI();
+            WeatherService ws = configData.getWeatherService();
+            WeatherServiceUI ui = ws.getUI();
             ui.updateConfiguration(configData, writer, req);
         } catch (WeatherServiceException e) {
             writer.addError("Error getting weather service:" + e.getMessage());
             Logging.println("Error getting weather service:" + e.getMessage(), e);
         }
+        return configData;
     }
 
+
     private void retrieveUI(ConfigData configData, ResponseWriter writer) {
+        WeatherServiceUI ui = null;
         try {
-            WeatherServiceUI ui = configData.getWeatherService().getUI();
-            writer.putString("adddialog", ui.getAddDialogHTML());
-            writer.putString("serviceconfig", ui.getServiceConfigHTML());
-
-            for (WeatherServices service : WeatherServices.values()) {
-                Map row = new HashMap(2);
-
-                row.put("key", service.name());
-                row.put("display", service.getDisplayName());
-                writer.appendToArray("services", row);
-            }
-
-            List<String> serviceEntryFields = ui.getServiceEntryFields();
-            for (String serviceEntryField : serviceEntryFields) {
-                writer.appendToArray("entryheaders", ui.getServiceEntryHeaderName(serviceEntryField));
-            }
-
+            ui = configData.getWeatherService().getUI();
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather service:"+e.getMessage());
+            writer.addError("Error getting weather service:" + e.getMessage());
         }
+        retrieveUI(ui, writer);
+    }
+
+    private void retrieveUI(WeatherServiceUI ui, ResponseWriter writer) {
+        writer.putString("adddialog", ui.getAddDialogHTML());
+        writer.putString("serviceconfig", ui.getServiceConfigHTML());
+
+        // Get Weather Services
+        for (WeatherServices service : WeatherServices.values()) {
+            Map<String, Object> row = new HashMap<String, Object>(2);
+
+            row.put("key", service.name());
+            row.put("display", service.getDisplayName());
+            writer.appendToArray("services", row);
+        }
+
+        // Get headers for entry
+        List<String> serviceEntryFields = ui.getServiceEntryFields();
+
+        writer.appendToArray("entryheaders", " ");
+        writer.appendToArray("entryheaders", "Location Path");
+        for (String serviceEntryField : serviceEntryFields) {
+            writer.appendToArray("entryheaders", ui.getServiceEntryHeaderName(serviceEntryField));
+        }
+        writer.appendToArray("entryheaders", "Last Update");
     }
 
 

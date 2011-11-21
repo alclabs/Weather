@@ -29,7 +29,7 @@ import com.controlj.addon.weather.data.FieldType
 import java.text.SimpleDateFormat;
 
 class PrimDeclarationTest extends Specification {
-    static final SimpleDateFormat f = new SimpleDateFormat("dd/MM/yy hh:mm aa");
+    static final SimpleDateFormat f = new SimpleDateFormat("MM/dd/yy hh:mm aa");
 
     def "Define Primitive"() {
         setup:

@@ -22,6 +22,7 @@
 
 package com.controlj.addon.weather.config;
 
+import com.controlj.addon.weather.service.WeatherServices;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.green.addonsupport.AddOnInfo;
 import java.io.IOException;
@@ -45,6 +46,11 @@ public class ConfigDataFactory
          Logging.println("Error reading configuration data.  Continuing as if no data.", e);
       }
       return data;
+   }
+
+
+   public static ConfigData create(WeatherServices serviceEnum) {
+       return new ConfigData(AddOnInfo.getAddOnInfo().getRootSystemConnection(), serviceEnum);
    }
 }
 

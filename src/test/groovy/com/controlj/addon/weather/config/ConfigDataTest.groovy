@@ -25,7 +25,8 @@ import spock.lang.Specification
 import com.controlj.green.addonsupport.access.SystemConnection
 import com.controlj.green.addonsupport.access.SystemAccess
 import com.controlj.green.addonsupport.access.DataStore
-import com.controlj.green.addonsupport.access.WritableSystemAccess;
+import com.controlj.green.addonsupport.access.WritableSystemAccess
+import com.controlj.addon.weather.service.WeatherServices;
 
 public class ConfigDataTest extends Specification
 {
@@ -128,4 +129,37 @@ public class ConfigDataTest extends Specification
          data.serviceConfigData['testdata'] == 'testvalue'
          data.serviceConfigData['key with spaces'] == 'value with spaces'
    }
+
+    def "test load of newer version"() {
+        when:
+            String propData = writeProperties(['version':'99'])
+            def data = new ConfigData(mockSystemConnection(propData));
+            data.load()
+        then:
+            thrown IOException
+    }
+
+    def "test load service"() {
+        given:
+            String propData = writeProperties(['version':'2', 'service':'wbug'])
+            def data = new ConfigData(mockSystemConnection(propData));
+            data.load()
+
+        expect:
+            data.weatherServiceEnum == WeatherServices.wbug
+    }
+
+    def "test store service"() {
+        given:
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
+            def data = new ConfigData(mockSystemConnection(outputStream));
+            data.service = WeatherServices.wbug
+            data.save()
+            def props = readProperties(outputStream.toString())
+
+        expect:
+            props['service'] == 'wbug'
+    }
+
+
 }

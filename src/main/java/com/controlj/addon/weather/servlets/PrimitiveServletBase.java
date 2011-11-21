@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat;
 
 
 public class PrimitiveServletBase extends HttpServlet {
-    public static final SimpleDateFormat timeFormat = new SimpleDateFormat("dd/MM/yy hh:mm aa");
+    public static final SimpleDateFormat timeFormat = new SimpleDateFormat("MM/dd/yy hh:mm aa");
 
     protected ConfigData getConfigData() {
         return ConfigDataFactory.loadConfigData();

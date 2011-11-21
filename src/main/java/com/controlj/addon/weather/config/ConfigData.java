@@ -39,19 +39,24 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ConfigData
 {
    private static final String DATASTORE_NAME = "WeatherConfig";
-
    private final AtomicReference<WeatherService> serviceRef = new AtomicReference<WeatherService>();
    private final List<WeatherConfigEntry> list = new ArrayList<WeatherConfigEntry>();
    private final SystemConnection systemConn;
 
-   private WeatherServices service = WeatherServices.wbug; //WeatherServices.nws; // the default is NWS
+   private WeatherServices service = WeatherServices.nws; // the default is NWS
    private int conditionsRefreshInMinutes = 60;
    private int forecastsRefreshInMinutes = 120;
-   private Map<String, String> serviceConfigData = Collections.emptyMap();
+   private Map<String, String> serviceConfigData = new HashMap<String,String>();
 
    ConfigData(SystemConnection systemConn)
    {
       this.systemConn = systemConn;
+   }
+
+   ConfigData(SystemConnection systemConn, WeatherServices service)
+   {
+      this(systemConn);
+      this.service = service;
    }
 
    /**
@@ -97,6 +102,8 @@ public class ConfigData
 
       conditionsRefreshInMinutes = properties.getIntProperty("conditionsRefreshInMinutes", conditionsRefreshInMinutes);
       forecastsRefreshInMinutes = properties.getIntProperty("forecastsRefreshInMinutes", forecastsRefreshInMinutes);
+      String serviceName = properties.getStringProperty("service", service.name());
+      service = WeatherServices.valueOf(serviceName);
       serviceConfigData = properties.getMap("servicedata.");
 
       synchronized (list)
@@ -133,6 +140,7 @@ public class ConfigData
       }
       return serviceRef.get(); // cannot be null now
    }
+
 
    public WeatherServices getWeatherServiceEnum() {
        return service;
@@ -249,6 +257,7 @@ public class ConfigData
       properties.setIntProperty("version", 2);
       properties.setIntProperty("conditionsRefreshInMinutes", conditionsRefreshInMinutes);
       properties.setIntProperty("forecastsRefreshInMinutes", forecastsRefreshInMinutes);
+      properties.setStringProperty("service", service.name());
       properties.setMap(serviceConfigData, "servicedata.");
 
       synchronized (list)

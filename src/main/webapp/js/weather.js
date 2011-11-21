@@ -1,7 +1,39 @@
+/*
+  ~ Copyright (c) 2011 Automated Logic Corporation
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  */
 
 var addDialog;
 
 function setupHandlers() {
+    $('select[name="service"]').on('change', function() {
+        $.post("ajaxcontroller", {action:"changeservice", service:$(this).val()}, function(result) {
+            if (!handleResponseErrors(result)) {
+                handleUIResults(result)
+                handleData(result)
+                noErrors()
+                $("#addlocation").button('disable')
+            }
+        })
+    })
+
     // Delete handler
     $("#locations").on('click', "button.del", function() {
         var num = $(this).parents("tr").data("row")
@@ -29,13 +61,14 @@ function setupHandlers() {
         addDialog.dialog("open");
     });
 
-    // Apply Rates
-    $("#submitrates").button().on('click', function() {
+    // Submit configuration changes
+    $("#submitconfig").button().on('click', function() {
         $.post("ajaxcontroller", $("#rates").serialize(), function(result) {
             if (!handleResponseErrors(result)) {
                 handleData(result)
                 noErrors()
             }
+            $("#addlocation").button('enable')
         })
     })
 
@@ -50,15 +83,6 @@ function noErrors() {
 function ajaxErrors(e, xhr, settings) {
     $("#errortext").text("Error communicating with server")
     $("#error").css("display","block")
-}
-
-function addRowSelectHandler() {
-    $("#locations tbody").on("click", "tr", function(e) {
-        var row = $(this)
-        row.siblings().toggleClass("select", false)
-        row.toggleClass("select",true);
-        row.data("row")
-    })
 }
 
 function handleResponseErrors(data) {
@@ -86,6 +110,13 @@ function handleResponseErrors(data) {
         return false
 }
 
+function removeAllRows() {
+    $("#locations tbody").empty()
+}
+
+/*
+Associate data returned as JSON with form fields
+ */
 function handleData(data) {
     if (data.data) {
         for (var key in data.data) {
@@ -94,7 +125,7 @@ function handleData(data) {
             $('input[name="'+key+'"]').filter('*[type="radio"]').filter('*[value="'+data.data[key]+'"]').attr("checked","true");
         }
     }
-    $("#locations tbody").empty()
+    removeAllRows()
     if (data.locations) {
         for (var i=0; i<data.locations.length; i++) {
             var next = data.locations[i]
@@ -158,13 +189,18 @@ function handleResultData(data) {
     $("#resultdata").css("display","block")
 }
 
+/*
+Adds the parts of the UI contributed by the WeatherServiceUI
+ */
 function handleUIResults(data) {
     $("#adddialog").html(data.adddialog)
+
     $("#serviceconfig").html(data.serviceconfig)
+    $("#locations thead tr").empty()
     $.each(data.entryheaders, function(index, value) {
         $("#locations thead tr").append("<th>"+value+"</th>");
     })
-    $("#locations thead tr").append("<th>Last Update</th>");
+
     if (data.services) {
         $.each(data.services, function(index, value) {
             $('select[name="service"]').append('<option value="'+value.key+'">'+value.display+'</option>')
@@ -172,18 +208,21 @@ function handleUIResults(data) {
     }
 }
 
-function initData() {
+/*
+One time initialization on page load to load all dynamic UIs and get data
+ */
+function initialize() {
     $.get("ajaxcontroller", {action:'init'}, function(result) {
         if (!handleResponseErrors(result)) {
             handleUIResults(result)
             handleData(result)
         }
+        setupHandlers()
     })
 }
 
 $(document).ready(function() {
-    setupHandlers()
-    initData()
+    initialize()
     addDialog = $("#adddialog").dialog({
         autoOpen:false,
         title:'Add New Location',

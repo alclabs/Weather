@@ -1,9 +1,6 @@
 package com.controlj.addon.weather.service;
 
 import com.controlj.addon.weather.config.ConfigData;
-import com.controlj.addon.weather.config.WeatherConfigEntry;
-import com.controlj.addon.weather.data.StationSource;
-import com.controlj.addon.weather.noaa.WeatherServiceImpl;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
 import org.apache.commons.io.IOUtils;
@@ -44,10 +41,22 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
 
     }
 
+    public static WeatherServices getSpecifiedService(HttpServletRequest req) {
+        WeatherServices result = null;
+
+        String serviceParam = req.getParameter("service");
+        if (serviceParam != null) {
+            try {
+                result = WeatherServices.valueOf(WeatherServices.class, serviceParam);
+            } catch (IllegalArgumentException e) {
+                Logging.println("Invalid service name of '"+serviceParam+"' provided");
+            }
+        }
+        return result;
+    }
 
     @Override
     public void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
-
         String conditionRateString = req.getParameter("conditionrefresh");
         String forecastRateString = req.getParameter("forecastrefresh");
 
