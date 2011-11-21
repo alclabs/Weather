@@ -2,7 +2,7 @@
 // and then apply it.
 configurations { gradleScript }
 repositories { mavenRepo url: 'http://repo.alcshare.com' }
-dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.7' }
+dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.9' }
 apply from: configurations.gradleScript.resolve().iterator().next()
 
 info {
@@ -32,18 +32,20 @@ dependencies {
    testCompile 'org.hamcrest:hamcrest-all:1.1'
 }
 
-// don't put the groovy jar in the .war file, we only need it for testing
-war {
-   classpath = classpath - configurations.groovy
+// The following strangeness is to get groovy dependencies only in the test configurations
+configurations {
+    compile.extendsFrom = [ providedCompile ]
+    testCompile.extendsFrom groovy
 }
 
-def wbug_file = file('src/main/resources/com/controlj/addon/weather/wbug/wbug-key.txt')
+def wbug_file = file('build/resources/main/com/controlj/addon/weather/wbug/wbug-key.txt')
 def wbug_key = 'wbugkey'
 task genwbugkey {
     inputs.property(wbug_key, { project.hasProperty(wbug_key) ? project.getProperty(wbug_key) : new Date()})
     outputs.file wbug_file
 } << {
     if (project.hasProperty(wbug_key)) {
+        wbug_file.parentFile.mkdirs()
         wbug_file.text = getProperty(wbug_key)
     } else throw new GradleException("ERROR: must set $wbug_key property to build")
 }
