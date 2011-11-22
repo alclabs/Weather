@@ -2,7 +2,7 @@
 // and then apply it.
 configurations { gradleScript }
 repositories { mavenRepo url: 'http://repo.alcshare.com' }
-dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.9' }
+dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.12' }
 apply from: configurations.gradleScript.resolve().iterator().next()
 
 info {
@@ -30,6 +30,9 @@ dependencies {
    testCompile 'org.spockframework:spock-core:0.5-groovy-1.8'
    testCompile 'cglib:cglib-nodep:2.2'
    testCompile 'org.hamcrest:hamcrest-all:1.1'
+
+   js group: 'jquery', name: 'jquery', version: '1.7.1', classifier: 'min', ext: "js"
+   js group: 'jquery', name: 'jquery-ui', version: '1.8.16', classifier: 'min', ext: "js"
 }
 
 // The following strangeness is to get groovy dependencies only in the test configurations
@@ -38,7 +41,7 @@ configurations {
     testCompile.extendsFrom groovy
 }
 
-def wbug_file = file('build/resources/main/com/controlj/addon/weather/wbug/wbug-key.txt')
+def wbug_file = file("$buildDir/resources/main/com/controlj/addon/weather/wbug/wbug-key.txt")
 def wbug_key = 'wbugkey'
 task genwbugkey {
     inputs.property(wbug_key, { project.hasProperty(wbug_key) ? project.getProperty(wbug_key) : new Date()})
