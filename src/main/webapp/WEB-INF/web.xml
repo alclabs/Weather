@@ -7,16 +7,6 @@
   </listener>
 
   <servlet>
-    <display-name>Controller Servlet</display-name>
-    <servlet-name>controller</servlet-name>
-    <servlet-class>com.controlj.addon.weather.servlets.Controller</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>controller</servlet-name>
-    <url-pattern>/controller</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
       <servlet-name>primdata</servlet-name>
       <servlet-class>com.controlj.addon.weather.servlets.PrimDeclaration</servlet-class>
   </servlet>
@@ -61,8 +51,4 @@
       <form-error-page>/loginout/fail_login.jsp</form-error-page>
     </form-login-config>
   </login-config>
-
-  <welcome-file-list>
-    <welcome-file>controller</welcome-file>
-  </welcome-file-list>
 </web-app>

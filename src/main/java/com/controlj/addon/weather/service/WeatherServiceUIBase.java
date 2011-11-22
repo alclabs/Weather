@@ -81,6 +81,11 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
         }
     }
 
+    @Override
+    public void dialogAction(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+        // do nothing
+    }
+
     protected void copyHTMLTemplate(Class clazz, String templatename, Writer out) {
         InputStream stream = clazz.getResourceAsStream(templatename);
         try {
@@ -109,4 +114,5 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
             writer.addValidationError(field, "\""+stringVal+"\" is not an integer");
         }
     }
+
 }

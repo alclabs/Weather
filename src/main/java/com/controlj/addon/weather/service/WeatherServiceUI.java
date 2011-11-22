@@ -20,4 +20,10 @@ public interface WeatherServiceUI {
     String getEntryDisplayName(WeatherConfigEntry entry);
     void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req);
     void addRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req);
+
+    /**
+     * Some UI's may provide for extra interactivity on the dialog.  The controller will
+     * forward those requests here.
+     */
+    void dialogAction(ConfigData configData, ResponseWriter writer, HttpServletRequest req);
 }

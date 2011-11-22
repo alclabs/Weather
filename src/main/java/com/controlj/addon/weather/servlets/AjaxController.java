@@ -30,6 +30,8 @@ import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.service.*;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
+import com.controlj.addon.weather.wbug.WeatherServiceImpl;
+import com.controlj.addon.weather.wbug.service.Location;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,6 +52,7 @@ public class AjaxController extends HttpServlet {
     private static final String ACTION_PARAM_NAME = "action";
     private static final String ROW_PARAM_NAME = "rownum";
     private static final String PARAM_SERVICE = "service";
+    private static final String PARAM_LOCATION = "location";
 
     private static final String ACTION_INIT = "init";
     private static final String ACTION_UPDATE = "update";
@@ -58,6 +61,7 @@ public class AjaxController extends HttpServlet {
     private static final String ACTION_DELETEROW = "deleterow";
     private static final String ACTION_ADDROW = "addrow";
     private static final String ACTION_CHANGESERVICE = "changeservice";
+    private static final String ACTION_UI = "ui";   // ui specific action, forwarded to WeatheServiceUI
 
     private static final String JSON_DATA = "data";
     private static final String JSON_NAME = "name";
@@ -113,6 +117,8 @@ public class AjaxController extends HttpServlet {
             retrieveData(configData, writer);
         } else if (ACTION_SHOWDATA.equals(action)) {
             showData(configData, writer, req);
+        } else if (ACTION_UI.equals(action)) {
+            uiAction(configData, writer, req);
         } else {
             String message = "Unknown action \"" + action + "\" specified for controller";
             writer.addError(message);
@@ -209,6 +215,18 @@ public class AjaxController extends HttpServlet {
                 writer.addError("Error getting weather service:" + e.getMessage());
                 Logging.println("Error getting weather service:" + e.getMessage(), e);
         }
+    }
+
+    private void uiAction(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+        try {
+            WeatherServiceUI ui = configData.getWeatherService().getUI();
+            ui.dialogAction(configData, writer, req);
+
+        } catch (WeatherServiceException e) {
+            writer.addError("Error getting weather service:" + e.getMessage());
+            Logging.println("Error getting weather service:" + e.getMessage(), e);
+        }
+
     }
 
     private String formatValue(Object value) {

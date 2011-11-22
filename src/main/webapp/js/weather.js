@@ -221,12 +221,21 @@ function initialize() {
     })
 }
 
+function cleanUpDialog() {
+    if (cleanAddDialog) {
+        cleanAddDialog()
+    } else {
+        $('#adddialog form input[type!="hidden"]').val("")
+    }
+}
+
 $(document).ready(function() {
     initialize()
     addDialog = $("#adddialog").dialog({
         autoOpen:false,
         title:'Add New Location',
-        minWidth:400,
+        minWidth:550,
+        modal:true,
 
         buttons: {
             "OK" : function() {
@@ -236,11 +245,11 @@ $(document).ready(function() {
                         noErrors()
                     }
                 })
-                $('#adddialog form input[type!="hidden"]').val("")
+                cleanUpDialog()
                 $(this).dialog("close")
             },
             "Cancel" : function() {
-                $('#adddialog form input[type!="hidden"]').val("")
+                cleanUpDialog()
                 $(this).dialog("close")
             }
         }

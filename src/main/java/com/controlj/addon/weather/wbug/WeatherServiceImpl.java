@@ -98,6 +98,26 @@ public class WeatherServiceImpl implements WeatherService
       return results;
    }
 
+   public Location[] findLocations(String searchString) throws WeatherServiceException {
+       try {
+           return getService().getLocationList(searchString);
+       } catch (WeatherBugServiceException e) {
+           throw new WeatherServiceException(e);
+       }
+   }
+
+   public Station[] findStations(boolean isZip, String cityZipCode) throws WeatherServiceException {
+       try {
+           if (isZip) {
+               return getService().getStationListByUSZipCode(cityZipCode);
+           } else {
+               return getService().getStationListByCityCode(cityZipCode);
+           }
+       } catch (WeatherBugServiceException e) {
+           throw new WeatherServiceException(e);
+       }
+   }
+
    @Override public Map<String, String> getDefaults()
    {
       return Collections.emptyMap();
