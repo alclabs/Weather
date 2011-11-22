@@ -2,7 +2,7 @@
 // and then apply it.
 configurations { gradleScript }
 repositories { mavenRepo url: 'http://repo.alcshare.com' }
-dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.9' }
+dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.11' }
 apply from: configurations.gradleScript.resolve().iterator().next()
 
 info {
