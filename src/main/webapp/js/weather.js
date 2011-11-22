@@ -222,7 +222,7 @@ function initialize() {
 }
 
 function cleanUpDialog() {
-    if (cleanAddDialog) {
+    if (cleanAddDialog != undefined) {
         cleanAddDialog()
     } else {
         $('#adddialog form input[type!="hidden"]').val("")

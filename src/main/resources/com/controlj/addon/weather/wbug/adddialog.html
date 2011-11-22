@@ -21,6 +21,7 @@
         </tr>
     </table>
     <input type="hidden" name="action" value="addrow"/>
+    <input type="hidden" id="cityname" name="cityname" value=""/>
 </form>
 <script>
     function cleanAddDialog() {
@@ -31,6 +32,7 @@
 
     function cityChanged() {
         getWeatherStations($(this).val())
+        $('#cityname').val($('#locationlist option:selected').text())
     }
 
     function getWeatherStations(locationid) {

@@ -75,7 +75,6 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         super.updateConfiguration(configData, writer, req);
 
         updateConfigField(WeatherServiceImpl.CONFIG_KEY_UNITS, configData, writer, req);
-        updateIntegerConfigField(WeatherServiceImpl.CONFIG_KEY_MAGICNUMBER, configData, writer, req, 0, 50);
     }
 
     @Override

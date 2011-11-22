@@ -1,4 +1,4 @@
-<form>
+<form id="noaadialog">
     <table>
         <tr>
             <td nowrap="true">Location Path:&nbsp;</td>
@@ -11,4 +11,8 @@
     </table>
     <input type="hidden" name="action" value="addrow"/>
 </form>
-        
+<script>
+    function cleanAddDialog() {
+        $('#noaadialog input').val('')
+    }
+</script>

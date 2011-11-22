@@ -34,7 +34,7 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
     private List<String> fieldList = new ArrayList<String>();
 
     public WeatherServiceUIImpl() {
-        //fields.put(FIELD_ZIP, "Zip Code");
+        fields.put(FIELD_CITY, "City");
         fields.put(FIELD_STATION, "Station Name");
         fieldList = new ArrayList<String>(fields.keySet());
     }
@@ -86,6 +86,7 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         String path = req.getParameter("path"); // location, locationlist, stationlist
         String cityKey = req.getParameter("locationlist");
         String stationKey = req.getParameter("stationlist");
+        String cityName = req.getParameter("cityname");
 
         try
         {
@@ -97,8 +98,8 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
                     stationKey);
             String stationName = stationSource.getName();
             Map<String,String> data = new HashMap<String, String>();
-            //data.put(FIELD_CITY, stationSource.
 
+            data.put(FIELD_CITY, cityName);
             data.put(FIELD_STATION, stationName);
 
             configData.add(new WeatherConfigEntry(path, stationSource, data));
