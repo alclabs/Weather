@@ -33,17 +33,6 @@ import java.util.Map;
 public interface WeatherService
 {
    /**
-    * Takes the given configuration data (for now, a zip code) and does whatever the service
-    * needs in order to later get the various Weather/Station/Forecast sources using that
-    * configuration data.  It should that resolved information and given back a String "key"
-    * that will later be used when getting the Weather/Station/Forecast sources.
-    *
-    * @param zipCode the zip code supplied by the user -- might not be valid.
-    * @return a key to the resolved information.
-    */
-   public StationSource resolveConfigurationToStation(String zipCode) throws InvalidConfigurationDataException, WeatherServiceException;
-
-   /**
     * Retrieves the current weather conditions using the given configuration information.
     * indicated by <code>key</code>.
     *

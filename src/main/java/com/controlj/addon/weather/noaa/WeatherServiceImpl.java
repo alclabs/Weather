@@ -48,7 +48,6 @@ public class WeatherServiceImpl implements WeatherService {
     private WeatherServiceUI ui = new WeatherServiceUIImpl();
 
 
-   @Override
    public StationSource resolveConfigurationToStation(String zipCode) throws InvalidConfigurationDataException, WeatherServiceException
    {
        StationSourceFactory factory = new StationSourceFactory(documentLoader.loadZipcodeDoc(zipCode));

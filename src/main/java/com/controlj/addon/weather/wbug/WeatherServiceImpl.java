@@ -45,16 +45,28 @@ public class WeatherServiceImpl implements WeatherService
    private static final AtomicReference<String> LICENSE_KEY = new AtomicReference<String>();
    private WeatherServiceUI ui = new WeatherServiceUIImpl();
 
-   @Override
-   public StationSource resolveConfigurationToStation(String zipCode) throws InvalidConfigurationDataException, WeatherServiceException
+   public StationSource resolveConfigurationToStation(boolean isZip, String cityZipCode, String stationCode) throws InvalidConfigurationDataException, WeatherServiceException
    {
       try
       {
-         Station[] stations = getService().getStationListByUSZipCode(zipCode);
-         if (stations.length == 0)
-            throw new InvalidConfigurationDataException("Unknown zip code "+zipCode);
+         Station result = null;
+         Station[] stations;
+         if (isZip) {
+             stations = getService().getStationListByUSZipCode(cityZipCode);
+         } else {
+             stations = getService().getStationListByCityCode(cityZipCode);
+         }
+         for (Station station : stations) {
+            if (stationCode.equals(station.getId())) {
+                 result = station;
+                 break;
+             }
+         }
 
-         return new StationSourceAdapter(stations[0]);
+         if (result == null)
+            throw new InvalidConfigurationDataException("Unknown station code "+stationCode);
+
+         return new StationSourceAdapter(result);
       }
       catch (WeatherBugServiceException e)
       {

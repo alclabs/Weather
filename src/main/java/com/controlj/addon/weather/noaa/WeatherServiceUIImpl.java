@@ -4,6 +4,7 @@ import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.data.StationSource;
 import com.controlj.addon.weather.service.InvalidConfigurationDataException;
+import com.controlj.addon.weather.service.WeatherService;
 import com.controlj.addon.weather.service.WeatherServiceException;
 import com.controlj.addon.weather.service.WeatherServiceUIBase;
 import com.controlj.addon.weather.util.Logging;
@@ -83,7 +84,8 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         String zip = req.getParameter(FIELD_ZIP);
         try
         {
-            StationSource stationSource = configData.getWeatherService().resolveConfigurationToStation(zip);
+            WeatherServiceImpl ws = (WeatherServiceImpl) configData.getWeatherService();
+            StationSource stationSource = ws.resolveConfigurationToStation(zip);
             String stationName = stationSource.getName();
             Map<String,String> data = new HashMap<String, String>();
             data.put(FIELD_ZIP, zip);

@@ -84,13 +84,21 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
     @Override
     public void addRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         String path = req.getParameter("path"); // location, locationlist, stationlist
-        String zip = "";
-        //String city = req.getParameter(FIELD_CITY);
+        String cityKey = req.getParameter("locationlist");
+        String stationKey = req.getParameter("stationlist");
+
         try
         {
-            StationSource stationSource = configData.getWeatherService().resolveConfigurationToStation(zip);
+            WeatherServiceImpl ws = (WeatherServiceImpl) configData.getWeatherService();
+
+            StationSource stationSource = ws.resolveConfigurationToStation(
+                    isLocationKeyZipCode(cityKey),
+                    getLocationKeyCode(cityKey),
+                    stationKey);
             String stationName = stationSource.getName();
             Map<String,String> data = new HashMap<String, String>();
+            //data.put(FIELD_CITY, stationSource.
+
             data.put(FIELD_STATION, stationName);
 
             configData.add(new WeatherConfigEntry(path, stationSource, data));
@@ -98,8 +106,8 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
             writer.addError("Can't get weather service");
             Logging.println("Can't get weather service in noaa.WeatherServiceUIImpl");
         } catch (InvalidConfigurationDataException e) {
-            writer.addError("Can't find station for zip code '"+zip+"'");
-            Logging.println("Can't find station for zip code '" + zip + "'", e);
+            //writer.addError("Can't find station for zip code '"+zip+"'");
+            //Logging.println("Can't find station for zip code '" + zip + "'", e);
         }
     }
 
