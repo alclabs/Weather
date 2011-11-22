@@ -121,9 +121,9 @@ public class WeatherBugService {
      * @throws WeatherBugServiceException
      *             if an error occurred processing the service response.
      */
-    public Station[] getStationListByCityCode(int cityCode) throws WeatherBugServiceException {
+    public Station[] getStationListByCityCode(String cityCode) throws WeatherBugServiceException {
         Map params = new HashMap();
-        params.put("cityCode", Integer.toString(cityCode));
+        params.put("cityCode", cityCode);
         Document doc = execute("getStationsXML", params);
         List stations = WeatherBugDataUtils.bind(doc, "aws:stations/aws:station", Station.class);
         return (Station[]) stations.toArray(new Station[0]);

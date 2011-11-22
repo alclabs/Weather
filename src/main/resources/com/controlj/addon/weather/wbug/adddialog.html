@@ -1,14 +1,67 @@
 <form>
-    <table>
+    <table id="wbugdialog" class="form">
         <tr>
             <td nowrap="true">Location Path:&nbsp;</td>
             <td><input type="text" name="path" value=""/></td>
         </tr>
         <tr>
-            <td>Zip Code:&nbsp;</td>
-            <td><input type="text" name="zip" value=""/></td>
+            <td>City or Zip:&nbsp;</td>
+            <td><input type="text" id="location" name="location"/></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td><td><button id="findlocbutton" type="button">Find City</button></td>
+        </tr>
+        <tr id="cityrow" style="visibility: hidden">
+            <td>Select City:</td>
+            <td><select name="locationlist" id="locationlist"></select></td>
+        </tr>
+        <tr id="weatherrow" style="visibility: hidden">
+            <td>Weather Station:</td>
+            <td><select name="stationlist" id="stationlist"></select></td>
         </tr>
     </table>
     <input type="hidden" name="action" value="addrow"/>
 </form>
+<script>
+    function cleanAddDialog() {
+        $('#wbugdialog input').val('')
+        $('#cityrow').css('visibility','hidden')
+        $('#weatherrow').css('visibility','hidden')
+    }
+
+    function cityChanged() {
+        getWeatherStations($(this).val())
+    }
+
+    function getWeatherStations(locationid) {
+        $('#stationlist').empty().append("<option>Loading...</option>")
+        $.get("ajaxcontroller", {action:'ui', dialogaction:'findstation', location:escape($('#locationlist').val())}, function(data) {
+            var sel = $('#stationlist').empty()
+            if (data.list) {
+                $.each(data.list, function(index, next ) {
+                    sel.append("<option value='"+next.key+"'>"+next.name+"</option>")
+                })
+                $('#weatherrow').css('visibility','visible ')
+            }
+        })
+    }
+
+    $('#findlocbutton').button().on('click', function() {
+        $('#locationlist').empty().append("<option>Loading...</option>")
+        $('#stationlist').empty().append("<option>Loading...</option>")
+        $.get("ajaxcontroller", {action:'ui', dialogaction:'findcity', location:escape($('#location').val())}, function(data) {
+            var sel = $('#locationlist').empty()
+            if (data.list) {
+                $.each(data.list, function(index, next ) {
+                    sel.append("<option value='"+next.key+"'>"+next.name+"</option>")
+                })
+            $('#cityrow').css('visibility','visible ')
+            $('#locationlist').trigger('change')
+            }
+        })
+    })
+
+    $('#locationlist').on('change', cityChanged)
+
+</script>
         
