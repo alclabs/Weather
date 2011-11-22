@@ -70,12 +70,11 @@ public interface WeatherService
     * Gets the map of default configuration values.
     * @return map of default values.
     */
-   public Map<String, String>getDefaults();
+   public Map<String, String> getDefaults();
 
    /**
    * Retrieves the object used to manage the interaction with the WeatherService's UI.
    * @return the WeatherServiceUI object
    */
    public WeatherServiceUI getUI();
-    
 }

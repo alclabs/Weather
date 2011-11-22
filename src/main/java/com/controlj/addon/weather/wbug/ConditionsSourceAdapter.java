@@ -29,12 +29,30 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConditionsSourceAdapter extends ConditionsSource {
     private final LiveWeather liveWeather;
 
     public ConditionsSourceAdapter(LiveWeather liveWeather) {
         this.liveWeather = liveWeather;
+    }
+
+    @Override public String getAverageWindDirection() {
+         return liveWeather.getAvgWindDirection();
+    }
+
+    @Override public Float getAverageWindDegrees() {
+        return directionToBearing(getAverageWindDirection());
+    }
+
+    @Override public Float getAverageWindSpeed() {
+        return toFloatNullSafe(liveWeather.getAvgWindSpeed());
+    }
+
+    @Override public Float getFeelsLike() {
+        return toFloatNullSafe(liveWeather.getFeelsLike());
     }
 
     @Override public Float getTemperature() {
@@ -65,6 +83,22 @@ public class ConditionsSourceAdapter extends ConditionsSource {
         return liveWeather.getWindDirection();
     }
 
+    @Override public Float getWindDegrees() {
+        return directionToBearing(getWindDirection());
+    }
+
+    @Override public Float getRainRate() {
+        return toFloatNullSafe(liveWeather.getRainRate());
+    }
+
+    @Override public Float getRainToday() {
+        return toFloatNullSafe(liveWeather.getRainToday());
+    }
+
+    @Override public Float getWetBulb() {
+        return toFloatNullSafe(liveWeather.getWetBulb());
+    }
+
     @Override public Date getObservationTime() {
         return toDateNullSafe(liveWeather.getObservationTime());
     }
@@ -74,11 +108,43 @@ public class ConditionsSourceAdapter extends ConditionsSource {
         return new WeatherIconMapper().mapIconURL(iconURL.getPath());
     }
 
+    @Override public String getSourceURL() {
+        return liveWeather.getWeatherBugSiteURL().toExternalForm();
+    }
+
     private Float toFloatNullSafe(BigDecimal value) {
         return value != null ? value.floatValue() : null;
     }
 
     private Date toDateNullSafe(Timestamp value) {
         return value != null ? new Date(value.getTime()) : null;
+    }
+
+    // this map is used to help convert cardinal directions (N, NE, NNE) to bearings (degrees).  It
+    // maps each cardinal direction to a simple integer between 0 and 15, where each integer represents
+    // 22.5 degrees of bearing.
+    private static final Map<String, Integer> directionToBearingMap = new HashMap<String, Integer>();
+    static {
+        directionToBearingMap.put("N",   0);
+        directionToBearingMap.put("NNE", 1);
+        directionToBearingMap.put("NE",  2);
+        directionToBearingMap.put("ENE", 3);
+        directionToBearingMap.put("E",   4);
+        directionToBearingMap.put("ESE", 5);
+        directionToBearingMap.put("SE",  6);
+        directionToBearingMap.put("SSE", 7);
+        directionToBearingMap.put("S",   8);
+        directionToBearingMap.put("SSW", 9);
+        directionToBearingMap.put("SW",  10);
+        directionToBearingMap.put("WSW", 11);
+        directionToBearingMap.put("W",   12);
+        directionToBearingMap.put("WNW", 13);
+        directionToBearingMap.put("NW",  14);
+        directionToBearingMap.put("NNW", 15);
+    }
+
+    private Float directionToBearing(String direction) {
+        Integer bearingInt = directionToBearingMap.get(direction);
+        return bearingInt == null ? null : bearingInt * 22.5f;
     }
 }

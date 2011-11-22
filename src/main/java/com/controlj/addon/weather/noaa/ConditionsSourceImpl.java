@@ -34,7 +34,7 @@ public class ConditionsSourceImpl extends ConditionsSource {
     private Float dewPoint;
     private Float windSpeed;
     private String windDirection;
-    private Integer windDegrees;
+    private Float windDegrees;
     private Date observationTime;
     private WeatherIcon icon;
 
@@ -94,11 +94,11 @@ public class ConditionsSourceImpl extends ConditionsSource {
         this.windDirection = windDirection;
     }
 
-    public Integer getWindDegrees() {
+    public Float getWindDegrees() {
         return windDegrees;
     }
 
-    public void setWindDegrees(Integer windDegrees) {
+    public void setWindDegrees(Float windDegrees) {
         this.windDegrees = windDegrees;
     }
 

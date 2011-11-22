@@ -35,17 +35,13 @@ public abstract class ForecastSource {
 
     /**
      * Returns when this source was read from the service.
-     *
-     * @return when this source was read from the service.
      */
-    public Date getUpdateTime() {
+    public final Date getUpdateTime() {
         return updateTime;
     }
 
     /**
-     * Returns the title (the name of a day).
-     *
-     * @return the title.
+     * Returns the title (the name of the day).
      */
     public String getTitle() {
         throw new UnsupportedOperationException();
@@ -53,8 +49,6 @@ public abstract class ForecastSource {
 
     /**
      * Returns the expected highest temperature.
-     *
-     * @return the expected highest temperature.
      */
     public Float getHighestTemperature() {
         throw new UnsupportedOperationException();
@@ -62,26 +56,27 @@ public abstract class ForecastSource {
 
     /**
      * Returns the expected lowest temperature.
-     *
-     * @return the expected lowest temperature.
      */
     public Float getLowestTemperature() {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * Returns the prediction text.
-     *
-     * @return the prediction text.
+     * Returns the (short) prediction text.
      */
     public String getPrediction() {
         throw new UnsupportedOperationException();
     }
 
     /**
+     * Returns the verbose prediction text.
+     */
+    public String getVerbosePrediction() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Returns the probability of precipitation.
-     *
-     * @return the probability of precipitation.
      */
     public Float getProbPrecipitation() {
         throw new UnsupportedOperationException();
@@ -89,10 +84,15 @@ public abstract class ForecastSource {
 
     /**
      * Returns the enumeration of the icon.
-     *
-     * @return the enumeration of the icon.
      */
     public WeatherIcon getIcon() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the weather services URL for this data source.
+     */
+    public String getSourceURL() {
         throw new UnsupportedOperationException();
     }
 }

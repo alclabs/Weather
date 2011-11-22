@@ -29,144 +29,148 @@ import static com.controlj.addon.weather.data.FieldType.*;
  * An enumeration of the fields available from a {@link ForecastSource}.  Using this enumeration allows code to
  * find fields by name, or iterator through all fields without resorting to reflection.
  */
-public enum ForecastField
-{
-   /**
-    * Field for {@link ForecastSource#getUpdateTime()}
-    */
-   updateTime(DateType),
+public enum ForecastField {
+    /**
+     * Field for {@link ForecastSource#getUpdateTime()}
+     */
+    updateTime(DateType),
 
-   /**
-    * Field for {@link ConditionsSource#getUpdateTime()}.getTime()/600000
-    */
-   updateStamp(IntegerType),
+    /**
+     * Field for {@link ForecastSource#getUpdateTime()}.getTime()/600000
+     */
+    updateStamp(IntegerType),
 
-   /**
-    * Field for {@link ForecastSource#getTitle()}
-    */
-   title(StringType),
+    /**
+     * Field for {@link ForecastSource#getTitle()}
+     */
+    title(StringType),
 
-   /**
-    * Field for {@link ForecastSource#getHighestTemperature()}
-    */
-   highestTemperature(FloatType),
+    /**
+     * Field for {@link ForecastSource#getHighestTemperature()}
+     */
+    highestTemperature(FloatType),
 
-   /**
-    * Field for {@link ForecastSource#getLowestTemperature()}
-    */
-   lowestTemperature(FloatType),
+    /**
+     * Field for {@link ForecastSource#getLowestTemperature()}
+     */
+    lowestTemperature(FloatType),
 
-   /**
-    * Field for {@link ForecastSource#getProbPrecipitation()}
-    */
-   probPrecipitation(FloatType),
+    /**
+     * Field for {@link ForecastSource#getProbPrecipitation()}
+     */
+    probPrecipitation(FloatType),
 
-   /**
-    * Field for {@link ForecastSource#getPrediction()}
-    */
-   prediction(StringType),
+    /**
+     * Field for {@link ForecastSource#getPrediction()}
+     */
+    prediction(StringType),
 
-   /**
-    * Field for {@link ConditionsSource#getIcon()}.getDisplayName()
-    */
-   iconName(StringType),
+    /**
+     * Field for {@link ForecastSource#getVerbosePrediction()}
+     */
+    verbosePrediction(StringType),
 
-   /**
-    * Field for {@link ConditionsSource#getIcon()}.getValue()
-    */
-   iconValue(IntegerType);
+    /**
+     * Field for {@link ForecastSource#getIcon()}.getDisplayName()
+     */
+    iconName(StringType),
 
-   /**
-    * Finds a field given the {link #name} String for the field.  NOTE: this method does not accept the result of
-    * {@link #getName} and will return null for that name.
-    * @param name The simple name of the field.
-    * @return The field.
-    */
-   public static ForecastField find(String name)
-   {
-      for (ForecastField field : values())
-         if (field.name().equalsIgnoreCase(name))
-            return field;
-      return null;
-   }
+    /**
+     * Field for {@link ForecastSource#getIcon()}.getValue()
+     */
+    iconValue(IntegerType),
 
-   private final FieldType type;
+    /**
+     * Field for {@link ForecastSource#getSourceURL()}
+     */
+    sourceURL(StringType);
 
-   private ForecastField(FieldType type)
-   {
-      this.type = type;
-   }
+    /**
+     * Finds a field given the {link #name} String for the field.  NOTE: this method does not accept the result of
+     * {@link #getName} and will return null for that name.
+     *
+     * @param name The simple name of the field.
+     * @return The field.
+     */
+    public static ForecastField find(String name) {
+        for (ForecastField field : values())
+            if (field.name().equalsIgnoreCase(name))
+                return field;
+        return null;
+    }
 
-   /**
-    * Returns an enumeration constant that describes the return type of the {@link #getValue} method.
-    */
-   public FieldType getType()
-   {
-      return type;
-   }
+    private final FieldType type;
 
-   /**
-    * Returns the value of this field from the given source. Returns null if the value is null or the source does not
-    * support this field.  Use {@link #isSupported} to distinguish between these null results (if you care).
-    * @param source the source of the data to return.
-    * @return the value of this field from the source.  The type of the value can be determined using {@link #getType}.
-    */
-   public Object getValue(ForecastSource source)
-   {
-      try
-      {
-         return getRawValue(source);
-      }
-      catch (UnsupportedOperationException e)
-      {
-         // source doesn't support this field
-         return null;
-      }
-   }
+    private ForecastField(FieldType type) {
+        this.type = type;
+    }
 
-   /**
-    * Returns true if this source supports this field, false if the source throws an UnsupportedOperationException
-    * when retrieving the value of the field.
-    */
-   public boolean isSupported(ForecastSource source)
-   {
-      try
-      {
-         getRawValue(source);
-         return true;
-      }
-      catch (UnsupportedOperationException e)
-      {
-         return false;
-      }
-   }
+    /**
+     * Returns an enumeration constant that describes the return type of the {@link #getValue} method.
+     */
+    public FieldType getType() {
+        return type;
+    }
 
-   /**
-    * Returns the full name of this field, with the given placeholder character being substituted for for
-    * day number.
-    */
-   public String getName(char placeholder) { return "wf"+placeholder+'_'+name(); }
+    /**
+     * Returns the value of this field from the given source. Returns null if the value is null or the source does not
+     * support this field.  Use {@link #isSupported} to distinguish between these null results (if you care).
+     *
+     * @param source the source of the data to return.
+     * @return the value of this field from the source.  The type of the value can be determined using {@link #getType}.
+     */
+    public Object getValue(ForecastSource source) {
+        try {
+            return getRawValue(source);
+        } catch (UnsupportedOperationException e) {
+            // source doesn't support this field
+            return null;
+        }
+    }
 
-   /**
-    * Returns the full name of this field for the given day number.
-    */
-   public String getName(int dayNum) { return "wf"+dayNum+'_'+name(); }
+    /**
+     * Returns true if this source supports this field, false if the source throws an UnsupportedOperationException
+     * when retrieving the value of the field.
+     */
+    public boolean isSupported(ForecastSource source) {
+        try {
+            getRawValue(source);
+            return true;
+        } catch (UnsupportedOperationException e) {
+            return false;
+        }
+    }
 
-   private Object getRawValue(ForecastSource source)
-   {
-      switch (this)
-      {
-         case updateTime:         return source.getUpdateTime();
-         case updateStamp:        return (int)(source.getUpdateTime().getTime()/600000);
-         case title:              return source.getTitle();
-         case highestTemperature: return source.getHighestTemperature();
-         case lowestTemperature:  return source.getLowestTemperature();
-         case prediction:         return source.getPrediction();
-         case probPrecipitation:  return source.getProbPrecipitation();
-         case iconName:           return source.getIcon().getDisplayName();
-         case iconValue:          return source.getIcon().getValue();
-      }
-      Logging.println("ForecastField.getRawValue() doesn't have a case for: "+this);
-      throw new UnsupportedOperationException("ForecastField.getRawValue() doesn't have a case for: "+this);
-   }
+    /**
+     * Returns the full name of this field, with the given placeholder character being substituted for for
+     * day number.
+     */
+    public String getName(char placeholder) {
+        return "wf" + placeholder + '_' + name();
+    }
+
+    /**
+     * Returns the full name of this field for the given day number.
+     */
+    public String getName(int dayNum) {
+        return "wf" + dayNum + '_' + name();
+    }
+
+    private Object getRawValue(ForecastSource source) {
+        switch (this) {
+            case updateTime:         return source.getUpdateTime();
+            case updateStamp:        return (int) (source.getUpdateTime().getTime() / 600000);
+            case title:              return source.getTitle();
+            case highestTemperature: return source.getHighestTemperature();
+            case lowestTemperature:  return source.getLowestTemperature();
+            case prediction:         return source.getPrediction();
+            case verbosePrediction:  return source.getVerbosePrediction();
+            case probPrecipitation:  return source.getProbPrecipitation();
+            case iconName:           return source.getIcon().getDisplayName();
+            case iconValue:          return source.getIcon().getValue();
+            case sourceURL:          return source.getSourceURL();
+        }
+        Logging.println("ForecastField.getRawValue() doesn't have a case for: " + this);
+        throw new UnsupportedOperationException("ForecastField.getRawValue() doesn't have a case for: " + this);
+    }
 }
