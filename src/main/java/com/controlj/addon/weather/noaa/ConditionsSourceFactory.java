@@ -42,7 +42,7 @@ public class ConditionsSourceFactory {
         weatherSource.setDewPoint(extractFloat(document, isMetric ? "dewpoint_c" : "dewpoint_f"));
         weatherSource.setWindSpeed(extractFloat(document, isMetric ? "wind_kt" : "wind_mph"));
         weatherSource.setWindDirection(extractString(document, "wind_dir"));
-        weatherSource.setWindDegrees(extractInteger(document, "wind_degrees"));
+        weatherSource.setWindDegrees(extractFloat(document, "wind_degrees"));
         weatherSource.setObservationTime(extractObservationTime(document));
         weatherSource.setIcon(mapIcon(extractString(document, "icon_url_name")));
         return weatherSource;
@@ -51,11 +51,6 @@ public class ConditionsSourceFactory {
     private String extractString(Document document, String element) {
         Node node = document.selectSingleNode("/current_observation/" + element);
         return node == null ? null : node.getText();
-    }
-
-    private Integer extractInteger(Document document, String element) {
-        Node node = document.selectSingleNode("/current_observation/" + element);
-        return node == null ? null : toInteger(node.getText());
     }
 
     private Float extractFloat(Document document, String element) {

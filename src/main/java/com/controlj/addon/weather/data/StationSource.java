@@ -25,82 +25,65 @@ package com.controlj.addon.weather.data;
  * The data source for Station information.  Instances of this are returned by the WeatherService or
  * reconstituted from the configuration data store.
  */
-public class StationSource
-{
-   private String id;
-   private String name;
-   private Float latitude;
-   private Float longitude;
+public class StationSource {
+    private String id;
+    private String name;
+    private Float latitude;
+    private Float longitude;
 
-   /**
-    * Returns the station id.
-    *
-    * @return the station id.
-    */
-   public String getId()
-   {
-      return id;
-   }
+    /**
+     * Returns the station id.
+     */
+    public String getId() {
+        return id;
+    }
 
-   /**
-    * Sets the station id.
-    */
-   public void setId(String id)
-   {
-      this.id = id;
-   }
+    /**
+     * Sets the station id.
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-   /**
-    * Returns the station name.
-    *
-    * @return the station name.
-    */
-   public String getName()
-   {
-      return name;
-   }
+    /**
+     * Returns the station name.
+     */
+    public String getName() {
+        return name;
+    }
 
-   /**
-    * Sets the station name.
-    */
-   public void setName(String name)
-   {
-      this.name = name;
-   }
+    /**
+     * Sets the station name.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   /**
-    * Returns the latitude of the station.
-    *
-    * @return the latitude of the station.
-    */
-   public Float getLatitude()
-   {
-      return latitude;
-   }
+    /**
+     * Returns the latitude of the station.
+     */
+    public Float getLatitude() {
+        return latitude;
+    }
 
-   /**
-    * Sets the latitude of the station.
-    */
-   public void setLatitude(Float latitude)
-   {
-      this.latitude = latitude;
-   }
+    /**
+     * Sets the latitude of the station.
+     */
+    public void setLatitude(Float latitude) {
+        this.latitude = latitude;
+    }
 
-   /**
-    * Returns the longitude of the station.
-    *
-    * @return the longitude of the station.
-    */
-   public Float getLongitude()
-   {
-      return longitude;
-   }
+    /**
+     * Returns the longitude of the station.
+     */
+    public Float getLongitude() {
+        return longitude;
+    }
 
-   /**
-    * Sets the longitude of the station.
-    */
-   public void setLongitude(Float longitude)
-   {
-      this.longitude = longitude;
-   }
+    /**
+     * Sets the longitude of the station.
+     */
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
+    }
 }

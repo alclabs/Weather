@@ -24,14 +24,17 @@ package com.controlj.addon.weather.wbug;
 import com.controlj.addon.weather.data.ForecastSource;
 import com.controlj.addon.weather.data.WeatherIcon;
 import com.controlj.addon.weather.wbug.service.Forecast;
+import com.controlj.addon.weather.wbug.service.Forecasts;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class ForecastSourceAdapter extends ForecastSource {
+    private final Forecasts forecasts;
     private final Forecast forecast;
 
-    public ForecastSourceAdapter(Forecast forecast) {
+    public ForecastSourceAdapter(Forecasts forecasts, Forecast forecast) {
+        this.forecasts = forecasts;
         this.forecast = forecast;
     }
 
@@ -51,12 +54,19 @@ public class ForecastSourceAdapter extends ForecastSource {
         return forecast.getShortPrediction();
     }
 
+    @Override public String getVerbosePrediction() {
+        return forecast.getPrediction();
+    }
+
     @Override public WeatherIcon getIcon() {
         return new WeatherIconMapper().mapIconURL(forecast.getIconName());
+    }
+
+    @Override public String getSourceURL() {
+        return forecasts.getWeatherBugSiteURL().toExternalForm();
     }
 
     private Float toFloatNullSafe(BigDecimal value) {
         return value != null ? value.floatValue() : null;
     }
 }
-

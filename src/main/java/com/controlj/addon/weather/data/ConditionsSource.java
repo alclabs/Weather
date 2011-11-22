@@ -35,17 +35,41 @@ public abstract class ConditionsSource {
 
     /**
      * Returns when this source was read from the service.
-     *
-     * @return when this source was read from the service.
      */
-    public Date getUpdateTime() {
+    public final Date getUpdateTime() {
         return updateTime;
     }
 
     /**
+     * Returns the average cardinal direction of the wind so far today.
+     */
+    public String getAverageWindDirection() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the average direction of the wind so far today.
+     */
+    public Float getAverageWindDegrees() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the average speed of the wind so far today.
+     */
+    public Float getAverageWindSpeed() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the wind chill or heat index temperature, whichever is relevant.
+     */
+    public Float getFeelsLike() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Returns the current temperature.
-     *
-     * @return the current temperature.
      */
     public Float getTemperature() {
         throw new UnsupportedOperationException();
@@ -53,8 +77,6 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the current relative humidity.
-     *
-     * @return the current relative humidity.
      */
     public Float getHumidity() {
         throw new UnsupportedOperationException();
@@ -62,8 +84,6 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the current barometric pressure.
-     *
-     * @return the current barometric pressure.
      */
     public Float getPressure() {
         throw new UnsupportedOperationException();
@@ -71,8 +91,6 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the current weather condition.
-     *
-     * @return the current weather condition.
      */
     public String getCurrentCondition() {
         throw new UnsupportedOperationException();
@@ -80,8 +98,6 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the temperature to which the air must be cooled to condense.
-     *
-     * @return the temperature to which the air must be cooled to condense.
      */
     public Float getDewPoint() {
         throw new UnsupportedOperationException();
@@ -89,8 +105,6 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the current wind speed.
-     *
-     * @return the current wind speed.
      */
     public Float getWindSpeed() {
         throw new UnsupportedOperationException();
@@ -98,8 +112,6 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the current cardinal direction of the wind.
-     *
-     * @return the current cardinal direction of the wind.
      */
     public String getWindDirection() {
         throw new UnsupportedOperationException();
@@ -107,17 +119,34 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the current cardinal direction of the wind.
-     *
-     * @return the current cardinal direction of the wind.
      */
-    public Integer getWindDegrees() {
+    public Float getWindDegrees() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the current rate at which rain is falling.
+     */
+    public Float getRainRate() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the amount of rainfall so far today.
+     */
+    public Float getRainToday() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the temperature at which no evaporation occurs and temperature stops dropping.
+     */
+    public Float getWetBulb() {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Returns the observation time.
-     *
-     * @return the observation time.
      */
     public Date getObservationTime() {
         throw new UnsupportedOperationException();
@@ -125,10 +154,15 @@ public abstract class ConditionsSource {
 
     /**
      * Returns the enumeration of the icon.
-     *
-     * @return the enumeration of the icon.
      */
     public WeatherIcon getIcon() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the weather services URL for this data source.
+     */
+    public String getSourceURL() {
         throw new UnsupportedOperationException();
     }
 }

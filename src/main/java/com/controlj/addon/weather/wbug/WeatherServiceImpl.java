@@ -24,7 +24,6 @@ package com.controlj.addon.weather.wbug;
 import com.controlj.addon.weather.data.ConditionsSource;
 import com.controlj.addon.weather.data.ForecastSource;
 import com.controlj.addon.weather.data.StationSource;
-import com.controlj.addon.weather.noaa.*;
 import com.controlj.addon.weather.service.InvalidConfigurationDataException;
 import com.controlj.addon.weather.service.WeatherService;
 import com.controlj.addon.weather.service.WeatherServiceException;
@@ -106,7 +105,7 @@ public class WeatherServiceImpl implements WeatherService
       Forecast[] forecastArray = forecasts.getForecasts();
       ForecastSource[] results = new ForecastSource[forecastArray.length];
       for (int i = 0; i < forecastArray.length; i++)
-         results[i] = new ForecastSourceAdapter(forecastArray[i]);
+         results[i] = new ForecastSourceAdapter(forecasts, forecastArray[i]);
 
       return results;
    }

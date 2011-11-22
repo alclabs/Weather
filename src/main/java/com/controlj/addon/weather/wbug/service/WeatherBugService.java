@@ -41,7 +41,7 @@ public class WeatherBugService {
     /**
      * The alphanumeric license key issued by WeatherBug.
      */
-    private String aCode;
+    private String apiKey;
 
     /** The current time-out (default = DEFAULT_TIMEOUT). */
     private int timeout = DEFAULT_TIMEOUT;
@@ -59,11 +59,11 @@ public class WeatherBugService {
     /**
      * Constructs a new WeatherBug service.
      * 
-     * @param aCode
+     * @param apiKey
      *            the alphanumeric license key issued by WeatherBug.
      */
-    public WeatherBugService(String aCode) {
-        this.aCode = aCode;
+    public WeatherBugService(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     /**
@@ -403,9 +403,9 @@ public class WeatherBugService {
      *             if an error occurred executing the method.
      */
     private Document execute(String methodName, Map params) throws WeatherBugServiceException {
-        params.put("ACode", aCode);
+        params.put("api_key", apiKey);
         try {
-            return new HTTPHelper().readDocument("http", aCode + ".api.wxbug.net", -1, methodName + ".aspx", params);
+            return new HTTPHelper().readDocument("http", "i.wxbug.net", -1, "REST/SP/" + methodName + ".aspx", params);
         } catch (Exception e) {
             throw new WeatherBugServiceException(e);
         }
