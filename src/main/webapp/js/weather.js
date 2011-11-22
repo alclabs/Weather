@@ -234,7 +234,7 @@ $(document).ready(function() {
     addDialog = $("#adddialog").dialog({
         autoOpen:false,
         title:'Add New Location',
-        minWidth:500,
+        minWidth:550,
         modal:true,
 
         buttons: {
