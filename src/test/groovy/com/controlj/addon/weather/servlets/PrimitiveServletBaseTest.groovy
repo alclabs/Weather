@@ -58,6 +58,8 @@ class PrimitiveServletBaseTest extends Specification {
             for (int i=0; i<forecastData.length; i++) {
                 forecastData[i]._ >> { throw new UnsupportedOperationException() }
             }
+            3 * handler.handleField(FieldType.DateType, {it.endsWith("_updateTime")}, _)
+            3 * handler.handleField(FieldType.IntegerType, {it.endsWith("_updateStamp")}, _)
             1 * handler.handleField(FieldType.FloatType, "wc_temperature", 42.0f)
             1 * handler.handleField(FieldType.StringType, "wc_windDirection", "Down")
             1 * handler.handleField(FieldType.StringType, "ws_name", "Wild Yonder")
