@@ -83,32 +83,37 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
 
     @Override
     public void addRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
-        String path = req.getParameter("path"); // location, locationlist, stationlist
+        String path = req.getParameter("path");
         String cityKey = req.getParameter("locationlist");
         String stationKey = req.getParameter("stationlist");
         String cityName = req.getParameter("cityname");
+        if (path == null || path.length() == 0) {
+            writer.addError("Error: Missing location path");
+        } else if (cityKey == null || cityKey.length()==0) {
+            writer.addError("Error: Missing City.  Please press \"Find City\" to pick a city when adding a location to update");
+        } else {
+            try
+            {
+                WeatherServiceImpl ws = (WeatherServiceImpl) configData.getWeatherService();
 
-        try
-        {
-            WeatherServiceImpl ws = (WeatherServiceImpl) configData.getWeatherService();
+                StationSource stationSource = ws.resolveConfigurationToStation(
+                        isLocationKeyZipCode(cityKey),
+                        getLocationKeyCode(cityKey),
+                        stationKey);
+                String stationName = stationSource.getName();
+                Map<String,String> data = new HashMap<String, String>();
 
-            StationSource stationSource = ws.resolveConfigurationToStation(
-                    isLocationKeyZipCode(cityKey),
-                    getLocationKeyCode(cityKey),
-                    stationKey);
-            String stationName = stationSource.getName();
-            Map<String,String> data = new HashMap<String, String>();
+                data.put(FIELD_CITY, cityName);
+                data.put(FIELD_STATION, stationName);
 
-            data.put(FIELD_CITY, cityName);
-            data.put(FIELD_STATION, stationName);
-
-            configData.add(new WeatherConfigEntry(path, stationSource, data));
-        } catch (WeatherServiceException e) {
-            writer.addError("Can't get weather service");
-            Logging.println("Can't get weather service in noaa.WeatherServiceUIImpl");
-        } catch (InvalidConfigurationDataException e) {
-            //writer.addError("Can't find station for zip code '"+zip+"'");
-            //Logging.println("Can't find station for zip code '" + zip + "'", e);
+                configData.add(new WeatherConfigEntry(path, stationSource, data));
+            } catch (WeatherServiceException e) {
+                writer.addError("Can't get weather service");
+                Logging.println("Can't get weather service in noaa.WeatherServiceUIImpl");
+            } catch (InvalidConfigurationDataException e) {
+                writer.addError("Can't find station");
+                Logging.println("Can't find station", e);
+            }
         }
     }
 
@@ -126,12 +131,16 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         try {
             WeatherServiceImpl ws = (WeatherServiceImpl) configData.getWeatherService();
             String searchString = req.getParameter(PARAM_LOCATION);
-            Location[] locations = ws.findLocations(searchString);
-            for (Location location : locations) {
-                Map<String,Object> data = new HashMap<String, Object>();
-                data.put(FIELD_KEY, getLocationKey(location));
-                data.put(FIELD_NAME, getLocationDescription(location));
-                writer.appendToArray("list", data);
+            if (searchString == null || searchString.length() == 0) {
+                writer.addError("Error: missing City or Zip");
+            } else {
+                Location[] locations = ws.findLocations(searchString);
+                for (Location location : locations) {
+                    Map<String,Object> data = new HashMap<String, Object>();
+                    data.put(FIELD_KEY, getLocationKey(location));
+                    data.put(FIELD_NAME, getLocationDescription(location));
+                    writer.appendToArray("list", data);
+                }
             }
         } catch (WeatherServiceException e) {
             writer.addError("Error getting weather service:" + e.getMessage());
