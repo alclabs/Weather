@@ -22,7 +22,7 @@
 
 var addDialog;
 
-function setupHandlers() {
+function setupServiceConfigHandlers() {
     $('select[name="service"]').on('change', function() {
         $.post("ajaxcontroller", {action:"changeservice", service:$(this).val()}, function(result) {
             if (!handleResponseErrors(result)) {
@@ -33,6 +33,10 @@ function setupHandlers() {
             }
         })
     })
+}
+
+function setupHandlers() {
+    setupServiceConfigHandlers()
 
     // Delete handler
     $("#locations").on('click', "button.del", function() {
@@ -196,6 +200,8 @@ function handleUIResults(data) {
     $("#adddialog").html(data.adddialog)
 
     $("#serviceconfig").html(data.serviceconfig)
+    setupServiceConfigHandlers()
+
     $("#locations thead tr").empty()
     $.each(data.entryheaders, function(index, value) {
         $("#locations thead tr").append("<th>"+value+"</th>");

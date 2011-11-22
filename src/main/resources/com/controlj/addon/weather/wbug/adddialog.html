@@ -24,6 +24,7 @@
     <input type="hidden" id="cityname" name="cityname" value=""/>
 </form>
 <script>
+    // must have a function with this name - called by infrastructure
     function cleanAddDialog() {
         $('#wbugdialog input').val('')
         $('#cityrow').css('visibility','hidden')
@@ -43,7 +44,6 @@
                 $.each(data.list, function(index, next ) {
                     sel.append("<option value='"+next.key+"'>"+next.name+"</option>")
                 })
-                $('#weatherrow').css('visibility','visible ')
             }
         })
     }
@@ -51,13 +51,14 @@
     $('#findlocbutton').button().on('click', function() {
         $('#locationlist').empty().append("<option>Loading...</option>")
         $('#stationlist').empty().append("<option>Loading...</option>")
+        $('#cityrow').css('visibility','visible ')
+        $('#weatherrow').css('visibility','visible ')
         $.get("ajaxcontroller", {action:'ui', dialogaction:'findcity', location:escape($('#location').val())}, function(data) {
             var sel = $('#locationlist').empty()
             if (data.list) {
                 $.each(data.list, function(index, next ) {
                     sel.append("<option value='"+next.key+"'>"+next.name+"</option>")
                 })
-            $('#cityrow').css('visibility','visible ')
             $('#locationlist').trigger('change')
             }
         })
