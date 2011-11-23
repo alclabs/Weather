@@ -51,8 +51,8 @@
     $('#findlocbutton').button().on('click', function() {
         $('#locationlist').empty().append("<option>Loading...</option>")
         $('#stationlist').empty().append("<option>Loading...</option>")
-        $('#cityrow').css('visibility','visible ')
-        $('#weatherrow').css('visibility','visible ')
+        $('#cityrow').css('visibility','visible')
+        $('#weatherrow').css('visibility','visible')
         $.get("ajaxcontroller", {action:'ui', dialogaction:'findcity', location:escape($('#location').val())}, function(data) {
             var sel = $('#locationlist').empty()
             if (data.list) {
