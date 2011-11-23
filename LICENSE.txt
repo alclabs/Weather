@@ -82,7 +82,7 @@ License: Apache version 2.0 - http://groovy.codehaus.org/License+Information
 spock packages
 -------------------------------------------------------------------------------
 Website: http://code.google.com/p/spock/
-License: Apache version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+License: Apache version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
 
 -------------------------------------------------------------------------------
 cglib-nodep packages
@@ -103,4 +103,11 @@ hamcrest-all packages
 -------------------------------------------------------------------------------
 Website: http://code.google.com/p/hamcrest/
 License: BSD 2-Clause License - http://www.opensource.org/licenses/bsd-license.php
+
+-------------------------------------------------------------------------------
+some code copied (and slightly modified) from weatherbug4eclipse
+-------------------------------------------------------------------------------
+Website: http://code.google.com/p/weatherbug4eclipse/
+License: Apache version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
+
 
