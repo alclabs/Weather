@@ -23,6 +23,7 @@
 package com.controlj.addon.weather.servlets;
 
 import com.controlj.addon.weather.ScheduledWeatherLookup;
+import com.controlj.addon.weather.WeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
@@ -166,8 +167,10 @@ public class AjaxController extends HttpServlet {
                 }
             }
 
+            WeatherLookup weatherLookup = new WeatherLookup(configData);
+
             // current conditions
-            ConditionsSource conditionsSource = ScheduledWeatherLookup.updateConditionsData(configData, entry);
+            ConditionsSource conditionsSource = weatherLookup.lookupConditionsData(entry, true);
             if (conditionsSource != null) {
                 for (ConditionsField field : ConditionsField.values()) {
                     if (field.isSupported(conditionsSource)) {
@@ -180,7 +183,7 @@ public class AjaxController extends HttpServlet {
             }
 
             // forecast data
-            ForecastSource[] forecastSources = ScheduledWeatherLookup.updateForecastsData(configData, entry);
+            ForecastSource[] forecastSources = weatherLookup.lookupForecastsData(entry, true);
             if (forecastSources != null) {
                 writer.appendToArray(JSON_FORECAST_HEADERS, "Field");
                 for (int i=0; i<forecastSources.length; i++) {

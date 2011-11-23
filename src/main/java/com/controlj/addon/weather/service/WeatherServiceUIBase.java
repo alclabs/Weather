@@ -1,5 +1,6 @@
 package com.controlj.addon.weather.service;
 
+import com.controlj.addon.weather.ScheduledWeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
@@ -59,10 +60,12 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
     public void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         String conditionRateString = req.getParameter("conditionrefresh");
         String forecastRateString = req.getParameter("forecastrefresh");
+        boolean rescheduleUpdates = false;
 
         if (conditionRateString != null) {
             try {
                 configData.setConditionsRefreshInMinutes(Integer.parseInt(conditionRateString));
+                rescheduleUpdates = true;
             } catch (NumberFormatException e) {
                 writer.addValidationError("conditionrefresh", "\"" + conditionRateString + "\" is not a valid number");
             }
@@ -73,12 +76,16 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
         if (forecastRateString!= null) {
             try {
                 configData.setForecastsRefreshInMinutes(Integer.parseInt(forecastRateString));
+                rescheduleUpdates = true;
             } catch (NumberFormatException e) {
                 writer.addValidationError("forecastrefresh", "\"" + forecastRateString + "\" is not a valid number");
             }
         } else {
             writer.addValidationError("forecastrefresh", "forecast rate not specified");
         }
+
+        if (rescheduleUpdates)
+            ScheduledWeatherLookup.rescheduleUpdates();
     }
 
     @Override

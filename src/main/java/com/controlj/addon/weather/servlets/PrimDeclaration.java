@@ -23,9 +23,8 @@
 package com.controlj.addon.weather.servlets;
 
 import com.controlj.addon.weather.EquipmentWriteException;
-import com.controlj.addon.weather.RuntimeInformation;
+import com.controlj.addon.weather.WeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
-import com.controlj.addon.weather.config.ConfigDataFactory;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.service.WeatherServiceException;
@@ -34,13 +33,10 @@ import com.controlj.green.addonsupport.AddOnInfo;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,10 +116,10 @@ public class PrimDeclaration extends PrimitiveServletBase {
 
 
     private void definePrimitives(final StringBuilder builder, ConfigData config, WeatherConfigEntry entry) throws EquipmentWriteException, WeatherServiceException {
-        RuntimeInformation rti = RuntimeInformation.getSingleton();
-        StationSource stationData = getStationSource(rti, config, entry);
-        ConditionsSource conditionData = getConditionsSource(rti, config, entry);
-        ForecastSource[] forecastSources = getForecastSources(rti, config, entry);
+        WeatherLookup weatherLookup = new WeatherLookup(config);
+        StationSource stationData = entry.getStationSource();
+        ConditionsSource conditionData = weatherLookup.lookupConditionsData(entry, false);
+        ForecastSource[] forecastSources = weatherLookup.lookupForecastsData(entry, false);
 
         try {
             iterateFields(conditionData, stationData, forecastSources, new FieldHandler() {

@@ -25,6 +25,7 @@ package com.controlj.addon.weather.servlets;
 import com.controlj.addon.weather.EquipmentWriteException;
 import com.controlj.addon.weather.RuntimeInformation;
 import com.controlj.addon.weather.ScheduledWeatherLookup;
+import com.controlj.addon.weather.WeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
@@ -40,26 +41,6 @@ public class PrimitiveServletBase extends HttpServlet {
 
     protected ConfigData getConfigData() {
         return ConfigDataFactory.loadConfigData();
-    }
-
-    protected ConditionsSource getConditionsSource(RuntimeInformation rti, ConfigData config, WeatherConfigEntry entry) throws EquipmentWriteException, WeatherServiceException {
-        ConditionsSource weatherData = rti.getLastConditionsData(entry);
-        if (weatherData == null) {
-            weatherData = ScheduledWeatherLookup.updateConditionsData(config, entry);
-        }
-        return weatherData;
-    }
-
-    protected StationSource getStationSource(RuntimeInformation rti, ConfigData config, WeatherConfigEntry entry) throws EquipmentWriteException, WeatherServiceException {
-        return entry.getStationSource();
-    }
-
-    protected ForecastSource[] getForecastSources(RuntimeInformation rti, ConfigData config, WeatherConfigEntry entry) throws EquipmentWriteException, WeatherServiceException {
-        ForecastSource[] forecastSources = rti.getLastForecastData(entry);
-        if (forecastSources == null || forecastSources.length == 0) {
-            forecastSources = ScheduledWeatherLookup.updateForecastsData(config, entry);
-        }
-        return forecastSources;
     }
 
     protected void iterateFields(ConditionsSource conditionData, StationSource stationData, ForecastSource[] forecastSources, FieldHandler handler) throws EquipmentWriteException, WeatherServiceException {

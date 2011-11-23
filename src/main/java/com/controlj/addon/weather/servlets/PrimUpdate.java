@@ -23,7 +23,7 @@
 package com.controlj.addon.weather.servlets;
 
 import com.controlj.addon.weather.EquipmentWriteException;
-import com.controlj.addon.weather.RuntimeInformation;
+import com.controlj.addon.weather.WeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.data.ConditionsSource;
@@ -79,10 +79,10 @@ public class PrimUpdate extends PrimitiveServletBase {
     }
 
     private void updatePrimitives(final StringBuilder builder, ConfigData config, WeatherConfigEntry entry) throws EquipmentWriteException, WeatherServiceException {
-        RuntimeInformation rti = RuntimeInformation.getSingleton();
-        StationSource stationData = getStationSource(rti, config, entry);
-        ConditionsSource conditionData = getConditionsSource(rti, config, entry);
-        ForecastSource[] forecastSources = getForecastSources(rti, config, entry);
+        WeatherLookup weatherLookup = new WeatherLookup(config);
+        StationSource stationData = entry.getStationSource();
+        ConditionsSource conditionData = weatherLookup.lookupConditionsData(entry, false);
+        ForecastSource[] forecastSources = weatherLookup.lookupForecastsData(entry, false);
 
         try {
             iterateFields(conditionData, stationData, forecastSources, new FieldHandler() {

@@ -25,7 +25,6 @@ import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.green.addonsupport.access.*;
 import com.controlj.green.addonsupport.access.aspect.PresentValue;
-import com.controlj.green.addonsupport.access.util.Acceptors;
 import com.controlj.green.addonsupport.access.value.FloatValue;
 import com.controlj.green.addonsupport.access.value.InvalidValueException;
 import org.jetbrains.annotations.NotNull;
@@ -39,200 +38,186 @@ import java.util.regex.Pattern;
  * This class is responsible for inserting weather data into control programs.  If the
  * lookupString given in the constructor is not an equipment, other calls to this class
  * will be ignored.
- *
+ * <p/>
  * Only numeric field values are written into the field devices.  String and Date type fields
  * are ignored.
- *
+ * <p/>
  * Control programs are written to using a "FieldAccess", so any changes get automatically
  * downloaded to the field device.
  */
-public class EquipmentHandler
-{
-   private static final Pattern WEATHER_STATION_PATTERN  = Pattern.compile("ws_(.+)");
-   private static final Pattern WEATHER_CONDITIONS_PATTERN = Pattern.compile("wc_(.+)");
-   private static final Pattern WEATHER_FORECAST_PATTERN = Pattern.compile("wf(\\d+)_(.+)");
+public class EquipmentHandler {
+    private static final Pattern WEATHER_STATION_PATTERN = Pattern.compile("ws_(.+)");
+    private static final Pattern WEATHER_CONDITIONS_PATTERN = Pattern.compile("wc_(.+)");
+    private static final Pattern WEATHER_FORECAST_PATTERN = Pattern.compile("wf(\\d+)_(.+)");
 
-   private final SystemConnection systemConnection;
-   private final Collection<PresentValue> presentValues;
+    private final SystemConnection systemConnection;
+    private final Collection<PresentValue> presentValues;
 
-   public EquipmentHandler(SystemConnection systemConn, final String lookupString) throws EquipmentWriteException
-   {
-      systemConnection = systemConn;
-      if (Logging.is41)
-      {
-         // 4.1 doesn't support writing to equipment (the presentValue aspect does not correctly redirect
-         // writes to the relinquish_default node).  So, just set the presentValues to an empty list, effectively
-         // bypassing the attempt to write data to the control programs.
-         presentValues = Collections.emptyList();
-      }
-      else
-      {
-         try
-         {
-            presentValues = systemConnection.runReadAction(new ReadActionResult<Collection<PresentValue>>()
-            {
-               @Override public Collection<PresentValue> execute(@NotNull SystemAccess systemAccess) throws Exception
-               {
-                  Location location = systemAccess.getTree(SystemTree.Geographic).resolve(lookupString);
-                  if (location.getType() == LocationType.Equipment)
-                     return location.find(PresentValue.class, Acceptors.acceptAll());
-                  else
-                     return Collections.emptyList();
-               }
+    public EquipmentHandler(SystemConnection systemConn, String path) throws EquipmentWriteException {
+        systemConnection = systemConn;
+        if (Logging.is41) {
+            // 4.1 doesn't support writing to equipment (the presentValue aspect does not correctly redirect
+            // writes to the relinquish_default node).  So, just set the presentValues to an empty list, effectively
+            // bypassing the attempt to write data to the control programs.
+            presentValues = Collections.emptyList();
+        } else {
+            try {
+                final String lookupString = "ABSPATH:1:" + path;
+                presentValues = systemConnection.runReadAction(new ReadActionResult<Collection<PresentValue>>() {
+                    @Override
+                    public Collection<PresentValue> execute(@NotNull SystemAccess systemAccess) throws Exception {
+                        Location location = systemAccess.getTree(SystemTree.Geographic).resolve(lookupString);
+                        if (location.getType() == LocationType.Equipment)
+                            return location.find(PresentValue.class, new FieldReferenceAcceptor());
+                        else
+                            return Collections.emptyList();
+                    }
+                });
+            } catch (Exception e) {
+                throw new EquipmentWriteException(e);
+            }
+        }
+    }
+
+    public boolean hasFieldsToWrite() { return !presentValues.isEmpty(); }
+
+    public void writeStationData(final StationSource stationSource) throws EquipmentWriteException {
+        if (!hasFieldsToWrite()) //short circuit if no data to update
+            return;
+
+        try {
+            systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather station data", new WriteAction() {
+                @Override
+                public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
+                    for (PresentValue presentValue : presentValues) {
+                        String referenceName = presentValue.getLocation().getReferenceName();
+                        Float value = getValueIfStation(referenceName, stationSource);
+                        if (value != null)
+                            setValue(presentValue, value);
+                    }
+                }
             });
-         }
-         catch (Exception e)
-         {
+        } catch (Exception e) {
             throw new EquipmentWriteException(e);
-         }
-      }
-   }
+        }
+    }
 
-   public void writeStationData(final StationSource stationSource) throws EquipmentWriteException
-   {
-      if (presentValues.isEmpty()) //short circuit if no data to update
-         return;
+    public void writeConditionsData(final ConditionsSource conditionsSource) throws EquipmentWriteException {
+        if (!hasFieldsToWrite()) //short circuit if no data to update
+            return;
 
-      try
-      {
-         systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather station data", new WriteAction()
-         {
-            @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
-            {
-               for (PresentValue presentValue : presentValues)
-               {
-                  String referenceName = presentValue.getLocation().getReferenceName();
-                  Float value = getValueIfStation(referenceName, stationSource);
-                  if (value != null)
-                     setValue(presentValue, value);
-               }
-            }
-         });
-      }
-      catch (Exception e)
-      {
-         throw new EquipmentWriteException(e);
-      }
-   }
+        try {
+            systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating current weather data", new WriteAction() {
+                @Override
+                public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
+                    for (PresentValue presentValue : presentValues) {
+                        String referenceName = presentValue.getLocation().getReferenceName();
+                        Float value = getValueIfConditions(referenceName, conditionsSource);
+                        if (value != null)
+                            setValue(presentValue, value);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            throw new EquipmentWriteException(e);
+        }
+    }
 
-   public void writeConditionsData(final ConditionsSource conditionsSource)throws EquipmentWriteException
-   {
-      if (presentValues.isEmpty()) //short circuit if no data to update
-         return;
+    public void writeForecastData(final ForecastSource[] forecastSources) throws EquipmentWriteException {
+        if (!hasFieldsToWrite()) //short circuit if no data to update
+            return;
 
-      try
-      {
-         systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating current weather data", new WriteAction()
-         {
-            @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
-            {
-               for (PresentValue presentValue : presentValues)
-               {
-                  String referenceName = presentValue.getLocation().getReferenceName();
-                  Float value = getValueIfConditions(referenceName, conditionsSource);
-                  if (value != null)
-                     setValue(presentValue, value);
-               }
-            }
-         });
-      }
-      catch (Exception e)
-      {
-         throw new EquipmentWriteException(e);
-      }
-   }
+        try {
+            systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather forecast data", new WriteAction() {
+                @Override
+                public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
+                    for (PresentValue presentValue : presentValues) {
+                        String referenceName = presentValue.getLocation().getReferenceName();
+                        Float value = getValueIfForecast(referenceName, forecastSources);
+                        if (value != null)
+                            setValue(presentValue, value);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            throw new EquipmentWriteException(e);
+        }
+    }
 
-   public void writeForecastData(final ForecastSource[] forecastSources)throws EquipmentWriteException
-   {
-      if (presentValues.isEmpty()) //short circuit if no data to update
-         return;
+    private Float getValueIfStation(String referenceName, StationSource stationSource) {
+        Matcher matcher = WEATHER_STATION_PATTERN.matcher(referenceName);
+        if (matcher.matches()) {
+            String fieldName = matcher.group(1);
+            StationField field = StationField.find(fieldName);
+            if (field != null)
+                return sanitizeValue(field.getValue(stationSource), field.getType());
+        }
+        return null;
+    }
 
-      try
-      {
-         systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather forecast data", new WriteAction()
-         {
-            @Override public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception
-            {
-               for (PresentValue presentValue : presentValues)
-               {
-                  String referenceName = presentValue.getLocation().getReferenceName();
-                  Float value = getValueIfForecast(referenceName, forecastSources);
-                  if (value != null)
-                     setValue(presentValue, value);
-               }
-            }
-         });
-      }
-      catch (Exception e)
-      {
-         throw new EquipmentWriteException(e);
-      }
-   }
+    private Float getValueIfConditions(String referenceName, ConditionsSource conditionsSource) {
+        Matcher matcher = WEATHER_CONDITIONS_PATTERN.matcher(referenceName);
+        if (matcher.matches()) {
+            String fieldName = matcher.group(1);
+            ConditionsField field = ConditionsField.find(fieldName);
+            if (field != null)
+                return sanitizeValue(field.getValue(conditionsSource), field.getType());
+        }
+        return null;
+    }
 
-   private Float getValueIfStation(String referenceName, StationSource stationSource)
-   {
-      Matcher matcher = WEATHER_STATION_PATTERN.matcher(referenceName);
-      if (matcher.matches())
-      {
-         String fieldName = matcher.group(1);
-         StationField field = StationField.find(fieldName);
-         if (field != null)
-            return sanitizeValue(field.getValue(stationSource), field.getType());
-      }
-      return null;
-   }
+    private Float getValueIfForecast(String referenceName, ForecastSource[] forecastSources) {
+        Matcher matcher = WEATHER_FORECAST_PATTERN.matcher(referenceName);
+        if (matcher.matches()) {
+            int day = Integer.parseInt(matcher.group(1));
+            String fieldName = matcher.group(2);
+            ForecastField field = ForecastField.find(fieldName);
+            if (field != null && day < forecastSources.length)
+                return sanitizeValue(field.getValue(forecastSources[day]), field.getType());
+        }
+        return null;
+    }
 
-   private Float getValueIfConditions(String referenceName, ConditionsSource conditionsSource)
-   {
-      Matcher matcher = WEATHER_CONDITIONS_PATTERN.matcher(referenceName);
-      if (matcher.matches())
-      {
-         String fieldName = matcher.group(1);
-         ConditionsField field = ConditionsField.find(fieldName);
-         if (field != null)
-            return sanitizeValue(field.getValue(conditionsSource), field.getType());
-      }
-      return null;
-   }
+    private Float sanitizeValue(Object value, FieldType type) {
+        if (value == null)
+            return null;
 
-   private Float getValueIfForecast(String referenceName, ForecastSource[] forecastSources)
-   {
-      Matcher matcher = WEATHER_FORECAST_PATTERN.matcher(referenceName);
-      if (matcher.matches())
-      {
-         int day = Integer.parseInt(matcher.group(1));
-         String fieldName = matcher.group(2);
-         ForecastField field = ForecastField.find(fieldName);
-         if (field != null && day < forecastSources.length)
-            return sanitizeValue(field.getValue(forecastSources[day]), field.getType());
-      }
-      return null;
-   }
+        switch (type) {
+            case FloatType:
+                return (Float) value;
+            case IntegerType:
+                return new Float((Integer) value);
+            case StringType:
+            case DateType:
+                return null; // strings and dates don't get written to the field
+        }
+        return null; // if it's a type we don't recognize, ignore it
+    }
 
-   private Float sanitizeValue(Object value, FieldType type)
-   {
-      if (value == null)
-         return null;
+    private void setValue(PresentValue pv, Float value) {
+        try {
+            ((FloatValue) pv.getValue()).set(value);
+        } catch (InvalidValueException e) {
+            Logging.println("Error writing weather data (" + value + ") into present value (" + pv.getLocation() + ')', e);
+        }
+    }
 
-      switch(type)
-      {
-         case FloatType:   return (Float)value;
-         case IntegerType: return new Float((Integer)value);
-         case StringType:
-         case DateType:    return null; // strings and dates don't get written to the field
-      }
-      return null; // if it's a type we don't recognize, ignore it
-   }
+    private static final class FieldReferenceAcceptor implements AspectAcceptor<PresentValue>
+    {
+        @Override
+        public boolean accept(@NotNull PresentValue presentValue) {
+            String referenceName = presentValue.getLocation().getReferenceName();
+            Matcher stationPatternMatcher = WEATHER_STATION_PATTERN.matcher(referenceName);
+            if (stationPatternMatcher.matches())
+                return true;
+            Matcher conditionsPatternMatcher = WEATHER_CONDITIONS_PATTERN.matcher(referenceName);
+            if (conditionsPatternMatcher.matches())
+                return true;
+            Matcher forecastPatternMatcher = WEATHER_FORECAST_PATTERN.matcher(referenceName);
+            if (forecastPatternMatcher.matches())
+                return true;
 
-   private void setValue(PresentValue pv, Float value)
-   {
-      try
-      {
-         ((FloatValue)pv.getValue()).set(value);
-      }
-      catch (InvalidValueException e)
-      {
-         Logging.println("Error writing weather data (" + value + ") into present value (" + pv.getLocation() + ')', e);
-      }
-   }
+            return false;
+        }
+    }
 }
