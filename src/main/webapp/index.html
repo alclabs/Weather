@@ -25,17 +25,18 @@
 <html>
 <head>
     <title>Weather Settings</title>
-    <link type="text/css" href="css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+    <link type="text/css" href="css/dot-luv/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
     <script type="text/javascript" src="js/jquery-1.7.1-min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.16-min.js"></script>
     <script type="text/javascript" src="js/weather.js"></script>
     <style type="text/css">
-        body {font-family:sans-serif; color:black; }
+        body { font-family:sans-serif; color:black; }
+        .configdata { background: #85b6de url("images/sunny_clouds_sky.jpg") no-repeat; }
         a { color:black; }
         td { padding-left:1em; text-align:left; }
         th { padding-left:1em; text-align:left; }
         input { margin-right:1em; }
-        .title { font-weight:bold; font-size:150%; }
+        .title { font-weight:bold; font-size:300%; }
         .subtitle { font-style:italic; padding-left:2em; }
         .right {text-align: right;}
         .select { background-color: #c0e0ff; }
@@ -54,28 +55,38 @@
         .note {font-size: smaller; font-style: italic; margin-bottom: 5px;}
         #forecastdata td:first-child { font-weight:bold; white-space: nowrap;}
         .form td:first-child { text-align: right; white-space: nowrap;}
-
+        .serviceconfig { padding-left: 10px; padding-top: 10px; padding-bottom: 20px; }
+        .locationconfig { padding-left: 10px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
+<div class="configdata">
 <div>
-    <span class="title">Weather</span>
     <div id="error" class="ui-state-error ui-corner-all" style="padding: 0 .7em; float:right;">
         <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
         <div id="errortext"></div></p>
     </div>
 </div>
-<br/><br/>
+<div style="padding-left: 10px;">
+<div style="float: left; color: white;">
+   <span class="title">Weather</span><br/>
+   1) Pick a weather service<br/>
+   2) Choose how frequently you need updated information<br/>
+   3) blah blah<br/>
+</div>
+<div class="serviceconfig">
 <fieldset>
 <legend>Service Configuration:</legend>
 <form id="rates">
     <div id="serviceconfig">
     </div>
-    <button style="float:right" id="submitconfig" type="button">Apply</button>
+    <button style="float:right; margin-top: 10px;" id="submitconfig" type="button">Apply</button>
     <input type="hidden" name="action" value="postconfig">
 </form>
 </fieldset>
-<br/><br/>
+</div>
+</div>
+<div class="locationconfig">
 <fieldset>
     <legend>Locations to Update:</legend>
     <table id="locations">
@@ -88,7 +99,8 @@
     </table>
     <button id="addlocation">Add...</button>
 </fieldset>
-<br/>
+</div>
+</div>
 <div id="resultdata">
     <h3>Results of reading weather data for <span id="resultname"></span></h3>
     <h4>Station Data</h4>
