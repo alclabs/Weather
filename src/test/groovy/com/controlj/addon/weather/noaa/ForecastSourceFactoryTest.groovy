@@ -31,7 +31,7 @@ import static com.controlj.addon.weather.data.WeatherIcon.*
  */
 @Mixin(NOAAUtilities)
 class ForecastSourceFactoryTest extends Specification {
-    ForecastSourceFactory factory = new ForecastSourceFactory( getTestDocument(GOODFORECAST))
+    ForecastSourceFactory factory = new ForecastSourceFactory(true, getTestDocument(GOODFORECAST))
 
     def "get forecast dates good"() {
         when:
@@ -46,7 +46,7 @@ class ForecastSourceFactoryTest extends Specification {
 
     def "get forecast dates bad"() {
         setup:
-          factory = new ForecastSourceFactory( getTestDocument(BADDATEFORECAST))
+          factory = new ForecastSourceFactory(true, getTestDocument(BADDATEFORECAST))
 
         when:
             List<Date> dates = factory.dates
@@ -87,7 +87,7 @@ class ForecastSourceFactoryTest extends Specification {
 
     def "get forecast descriptions handles missing desc"() {
         when:
-           factory = new ForecastSourceFactory( getTestDocument(MISSINGDESCFORECAST))
+           factory = new ForecastSourceFactory(true, getTestDocument(MISSINGDESCFORECAST))
            List<String> descriptions = factory.descriptions
         then:
             descriptions.size() == 7
@@ -103,5 +103,4 @@ class ForecastSourceFactoryTest extends Specification {
             icons.size() == 7
             icons == [PartlyCloudy, PartlyCloudy, PartlyCloudy, Storms, PartlyCloudy, PartlyCloudy, PartlyCloudy]
     }
-
 }

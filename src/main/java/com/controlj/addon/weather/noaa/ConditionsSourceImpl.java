@@ -27,6 +27,7 @@ import com.controlj.addon.weather.data.WeatherIcon;
 import java.util.Date;
 
 public class ConditionsSourceImpl extends ConditionsSource {
+    private boolean isMetric;
     private Float temperature;
     private Float humidity;
     private Float pressure;
@@ -38,12 +39,20 @@ public class ConditionsSourceImpl extends ConditionsSource {
     private Date observationTime;
     private WeatherIcon icon;
 
+    public void setMetric(boolean metric) {
+        isMetric = metric;
+    }
+
     @Override public Float getTemperature() {
         return temperature;
     }
 
     public void setTemperature(Float temperature) {
         this.temperature = temperature;
+    }
+
+    @Override public String getTemperatureUnits() {
+        return isMetric ? "\u00B0C" : "\u00B0F";
     }
 
     @Override public Float getHumidity() {
@@ -54,12 +63,20 @@ public class ConditionsSourceImpl extends ConditionsSource {
         this.humidity = humidity;
     }
 
+    @Override public String getHumidityUnits() {
+        return "%";
+    }
+
     @Override public Float getPressure() {
         return pressure;
     }
 
     public void setPressure(Float pressure) {
         this.pressure = pressure;
+    }
+
+    @Override public String getPressureUnits() {
+        return isMetric ? "mb" : "\"";
     }
 
     @Override public String getCurrentCondition() {
@@ -84,6 +101,10 @@ public class ConditionsSourceImpl extends ConditionsSource {
 
     public void setWindSpeed(Float windSpeed) {
         this.windSpeed = windSpeed;
+    }
+
+    @Override public String getWindSpeedUnits() {
+        return isMetric ? "kt" : "mph";
     }
 
     @Override public String getWindDirection() {

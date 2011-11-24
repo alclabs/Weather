@@ -33,12 +33,14 @@ import java.util.Date;
  *
  */
 public class ForecastSourceImpl extends ForecastSource {
+    private final boolean isMetric;
     private final String day;
     private final Float high, low, probPrecip;
     private final String weatherDescription;
     private final WeatherIcon icon;
 
-    public ForecastSourceImpl(@Nullable Float high, @Nullable Float low, @Nullable Float probPrecip, @NotNull String day, @Nullable String weatherDescription, WeatherIcon icon) {
+    public ForecastSourceImpl(boolean isMetric, @Nullable Float high, @Nullable Float low, @Nullable Float probPrecip, @NotNull String day, @Nullable String weatherDescription, WeatherIcon icon) {
+        this.isMetric = isMetric;
         this.high = high;
         this.low = low;
         this.probPrecip = probPrecip;
@@ -51,23 +53,27 @@ public class ForecastSourceImpl extends ForecastSource {
         return day;
     }
 
-    @Override @Nullable
-    public Float getHighestTemperature() {
+    @Override @Nullable public Float getHighestTemperature() {
         return high;
     }
 
-    @Override @Nullable
-    public Float getLowestTemperature() {
+    @Override public String getHighestTemperatureUnits() {
+        return isMetric ? "\u00B0C" : "\u00B0F";
+    }
+
+    @Override @Nullable public Float getLowestTemperature() {
         return low;
     }
 
-    @Override @Nullable
-    public String getPrediction() {
+    @Override public String getLowestTemperatureUnits() {
+        return isMetric ? "\u00B0C" : "\u00B0F";
+    }
+
+    @Override @Nullable public String getPrediction() {
         return weatherDescription;
     }
 
-    @Override
-    public Float getProbPrecipitation() {
+    @Override public Float getProbPrecipitation() {
         return probPrecip;
     }
 

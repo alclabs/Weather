@@ -39,6 +39,7 @@ public class ForecastSourceFactory {
     private static final SimpleDateFormat timeLayoutFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat dateDescriptionFormat = new SimpleDateFormat("EEEE");
 
+    private boolean isMetric;
     private List<Date> dates;
     private List<Float> highs;
     private List<Float> lows;
@@ -46,7 +47,8 @@ public class ForecastSourceFactory {
     private List<String> descriptions;
     private List<WeatherIcon> icons;
 
-    public ForecastSourceFactory(Document forecast) throws WeatherServiceException {
+    public ForecastSourceFactory(boolean isMetric, Document forecast) throws WeatherServiceException {
+        this.isMetric = isMetric;
         dates = getForecastDates(forecast);
         highs = getForecastHighs(forecast);
         lows = getForecastLows(forecast);
@@ -62,7 +64,7 @@ public class ForecastSourceFactory {
     }
 
     public ForecastSource getForecast(int day) {
-        return new ForecastSourceImpl(highs.get(day),
+        return new ForecastSourceImpl(isMetric, highs.get(day),
                                       lows.get(day),
                                       probPrecip.get(day),
                                       dateDescriptionFormat.format(dates.get(day)),

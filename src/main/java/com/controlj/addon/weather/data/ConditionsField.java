@@ -183,6 +183,10 @@ public enum ConditionsField {
         }
     }
 
+    public String getUnits(ConditionsSource source) {
+        return getRawUnits(source);
+    }
+
     /**
      * Returns true if this source supports this field, false if the source throws an UnsupportedOperationException
      * when retrieving the value of the field.
@@ -231,5 +235,23 @@ public enum ConditionsField {
 
         Logging.println("WeatherField.getRawValue() doesn't have a case for: " + this);
         throw new UnsupportedOperationException("WeatherField.getRawValue() doesn't have a case for: " + this);
+    }
+
+    private String getRawUnits(ConditionsSource source) {
+        switch (this) {
+            case avgWindDegrees:   return source.getAverageWindDegreesUnits();
+            case avgWindSpeed:     return source.getAverageWindSpeedUnits();
+            case feelsLike:        return source.getFeelsLikeUnits();
+            case temperature:      return source.getTemperatureUnits();
+            case humidity:         return source.getHumidityUnits();
+            case pressure:         return source.getPressureUnits();
+            case dewPoint:         return source.getDewPointUnits();
+            case windSpeed:        return source.getWindSpeedUnits();
+            case windDegrees:      return source.getWindDegreesUnits();
+            case rainRate:         return source.getRainRateUnits();
+            case rainToday:        return source.getRainTodayUnits();
+            case wetBulb:          return source.getWetBulbUnits();
+            default: return "";
+        }
     }
 }

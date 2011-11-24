@@ -35,6 +35,7 @@ public class ConditionsSourceFactory {
 
     ConditionsSource createSourceFromDocument(Document document, boolean isMetric) {
         ConditionsSourceImpl weatherSource = new ConditionsSourceImpl();
+        weatherSource.setMetric(isMetric);
         weatherSource.setTemperature(extractFloat(document, isMetric ? "temp_c" : "temp_f"));
         weatherSource.setHumidity(extractFloat(document, "relative_humidity"));
         weatherSource.setPressure(extractFloat(document, isMetric ? "pressure_mb" : "pressure_in"));

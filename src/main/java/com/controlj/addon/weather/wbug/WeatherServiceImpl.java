@@ -76,7 +76,7 @@ public class WeatherServiceImpl implements WeatherService
    @Override
    public ConditionsSource getConditionsSource(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException
    {
-      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(entryData.get(CONFIG_KEY_UNITS));
+      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
       try
       {
          LiveWeather liveWeather = getService().getLiveWeatherByStationID(stationSource.getId(), isMetric ? 1 : 0);
@@ -91,7 +91,7 @@ public class WeatherServiceImpl implements WeatherService
    @Override
    public ForecastSource[] getForecastSources(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException
    {
-      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(entryData.get(CONFIG_KEY_UNITS));
+      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
       Forecasts forecasts;
       try
       {

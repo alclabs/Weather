@@ -55,10 +55,24 @@ public abstract class ForecastSource {
     }
 
     /**
+     * Returns the expected highest temperature.
+     */
+    public String getHighestTemperatureUnits() {
+        return "";
+    }
+
+    /**
      * Returns the expected lowest temperature.
      */
     public Float getLowestTemperature() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the expected lowest temperature.
+     */
+    public String getLowestTemperatureUnits() {
+        return getHighestTemperatureUnits();
     }
 
     /**
@@ -80,6 +94,13 @@ public abstract class ForecastSource {
      */
     public Float getProbPrecipitation() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the probability of precipitation.
+     */
+    public String getProbPrecipitationUnits() {
+        return "";
     }
 
     /**

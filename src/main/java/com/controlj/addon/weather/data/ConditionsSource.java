@@ -55,10 +55,24 @@ public abstract class ConditionsSource {
     }
 
     /**
+     * Returns the average direction of the wind so far today.
+     */
+    public String getAverageWindDegreesUnits() {
+        return "\u00B0";
+    }
+
+    /**
      * Returns the average speed of the wind so far today.
      */
     public Float getAverageWindSpeed() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the average speed of the wind so far today.
+     */
+    public String getAverageWindSpeedUnits() {
+        return "";
     }
 
     /**
@@ -69,10 +83,24 @@ public abstract class ConditionsSource {
     }
 
     /**
+     * Returns the wind chill or heat index temperature, whichever is relevant.
+     */
+    public String getFeelsLikeUnits() {
+        return "";
+    }
+
+    /**
      * Returns the current temperature.
      */
     public Float getTemperature() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the current temperature.
+     */
+    public String getTemperatureUnits() {
+        return "";
     }
 
     /**
@@ -83,10 +111,24 @@ public abstract class ConditionsSource {
     }
 
     /**
+     * Returns the current relative humidity.
+     */
+    public String getHumidityUnits() {
+        return "";
+    }
+
+    /**
      * Returns the current barometric pressure.
      */
     public Float getPressure() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the current barometric pressure.
+     */
+    public String getPressureUnits() {
+        return "";
     }
 
     /**
@@ -104,10 +146,24 @@ public abstract class ConditionsSource {
     }
 
     /**
+     * Returns the temperature to which the air must be cooled to condense.
+     */
+    public String getDewPointUnits() {
+        return getTemperatureUnits();
+    }
+
+    /**
      * Returns the current wind speed.
      */
     public Float getWindSpeed() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the current wind speed.
+     */
+    public String getWindSpeedUnits() {
+        return "";
     }
 
     /**
@@ -125,10 +181,24 @@ public abstract class ConditionsSource {
     }
 
     /**
+     * Returns the current cardinal direction of the wind.
+     */
+    public String getWindDegreesUnits() {
+        return "\u00B0";
+    }
+
+    /**
      * Returns the current rate at which rain is falling.
      */
     public Float getRainRate() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the current rate at which rain is falling.
+     */
+    public String getRainRateUnits() {
+        return "";
     }
 
     /**
@@ -139,10 +209,24 @@ public abstract class ConditionsSource {
     }
 
     /**
+     * Returns the amount of rainfall so far today.
+     */
+    public String getRainTodayUnits() {
+        return "";
+    }
+
+    /**
      * Returns the temperature at which no evaporation occurs and temperature stops dropping.
      */
     public Float getWetBulb() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the temperature at which no evaporation occurs and temperature stops dropping.
+     */
+    public String getWetBulbUnits() {
+        return getTemperatureUnits();
     }
 
     /**

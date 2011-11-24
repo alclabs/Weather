@@ -51,20 +51,40 @@ public class ConditionsSourceAdapter extends ConditionsSource {
         return toFloatNullSafe(liveWeather.getAvgWindSpeed());
     }
 
+    @Override public String getAverageWindSpeedUnits() {
+        return liveWeather.getAvgWindSpeedUnits();
+    }
+
     @Override public Float getFeelsLike() {
         return toFloatNullSafe(liveWeather.getFeelsLike());
+    }
+
+    @Override public String getFeelsLikeUnits() {
+        return liveWeather.getFeelsLikeUnits();
     }
 
     @Override public Float getTemperature() {
         return toFloatNullSafe(liveWeather.getTemperature());
     }
 
+    @Override public String getTemperatureUnits() {
+        return liveWeather.getTemperatureUnits();
+    }
+
     @Override public Float getHumidity() {
         return toFloatNullSafe(liveWeather.getHumidity());
     }
 
+    @Override public String getHumidityUnits() {
+        return liveWeather.getHumidityUnits();
+    }
+
     @Override public Float getPressure() {
         return toFloatNullSafe(liveWeather.getPressure());
+    }
+
+    @Override public String getPressureUnits() {
+        return liveWeather.getPressureUnits();
     }
 
     @Override public String getCurrentCondition() {
@@ -75,8 +95,16 @@ public class ConditionsSourceAdapter extends ConditionsSource {
         return toFloatNullSafe(liveWeather.getDewPoint());
     }
 
+    @Override public String getDewPointUnits() {
+        return liveWeather.getDewPointUnits();
+    }
+
     @Override public Float getWindSpeed() {
         return toFloatNullSafe(liveWeather.getWindSpeed());
+    }
+
+    @Override public String getWindSpeedUnits() {
+        return liveWeather.getWindSpeedUnits();
     }
 
     @Override public String getWindDirection() {
@@ -91,12 +119,24 @@ public class ConditionsSourceAdapter extends ConditionsSource {
         return toFloatNullSafe(liveWeather.getRainRate());
     }
 
+    @Override public String getRainRateUnits() {
+        return liveWeather.getRainRateUnits();
+    }
+
     @Override public Float getRainToday() {
         return toFloatNullSafe(liveWeather.getRainToday());
     }
 
+    @Override public String getRainTodayUnits() {
+        return liveWeather.getRainTodayUnits();
+    }
+
     @Override public Float getWetBulb() {
         return toFloatNullSafe(liveWeather.getWetBulb());
+    }
+
+    @Override public String getWetBulbUnits() {
+        return liveWeather.getWetBulbUnits();
     }
 
     @Override public Date getObservationTime() {

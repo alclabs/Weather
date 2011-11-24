@@ -73,6 +73,7 @@ public class AjaxController extends HttpServlet {
     private static final String JSON_ICON     = "icon";
     private static final String JSON_FIELD    = "field";
     private static final String JSON_VALUE    = "value";
+    private static final String JSON_UNITS    = "units";
 
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -174,9 +175,10 @@ public class AjaxController extends HttpServlet {
             if (conditionsSource != null) {
                 for (ConditionsField field : ConditionsField.values()) {
                     if (field.isSupported(conditionsSource)) {
-                        Map<String, Object> row = new HashMap<String, Object>(2);
+                        Map<String, Object> row = new HashMap<String, Object>(3);
                         row.put(JSON_FIELD, field.getName());
                         row.put(JSON_VALUE, formatValue(field.getValue(conditionsSource)));
+                        row.put(JSON_UNITS, formatValue(field.getUnits(conditionsSource)));
                         writer.appendToArray(JSON_CURRENT, row);
                     }
                 }
@@ -187,16 +189,21 @@ public class AjaxController extends HttpServlet {
             if (forecastSources != null) {
                 writer.appendToArray(JSON_FORECAST_HEADERS, "Field");
                 for (int i=0; i<forecastSources.length; i++) {
-                    writer.appendToArray(JSON_FORECAST_HEADERS, "Day "+i+ " Value");
+                    writer.appendToArray(JSON_FORECAST_HEADERS, "Day "+i+" Value");
                 }
 
                 for (ForecastField field : ForecastField.values()) {
                     if (field.isSupported(forecastSources[0])) {
-                        String row[] = new String[forecastSources.length + 1];
-                        row[0] = field.getName('?');
+                        Map<String, Object> row[] = new Map[forecastSources.length + 1];
+                        row[0] = new HashMap<String, Object>();
+                        row[0].put(JSON_VALUE, field.getName('?'));
+                        row[0].put(JSON_UNITS, "");
                         int i=1;
                         for (ForecastSource forecastSource : forecastSources) {
-                            row[i++] = formatValue(field.getValue(forecastSource));
+                            row[i] = new HashMap<String, Object>();
+                            row[i].put(JSON_VALUE, formatValue(field.getValue(forecastSource)));
+                            row[i].put(JSON_UNITS, formatValue(field.getUnits(forecastSource)));
+                            ++i;
                         }
                         writer.appendToArray(JSON_FORECAST, row);
                     }
@@ -236,8 +243,10 @@ public class AjaxController extends HttpServlet {
         //todo - safer formatting
         if (value == null) {
             return "-";
+        } else if (value instanceof Date) {
+            return PrimitiveServletBase.timeFormat.format(value);
         } else {
-            return value instanceof Date ? PrimitiveServletBase.timeFormat.format(value) : value.toString();
+            return value.toString().replaceAll("\\xB0", "&deg;");
         }
     }
 

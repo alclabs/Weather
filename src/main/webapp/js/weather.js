@@ -167,7 +167,7 @@ function handleResultData(data) {
     }
     if (data.current) {
         $.each(data.current, function(index, value) {
-            $("#currentdata tbody").append("<tr><td>"+value.field+"</td><td>"+value.value+"</td></tr>")
+            $("#currentdata tbody").append("<tr><td>"+value.field+"</td><td>"+value.value+" <b>"+value.units+"</b></td></tr>")
         })
     }
     if (data.forecastheaders) {
@@ -179,7 +179,7 @@ function handleResultData(data) {
         $.each(data.forecast, function(index, rowData) {
             var row = $("<tr></tr>")
             $.each(rowData, function(index, name) {
-                row.append("<td>"+name+"</td>")
+                row.append("<td>"+name.value+" <b>"+name.units+"</b></td>")
             })
             $("#forecastdata tbody").append(row)
         })

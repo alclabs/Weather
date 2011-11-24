@@ -93,6 +93,19 @@ public class ResponseWriter {
         }
     }
 
+    public void appendToArray(String arrayName, Map<String, Object>[] values) {
+        try {
+            JSONArray array = getOrCreateArray(arrayName);
+            JSONArray next = new JSONArray();
+            for (Map<String, Object> value : values) {
+                next.put(new JSONObject(value));
+            }
+            array.put(next);
+        } catch (JSONException e) {
+            Logging.println("Error adding to JSON array", e);
+        }
+    }
+
     public boolean hasErrors() {
         return jsonRoot.has(ERROR_LIST);
     }

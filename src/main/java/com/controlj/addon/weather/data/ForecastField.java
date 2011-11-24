@@ -128,6 +128,10 @@ public enum ForecastField {
         }
     }
 
+    public String getUnits(ForecastSource source) {
+        return getRawUnits(source);
+    }
+
     /**
      * Returns true if this source supports this field, false if the source throws an UnsupportedOperationException
      * when retrieving the value of the field.
@@ -172,5 +176,14 @@ public enum ForecastField {
         }
         Logging.println("ForecastField.getRawValue() doesn't have a case for: " + this);
         throw new UnsupportedOperationException("ForecastField.getRawValue() doesn't have a case for: " + this);
+    }
+
+    private String getRawUnits(ForecastSource source) {
+        switch (this) {
+            case highestTemperature: return source.getHighestTemperatureUnits();
+            case lowestTemperature:  return source.getLowestTemperatureUnits();
+            case probPrecipitation:  return source.getProbPrecipitationUnits();
+            default: return "";
+        }
     }
 }

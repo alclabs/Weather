@@ -46,8 +46,16 @@ public class ForecastSourceAdapter extends ForecastSource {
         return toFloatNullSafe(forecast.getHighestTemperature());
     }
 
+    @Override public String getHighestTemperatureUnits() {
+        return forecast.getHighestTemperatureUnits();
+    }
+
     @Override public Float getLowestTemperature() {
         return toFloatNullSafe(forecast.getLowestTemperature());
+    }
+
+    @Override public String getLowestTemperatureUnits() {
+        return forecast.getLowestTemperatureUnits();
     }
 
     @Override public String getPrediction() {
