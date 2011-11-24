@@ -49,7 +49,6 @@ public class WeatherLookup {
         ConditionsSource conditionsSource = null;
         try {
             WeatherService weatherService = configData.getWeatherService();
-            Logging.println("Reading conditions data for "+entry.getCpPath());
             conditionsSource = weatherService.getConditionsSource(configData.getServiceConfigData(),
                     entry.getStationSource(), entry.getServiceEntryData());
 
@@ -90,7 +89,6 @@ public class WeatherLookup {
 
         try {
             WeatherService weatherService = configData.getWeatherService();
-            Logging.println("Reading forecast data for "+entry.getCpPath());
             ForecastSource[] forecastSources = weatherService.getForecastSources(configData.getServiceConfigData(),
                     entry.getStationSource(), entry.getServiceEntryData());
 
