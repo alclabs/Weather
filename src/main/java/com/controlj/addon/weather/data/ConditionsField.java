@@ -251,6 +251,8 @@ public enum ConditionsField {
             case rainRate:         return source.getRainRateUnits();
             case rainToday:        return source.getRainTodayUnits();
             case wetBulb:          return source.getWetBulbUnits();
+            case updateStamp:
+            case observationStamp: return "10 minute intervals";
             default: return "";
         }
     }

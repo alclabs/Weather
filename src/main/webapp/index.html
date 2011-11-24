@@ -114,8 +114,9 @@
     </table>
 
     <h4>Current Conditions</h4>
-    <div class="note">Note: wc_updateStamp and wc_observationStamp are the number of 10 minute intervals between
-    midnight Jan 1, 1970 GMT and the update or observation time</div>
+    <div class="note">Note: wc_updateStamp and wc_observationStamp are provided for use in control programs.  Their
+                      value is the number of 10 minute intervals since midnight Jan 1, 1970 GMT. This was chosen because
+                      the resulting value can fit on a wire.</div>
     <table id="currentdata">
         <thead>
             <tr>

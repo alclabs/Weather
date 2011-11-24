@@ -183,6 +183,7 @@ public enum ForecastField {
             case highestTemperature: return source.getHighestTemperatureUnits();
             case lowestTemperature:  return source.getLowestTemperatureUnits();
             case probPrecipitation:  return source.getProbPrecipitationUnits();
+            case updateStamp:        return "10 minute intervals";
             default: return "";
         }
     }
