@@ -80,6 +80,8 @@ public class WeatherServiceImpl implements WeatherService
       try
       {
          LiveWeather liveWeather = getService().getLiveWeatherByStationID(stationSource.getId(), isMetric ? 1 : 0);
+         if (liveWeather == null)
+             throw new WeatherServiceException("Error getting live weather data");
          return new ConditionsSourceAdapter(liveWeather);
       }
       catch (WeatherBugServiceException e)
@@ -96,6 +98,8 @@ public class WeatherServiceImpl implements WeatherService
       try
       {
          forecasts = getService().getForecastByLatLong(stationSource.getLatitude(), stationSource.getLongitude(), isMetric ? 1 : 0);
+          if (forecasts == null)
+              throw new WeatherServiceException("Error getting live weather data");
       }
       catch (WeatherBugServiceException e)
       {

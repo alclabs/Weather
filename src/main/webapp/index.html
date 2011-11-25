@@ -30,7 +30,7 @@
     <script type="text/javascript" src="js/weather.js"></script>
     <style type="text/css">
         body { font-family:sans-serif; color:black; }
-        .configdata { background: url("images/sunny_clouds_sky.jpg") no-repeat; }
+        .configdata { background: url("images/sunny_clouds_sky.jpg") no-repeat; margin-bottom: 20px; }
         a { color:black; }
         td { padding-left:1em; text-align:left; }
         th { padding-left:1em; text-align:left; }
@@ -44,7 +44,7 @@
         button.del { width: 20px; height: 20px; }
         #error {display:none;}
         .field-error {border:solid red 1px; }
-        fieldset {display:inline; border-radius: 8px;}
+        fieldset { display:inline; border-radius: 8px; background-color: rgba(255, 255, 255, 0.4); border: solid black 1px; }
         .indent { padding-left:2em; }
         .nobr {white-space: nowrap; vertical-align: baseline; }
         label {float:left; text-align: right; width:150px; margin: 2px 5px 0px 0px;}
@@ -56,6 +56,7 @@
         .form td:first-child { text-align: right; white-space: nowrap;}
         .serviceconfig { padding-left: 10px; padding-top: 10px; padding-bottom: 20px; }
         .locationconfig { padding-left: 10px; padding-bottom: 20px; }
+        legend { color: black; }
     </style>
 </head>
 <body>
@@ -66,12 +67,19 @@
         <div id="errortext"></div></p>
     </div>
 </div>
-<div style="padding-left: 10px;">
+<div style="margin-left: 10px;">
 <div style="float: left; color: white;">
    <span class="title">Weather</span><br/>
    1) Pick a weather service<br/>
    2) Choose how frequently you need updated information<br/>
-   3) blah blah<br/>
+   3) Decide on any remaining service specific options<br/>
+   4) Click "Apply"<br/>
+   5) Click "Add" in Locations to Update<br/>
+   6) Enter the GQL path of the location<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;Areas &mdash; data only shown in views<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;Control Programs &mdash; also downloads to device<br/>
+   7) Enter the weather location information<br/>
+   8) Repeat 5-7 if more locations are needed<br/>
 </div>
 <div class="serviceconfig">
 <fieldset>

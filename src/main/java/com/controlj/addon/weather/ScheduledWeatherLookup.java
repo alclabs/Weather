@@ -100,6 +100,8 @@ public class ScheduledWeatherLookup implements ServletContextListener {
                 } catch (Exception e) {
                     Logging.println("Error writing conditions data for entry " + entry, e);
                 }
+
+                sleep("conditions");
             }
         }
     }
@@ -116,7 +118,17 @@ public class ScheduledWeatherLookup implements ServletContextListener {
                 } catch (Exception e) {
                     Logging.println("Error writing forecasts data for entry " + entry, e);
                 }
+
+                sleep("forecast");
             }
+        }
+    }
+
+    private static void sleep(String lookupType) {
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            Logging.println("Interrupted while sleeping between " + lookupType + " updates", e);
         }
     }
 }
