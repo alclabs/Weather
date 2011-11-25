@@ -52,7 +52,11 @@ public class ScheduledWeatherLookup implements ServletContextListener {
     @Override public synchronized void contextInitialized(ServletContextEvent sce) {
         ref.set(this);
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        rescheduleUpdates(1);
+
+        ConfigData configData = ConfigDataFactory.loadConfigData();
+        int conditionsRefresh = configData.getConditionsRefreshInMinutes();
+        int forecastsRefresh = configData.getForecastsRefreshInMinutes();
+        rescheduleUpdates(1, conditionsRefresh, forecastsRefresh);
     }
 
     /**
@@ -63,15 +67,15 @@ public class ScheduledWeatherLookup implements ServletContextListener {
         scheduledExecutorService.shutdownNow();
     }
 
-    public static void rescheduleUpdates() {
-        ref.get().rescheduleUpdates(1);
+    public static void rescheduleUpdates(int conditionsRefresh, int forecastsRefresh) {
+        ref.get().rescheduleUpdates(1, conditionsRefresh, forecastsRefresh);
     }
 
     /**
      * Stops any running updates and reschedules them based on the current saved configuration data.
      * The updates have an initial delay as specified.
      */
-    private synchronized void rescheduleUpdates(int initialDelay) {
+    private synchronized void rescheduleUpdates(int initialDelay, int conditionsRefresh, int forecastsRefresh) {
         if (conditionsUpdateFuture != null)
             conditionsUpdateFuture.cancel(false);
         if (forecastsUpdateFuture != null)
@@ -79,56 +83,54 @@ public class ScheduledWeatherLookup implements ServletContextListener {
 
         Logging.println("Starting scheduled update of weather information:");
 
-        int conditionsRefresh = ConfigDataFactory.loadConfigData().getConditionsRefreshInMinutes();
         Logging.println("    current conditions updated at a fixed rate of every " + conditionsRefresh + " minutes");
         conditionsUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(new ConditionsUpdate(), initialDelay * 60, conditionsRefresh * 60, TimeUnit.SECONDS);
 
-        int forecastsRefresh = ConfigDataFactory.loadConfigData().getForecastsRefreshInMinutes();
         Logging.println("    forecasts updated at a fixed rate of every " + forecastsRefresh + " minutes");
         forecastsUpdateFuture = scheduledExecutorService.scheduleAtFixedRate(new ForecastsUpdate(), initialDelay * 60, forecastsRefresh * 60, TimeUnit.SECONDS);
     }
 
     private static class ConditionsUpdate implements Runnable {
         @Override public void run() {
-            ConfigData configData = ConfigDataFactory.loadConfigData();
-            WeatherLookup weatherLookup = new WeatherLookup(configData);
-            for (WeatherConfigEntry entry : configData.getList()) {
-                try {
-                    EquipmentHandler handler = new EquipmentHandler(configData.getSystemConn(), entry.getCpPath());
-                    if (handler.hasFieldsToWrite())
-                        weatherLookup.lookupConditionsData(entry, true);
-                } catch (Exception e) {
-                    Logging.println("Error writing conditions data for entry " + entry, e);
-                }
+            try {
+                ConfigData configData = ConfigDataFactory.loadConfigData();
+                WeatherLookup weatherLookup = new WeatherLookup(configData);
+                for (WeatherConfigEntry entry : configData.getList()) {
+                    try {
+                        EquipmentHandler handler = new EquipmentHandler(configData.getSystemConn(), entry.getCpPath());
+                        if (handler.hasFieldsToWrite())
+                            weatherLookup.lookupConditionsData(entry, true);
+                    } catch (Exception e) {
+                        Logging.println("Error writing conditions data for entry " + entry, e);
+                    }
 
-                sleep("conditions");
+                    Thread.sleep(60000);
+                }
+            } catch (InterruptedException ignored) {
+                // we must be being rescheduled, so just return from the run()
             }
         }
     }
 
     private static class ForecastsUpdate implements Runnable {
         @Override public void run() {
-            ConfigData configData = ConfigDataFactory.loadConfigData();
-            WeatherLookup weatherLookup = new WeatherLookup(configData);
-            for (WeatherConfigEntry entry : configData.getList()) {
-                try {
-                    EquipmentHandler handler = new EquipmentHandler(configData.getSystemConn(), entry.getCpPath());
-                    if (handler.hasFieldsToWrite())
-                        weatherLookup.lookupForecastsData(entry, true);
-                } catch (Exception e) {
-                    Logging.println("Error writing forecasts data for entry " + entry, e);
+            try {
+                ConfigData configData = ConfigDataFactory.loadConfigData();
+                WeatherLookup weatherLookup = new WeatherLookup(configData);
+                for (WeatherConfigEntry entry : configData.getList()) {
+                    try {
+                        EquipmentHandler handler = new EquipmentHandler(configData.getSystemConn(), entry.getCpPath());
+                        if (handler.hasFieldsToWrite())
+                            weatherLookup.lookupForecastsData(entry, true);
+                    } catch (Exception e) {
+                        Logging.println("Error writing forecasts data for entry " + entry, e);
+                    }
+
+                    Thread.sleep(60000);
                 }
-
-                sleep("forecast");
+            } catch (InterruptedException ignored) {
+                // we must be being rescheduled, so just return from the run()
             }
-        }
-    }
-
-    private static void sleep(String lookupType) {
-        try {
-            Thread.sleep(60000);
-        } catch (InterruptedException e) {
-            Logging.println("Interrupted while sleeping between " + lookupType + " updates", e);
         }
     }
 }

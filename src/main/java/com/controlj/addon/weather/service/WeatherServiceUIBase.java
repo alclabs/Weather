@@ -85,7 +85,8 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
         }
 
         if (rescheduleUpdates)
-            ScheduledWeatherLookup.rescheduleUpdates();
+            ScheduledWeatherLookup.rescheduleUpdates(configData.getConditionsRefreshInMinutes(),
+                                                     configData.getForecastsRefreshInMinutes());
     }
 
     @Override

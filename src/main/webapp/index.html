@@ -44,7 +44,10 @@
         button.del { width: 20px; height: 20px; }
         #error {display:none;}
         .field-error {border:solid red 1px; }
-        fieldset { display:inline; border-radius: 8px; background-color: rgba(255, 255, 255, 0.4); border: solid black 1px; }
+        fieldset { display:inline; border-radius: 8px; border: solid black 1px;
+            background-color: #ffffff; filter:alpha(opacity=40); /* for IE8 and earlier */
+            background-color: rgba(255, 255, 255, 0.4); /* for decent quality browsers */
+        }
         .indent { padding-left:2em; }
         .nobr {white-space: nowrap; vertical-align: baseline; }
         label {float:left; text-align: right; width:150px; margin: 2px 5px 0px 0px;}
@@ -83,13 +86,13 @@
 </div>
 <div class="serviceconfig">
 <fieldset>
-<legend>Service Configuration:</legend>
-<form id="rates">
-    <div id="serviceconfig">
-    </div>
-    <button style="float:right; margin-top: 10px;" id="submitconfig" type="button">Apply</button>
-    <input type="hidden" name="action" value="postconfig">
-</form>
+    <legend>Service Configuration:</legend>
+    <form id="rates">
+        <div id="serviceconfig">
+        </div>
+        <button style="float:right; margin-top: 10px;" id="submitconfig" type="button">Apply</button>
+        <input type="hidden" name="action" value="postconfig">
+    </form>
 </fieldset>
 </div>
 </div>
