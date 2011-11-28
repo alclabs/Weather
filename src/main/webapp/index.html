@@ -41,12 +41,18 @@
         .select { background-color: #c0e0ff; }
         .ui-widget {font-size: .9em; }
         .ui-button-text-only .ui-button-text { padding: 0.2em 0.8em; }
-        button.del { width: 20px; height: 20px; }
+        button.del { width: 20px; height: 20px; padding-bottom: 20px;}
         #error {display:none;}
         .field-error {border:solid red 1px; }
         fieldset { display:inline; border-radius: 8px; border: solid black 1px;
-            background-color: #ffffff; filter:alpha(opacity=40); /* for IE8 and earlier */
+            background-color: #ffffff; filter:alpha(opacity=60); /* for IE8 and earlier */
             background-color: rgba(255, 255, 255, 0.4); /* for decent quality browsers */
+            position: relative;
+        }
+        fieldset legend {
+            background-color: #ffffff;
+            position: relative;
+            top: -0.5em;
         }
         .indent { padding-left:2em; }
         .nobr {white-space: nowrap; vertical-align: baseline; }
