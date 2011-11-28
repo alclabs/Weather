@@ -46,12 +46,18 @@ public class WeatherIconMapper
       Matcher matcher = ICON_URL_PATTERN.matcher(iconUrl);
       if (matcher.matches())
       {
-         int iconNum = Integer.parseInt(matcher.group(1));
-         if (iconNum >= 0 && iconNum < iconMap.length)
-            return iconMap[iconNum];
+          int iconNum = 0;
+          try {
+              iconNum = Integer.parseInt(matcher.group(1));
+              if (iconNum >= 0 && iconNum < iconMap.length)
+                 return iconMap[iconNum];
+          } catch (NumberFormatException e) {
+              Logging.println("Error parsing icon number from " + matcher.group(1) + ", which was extracted from URL "+iconUrl);
+              return WeatherIcon.Unknown;
+          }
 
-         Logging.println("Cannot find icon number "+iconNum+", which was extracted from URL "+iconUrl);
-         return WeatherIcon.Unknown;
+          Logging.println("Cannot find icon number "+iconNum+", which was extracted from URL "+iconUrl);
+          return WeatherIcon.Unknown;
       }
 
       Logging.println("Cannot match URL "+iconUrl);

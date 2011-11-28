@@ -64,7 +64,6 @@ public class WeatherLookup {
             RuntimeInformation.getSingleton().updateConditionsData(entry, conditionsSource, errorMessage);
             return conditionsSource;
         } catch (WeatherServiceException e) {
-            Logging.println("Error reading forecast data", e);
             RuntimeInformation.getSingleton().updateConditionsData(entry, null, "Error reading data");
             throw e;
         }
@@ -108,7 +107,6 @@ public class WeatherLookup {
             RuntimeInformation.getSingleton().updateForecastData(entry, forecastSources, errorMessage);
             return forecastSources;
         } catch (WeatherServiceException e) {
-            Logging.println("Error reading forecast data", e);
             RuntimeInformation.getSingleton().updateForecastData(entry, null, "Error reading data");
             throw e;
         }
