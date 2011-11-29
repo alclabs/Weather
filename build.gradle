@@ -17,7 +17,7 @@ dependencies {
    compile 'org.apache.httpcomponents:httpclient:4.1.2'
    compile 'commons-lang:commons-lang:2.4'
    compile 'dom4j:dom4j:1.6.1'
-   compile 'org.json:json:20090211'
+   compile 'org.json:json:20080701' // older version required for compatibility with 4.1 SP1b
    compile 'commons-io:commons-io:1.1'
 
    providedCompile 'com.controlj.green:addonsupport-api-addon:1.0.8'
@@ -34,6 +34,10 @@ dependencies {
    js group: 'jquery', name: 'jquery', version: '1.7.1', classifier: 'min', ext: "js"
    js group: 'jquery', name: 'jquery-ui', version: '1.8.16', classifier: 'min', ext: "js"
 }
+
+// required for compatibility with 4.1 SP1b
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
 
 // The following strangeness is to get groovy dependencies only in the test configurations
 configurations {

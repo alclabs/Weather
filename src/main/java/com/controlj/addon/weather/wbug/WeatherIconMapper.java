@@ -44,7 +44,7 @@ public class WeatherIconMapper
          return WeatherIcon.Unknown;
 
       Matcher matcher = ICON_URL_PATTERN.matcher(iconUrl);
-      if (matcher.matches())
+      if (matcher.matches() && matcher.group(1).length() > 0)
       {
           int iconNum = 0;
           try {

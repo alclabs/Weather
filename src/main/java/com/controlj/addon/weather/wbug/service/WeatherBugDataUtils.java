@@ -39,10 +39,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import com.controlj.addon.weather.util.Logging;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * A set of utility methods to handle data returned from the WeatherBug API.
@@ -191,8 +193,11 @@ public class WeatherBugDataUtils {
      *            the class of objects being instantiated (<i>Location</i>, <i>Station</i>, and so on).
      * @return a list of <i>dataClass</i> objects.
      */
-    public static <T> List<T> bind(Document doc, String path, Class<T> dataClass) {
-        return bind(doc.getRootElement(), path, dataClass);
+    public static <T> List<T> bind(Document doc, String path, Class<T> dataClass) throws WeatherBugServiceException {
+        List<T> objects = bind(doc.getRootElement(), path, dataClass);
+        if (objects.isEmpty())
+            extractError(doc);
+        return objects;
     }
 
     /**
@@ -207,13 +212,9 @@ public class WeatherBugDataUtils {
      *            the class of object being instantiated (<i>Location</i>, <i>Station</i>, and so on).
      * @return a <i>dataClass</i> object or <code>null</code>.
      */
-    public static <T> T bindSingle(Document doc, String path, Class<T> dataClass) {
-        List<T> objects = bind(doc.getRootElement(), path, dataClass);
-        if (objects.isEmpty()) {
-            return null;
-        } else {
-            return objects.get(0);
-        }
+    public static <T> T bindSingle(Document doc, String path, Class<T> dataClass) throws WeatherBugServiceException {
+        List<T> objects = bind(doc, path, dataClass);
+        return objects.get(0);
     }
 
     /**
@@ -249,6 +250,16 @@ public class WeatherBugDataUtils {
             }
         }
         return resultList;
+    }
+
+    private static void extractError(Document doc) throws WeatherBugServiceException {
+        Node h1 = doc.getRootElement().selectSingleNode("/h1");
+        if (h1 != null)
+            throw new WeatherBugServiceException(h1.getText());
+        else {
+            Logging.logDocument("unknown", "Unknown error", doc);
+            throw new WeatherBugServiceException("Unknown error");
+        }
     }
 
     /**
