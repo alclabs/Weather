@@ -73,8 +73,8 @@ public class Forecasts {
         this.cityCode = WeatherBugDataUtils.getInt(location, "aws:citycode", -1);
         this.zone = WeatherBugDataUtils.getString(location, "aws:zone");
         this.weatherBugSiteURL = WeatherBugDataUtils.getURL(weather, "aws:WebURL");
-        List forecastList = WeatherBugDataUtils.bind(weather, "aws:forecasts/aws:forecast", Forecast.class);
-        forecasts = (Forecast[]) forecastList.toArray(new Forecast[0]);
+        List<Forecast> forecastList = WeatherBugDataUtils.bind(weather, "aws:forecasts/aws:forecast", Forecast.class);
+        forecasts = forecastList.toArray(new Forecast[forecastList.size()]);
     }
 
     /**

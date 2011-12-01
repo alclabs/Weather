@@ -22,11 +22,10 @@
 
 package com.controlj.addon.weather.wbug.service;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.*;
 
 import com.controlj.addon.weather.util.HTTPHelper;
+import com.controlj.addon.weather.util.Logging;
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 
@@ -88,11 +87,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public Location[] getLocationList(String searchString) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("SearchString", searchString);
         Document doc = execute("getLocationsXML", params);
-        List locations = WeatherBugDataUtils.bind(doc, "aws:locations/aws:location", Location.class);
-        return (Location[]) locations.toArray(new Location[0]);
+        List<Location> locations = WeatherBugDataUtils.bind(doc, "aws:locations/aws:location", Location.class);
+        return locations.toArray(new Location[locations.size()]);
     }
 
     /**
@@ -105,11 +104,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public Station[] getStationListByUSZipCode(String zipCode) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("zipCode", zipCode);
         Document doc = execute("getStationsXML", params);
-        List stations = WeatherBugDataUtils.bind(doc, "aws:stations/aws:station", Station.class);
-        return (Station[]) stations.toArray(new Station[0]);
+        List<Station> stations = WeatherBugDataUtils.bind(doc, "aws:stations/aws:station", Station.class);
+        return stations.toArray(new Station[stations.size()]);
     }
 
     /**
@@ -122,11 +121,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public Station[] getStationListByCityCode(String cityCode) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("cityCode", cityCode);
         Document doc = execute("getStationsXML", params);
-        List stations = WeatherBugDataUtils.bind(doc, "aws:stations/aws:station", Station.class);
-        return (Station[]) stations.toArray(new Station[0]);
+        List<Station> stations = WeatherBugDataUtils.bind(doc, "aws:stations/aws:station", Station.class);
+        return stations.toArray(new Station[stations.size()]);
     }
 
     /**
@@ -161,12 +160,14 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public LiveWeather getLiveWeatherByStationID(String stationId, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("stationid", stationId);
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveWeatherRSS", params);
-        return (LiveWeather) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
-
+        LiveWeather result = WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
+        if (result == null)
+            Logging.logDocument("conditions", "Returned null result", doc);
+        return result;
     }
 
     /**
@@ -181,11 +182,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public LiveWeather getLiveWeatherByUSZipCode(String zipCode, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("zipCode", zipCode);
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveWeatherRSS", params);
-        return (LiveWeather) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
     }
 
     /**
@@ -200,11 +201,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public LiveWeather getLiveWeatherByCityCode(int cityCode, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("cityCode", Integer.toString(cityCode));
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveWeatherRSS", params);
-        return (LiveWeather) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
     }
 
     /**
@@ -219,11 +220,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public LiveCompactWeather getLiveCompactWeatherByStationID(String stationId, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("stationid", stationId);
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveCompactWeatherRSS", params);
-        return (LiveCompactWeather) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
     }
 
     /**
@@ -238,11 +239,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public LiveCompactWeather getLiveCompactWeatherByUSZipCode(String zipCode, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("zipCode", zipCode);
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveCompactWeatherRSS", params);
-        return (LiveCompactWeather) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
     }
 
     /**
@@ -257,11 +258,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public LiveCompactWeather getLiveCompactWeatherByCityCode(int cityCode, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("cityCode", Integer.toString(cityCode));
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveCompactWeatherRSS", params);
-        return (LiveCompactWeather) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
     }
 
     /**
@@ -279,12 +280,12 @@ public class WeatherBugService {
      */
     public LiveCompactWeather getLiveCompactWeatherByLatLong(double latitude, double longitude, int unitType)
             throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("lat", WeatherBugDataUtils.formatNumber(latitude, "0.00"));
         params.put("long", WeatherBugDataUtils.formatNumber(longitude, "0.00"));
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveCompactWeatherRSS", params);
-        return (LiveCompactWeather) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveCompactWeather.class);
     }
 
     /**
@@ -299,11 +300,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public Forecasts getForecastByUSZipCode(String zipCode, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("zipCode", zipCode);
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getForecastRSS", params);
-        return (Forecasts) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", Forecasts.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", Forecasts.class);
     }
 
     /**
@@ -318,11 +319,11 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public Forecasts getForecastByCityCode(int cityCode, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("cityCode", Integer.toString(cityCode));
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getForecastRSS", params);
-        return (Forecasts) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", Forecasts.class);
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", Forecasts.class);
     }
 
     /**
@@ -339,12 +340,15 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public Forecasts getForecastByLatLong(double latitude, double longitude, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("lat", WeatherBugDataUtils.formatNumber(latitude, "0.00"));
         params.put("long", WeatherBugDataUtils.formatNumber(longitude, "0.00"));
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getForecastRSS", params);
-        return (Forecasts) WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", Forecasts.class);
+        Forecasts result = WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", Forecasts.class);
+        if (result == null)
+            Logging.logDocument("forecast", "Returned null result", doc);
+        return result;
     }
 
     /**
@@ -359,12 +363,12 @@ public class WeatherBugService {
      *             if an error occurred processing the service response.
      */
     public Alert[] getAlerts(String zipCode, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("zipCode", zipCode);
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getAlertsRSS", params);
-        List alerts = WeatherBugDataUtils.bind(doc, "/rss/channel/aws:weather/aws:alerts/aws:alert", Alert.class);
-        return (Alert[]) alerts.toArray(new Alert[0]);
+        List<Alert> alerts = WeatherBugDataUtils.bind(doc, "/rss/channel/aws:weather/aws:alerts/aws:alert", Alert.class);
+        return alerts.toArray(new Alert[alerts.size()]);
     }
 
     /**
@@ -382,13 +386,13 @@ public class WeatherBugService {
      */
     //http://api.wxbug.net/getAlertsRSS.aspx?ACode=&lat=26&long=-80
     public Alert[] getAlertsByLatLong(double latitude, double longitude, int unitType) throws WeatherBugServiceException {
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("lat", WeatherBugDataUtils.formatNumber(latitude, "0.00"));
         params.put("long", WeatherBugDataUtils.formatNumber(longitude, "0.00"));
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getAlertsRSS", params);
-        List alerts = WeatherBugDataUtils.bind(doc, "/rss/channel/aws:weather/aws:alerts/aws:alert", Alert.class);
-        return (Alert[]) alerts.toArray(new Alert[0]);
+        List<Alert> alerts = WeatherBugDataUtils.bind(doc, "/rss/channel/aws:weather/aws:alerts/aws:alert", Alert.class);
+        return alerts.toArray(new Alert[alerts.size()]);
     }
 
     /**
@@ -402,27 +406,12 @@ public class WeatherBugService {
      * @throws WeatherBugServiceException
      *             if an error occurred executing the method.
      */
-    private Document execute(String methodName, Map params) throws WeatherBugServiceException {
+    private Document execute(String methodName, Map<String, Object> params) throws WeatherBugServiceException {
         params.put("api_key", apiKey);
         try {
             return new HTTPHelper().readDocument("http", "i.wxbug.net", -1, "REST/SP/" + methodName + ".aspx", params);
         } catch (Exception e) {
             throw new WeatherBugServiceException(e);
         }
-    }
-
-    /**
-     * Encodes a URL parameter using the UTF-8 encoding.
-     * 
-     * @param param
-     *            the parameter being encoded.
-     * @return the encoded parameter.
-     * @throws UnsupportedEncodingException
-     *             if the parameter cannot be encoded.
-     */
-    private String encodeURLParameter(String param) throws UnsupportedEncodingException {
-        String encodedPath = URLEncoder.encode(param, "UTF8");
-        encodedPath = encodedPath.replaceAll("\\+", "%20");
-        return encodedPath;
     }
 }

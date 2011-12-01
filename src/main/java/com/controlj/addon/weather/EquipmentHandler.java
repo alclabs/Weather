@@ -29,6 +29,7 @@ import com.controlj.green.addonsupport.access.value.FloatValue;
 import com.controlj.green.addonsupport.access.value.InvalidValueException;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -55,27 +56,20 @@ public class EquipmentHandler {
 
     public EquipmentHandler(SystemConnection systemConn, String path) throws EquipmentWriteException {
         systemConnection = systemConn;
-        if (Logging.is41) {
-            // 4.1 doesn't support writing to equipment (the presentValue aspect does not correctly redirect
-            // writes to the relinquish_default node).  So, just set the presentValues to an empty list, effectively
-            // bypassing the attempt to write data to the control programs.
-            presentValues = Collections.emptyList();
-        } else {
-            try {
-                final String lookupString = "ABSPATH:1:" + path;
-                presentValues = systemConnection.runReadAction(new ReadActionResult<Collection<PresentValue>>() {
-                    @Override
-                    public Collection<PresentValue> execute(@NotNull SystemAccess systemAccess) throws Exception {
-                        Location location = systemAccess.getTree(SystemTree.Geographic).resolve(lookupString);
-                        if (location.getType() == LocationType.Equipment)
-                            return location.find(PresentValue.class, new FieldReferenceAcceptor());
-                        else
-                            return Collections.emptyList();
-                    }
-                });
-            } catch (Exception e) {
-                throw new EquipmentWriteException(e);
-            }
+        try {
+            final String lookupString = "ABSPATH:1:" + path;
+            presentValues = systemConnection.runReadAction(new ReadActionResult<Collection<PresentValue>>() {
+                @Override
+                public Collection<PresentValue> execute(@NotNull SystemAccess systemAccess) throws Exception {
+                    Location location = systemAccess.getTree(SystemTree.Geographic).resolve(lookupString);
+                    if (location.getType() == LocationType.Equipment)
+                        return location.find(PresentValue.class, new FieldReferenceAcceptor());
+                    else
+                        return Collections.emptyList();
+                }
+            });
+        } catch (Exception e) {
+            throw new EquipmentWriteException(e);
         }
     }
 
@@ -89,6 +83,7 @@ public class EquipmentHandler {
             systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather station data", new WriteAction() {
                 @Override
                 public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
+                    workaroundFor41SP1b(systemAccess);
                     for (PresentValue presentValue : presentValues) {
                         String referenceName = presentValue.getLocation().getReferenceName();
                         Float value = getValueIfStation(referenceName, stationSource);
@@ -110,6 +105,7 @@ public class EquipmentHandler {
             systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating current weather data", new WriteAction() {
                 @Override
                 public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
+                    workaroundFor41SP1b(systemAccess);
                     for (PresentValue presentValue : presentValues) {
                         String referenceName = presentValue.getLocation().getReferenceName();
                         Float value = getValueIfConditions(referenceName, conditionsSource);
@@ -131,6 +127,7 @@ public class EquipmentHandler {
             systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather forecast data", new WriteAction() {
                 @Override
                 public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
+                    workaroundFor41SP1b(systemAccess);
                     for (PresentValue presentValue : presentValues) {
                         String referenceName = presentValue.getLocation().getReferenceName();
                         Float value = getValueIfForecast(referenceName, forecastSources);
@@ -200,6 +197,11 @@ public class EquipmentHandler {
         } catch (InvalidValueException e) {
             Logging.println("Error writing weather data (" + value + ") into present value (" + pv.getLocation() + ')', e);
         }
+    }
+
+    private void workaroundFor41SP1b(SystemAccess systemAccess) throws IOException {
+        if (Logging.is41)
+            systemAccess.getSystemDataStore("not_real").getOutputStream();
     }
 
     private static final class FieldReferenceAcceptor implements AspectAcceptor<PresentValue>

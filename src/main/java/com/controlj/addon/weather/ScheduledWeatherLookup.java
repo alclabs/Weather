@@ -104,7 +104,7 @@ public class ScheduledWeatherLookup implements ServletContextListener {
                         Logging.println("Error writing conditions data for entry " + entry, e);
                     }
 
-                    Thread.sleep(60000);
+                    Thread.sleep(2000);
                 }
             } catch (InterruptedException ignored) {
                 // we must be being rescheduled, so just return from the run()
@@ -126,7 +126,7 @@ public class ScheduledWeatherLookup implements ServletContextListener {
                         Logging.println("Error writing forecasts data for entry " + entry, e);
                     }
 
-                    Thread.sleep(60000);
+                    Thread.sleep(2000);
                 }
             } catch (InterruptedException ignored) {
                 // we must be being rescheduled, so just return from the run()
