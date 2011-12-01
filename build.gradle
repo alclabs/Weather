@@ -19,7 +19,6 @@ dependencies {
    compile 'dom4j:dom4j:1.6.1'
    compile 'org.json:json:20080701' // older version required for compatibility with 4.1 SP1b
    compile 'commons-io:commons-io:1.1'
-   compile 'commons-net:commons-net:3.0.1'
 
    providedCompile 'com.controlj.green:addonsupport-api-addon:1.0.8'
    providedCompile 'javax.servlet:servlet-api:2.5'
