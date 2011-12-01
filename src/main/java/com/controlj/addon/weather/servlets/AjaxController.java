@@ -138,8 +138,8 @@ public class AjaxController extends HttpServlet {
             retrieveUI(weatherService.getUI(), writer);
             retrieveData(configData, writer);
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather:" + e.getMessage());
-            Logging.println("Error getting weather:" + e.getMessage(), e);
+            writer.addError("Error getting weather: " + e.getMessage());
+            Logging.println("Error getting weather: " + e.getMessage(), e);
         }
         return configData;
     }
@@ -222,8 +222,8 @@ public class AjaxController extends HttpServlet {
             writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
             Logging.println("Error deleting row.  Invalid row number '"+rowString+"'", e);
         } catch (WeatherServiceException e) {
-                writer.addError("Error getting weather:" + e.getMessage());
-                Logging.println("Error getting weather:" + e.getMessage(), e);
+                writer.addError("Error getting weather: " + e.getMessage());
+                Logging.println("Error getting weather: " + e.getMessage(), e);
         }
     }
 
@@ -233,8 +233,8 @@ public class AjaxController extends HttpServlet {
             ui.dialogAction(configData, writer, req);
 
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather:" + e.getMessage());
-            Logging.println("Error getting weather:" + e.getMessage(), e);
+            writer.addError("Error getting weather: " + e.getMessage());
+            Logging.println("Error getting weather: " + e.getMessage(), e);
         }
 
     }
@@ -267,8 +267,8 @@ public class AjaxController extends HttpServlet {
             WeatherServiceUI ui = configData.getWeatherService().getUI();
             ui.addRow(configData, writer, req);
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather:" + e.getMessage());
-            Logging.println("Error getting weather:" + e.getMessage(), e);
+            writer.addError("Error getting weather: " + e.getMessage());
+            Logging.println("Error getting weather: " + e.getMessage(), e);
         }
 
     }
@@ -298,8 +298,8 @@ public class AjaxController extends HttpServlet {
             WeatherServiceUI ui = ws.getUI();
             ui.updateConfiguration(configData, writer, req);
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather:" + e.getMessage());
-            Logging.println("Error getting weather:" + e.getMessage(), e);
+            writer.addError("Error getting weather: " + e.getMessage());
+            Logging.println("Error getting weather: " + e.getMessage(), e);
         }
         return configData;
     }
@@ -310,7 +310,7 @@ public class AjaxController extends HttpServlet {
         try {
             ui = configData.getWeatherService().getUI();
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather:" + e.getMessage());
+            writer.addError("Error getting weather: " + e.getMessage());
         }
         retrieveUI(ui, writer);
     }
@@ -374,7 +374,7 @@ public class AjaxController extends HttpServlet {
                 writer.appendToArray("locations", next);
             }
         } catch (WeatherServiceException e) {
-            writer.addError("Error getting weather:"+e.getMessage());
+            writer.addError("Error getting weather: "+e.getMessage());
         }
     }
 
