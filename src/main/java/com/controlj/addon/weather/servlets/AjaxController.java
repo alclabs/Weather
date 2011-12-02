@@ -22,7 +22,6 @@
 
 package com.controlj.addon.weather.servlets;
 
-import com.controlj.addon.weather.ScheduledWeatherLookup;
 import com.controlj.addon.weather.WeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
@@ -31,8 +30,6 @@ import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.service.*;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.addon.weather.util.ResponseWriter;
-import com.controlj.addon.weather.wbug.WeatherServiceImpl;
-import com.controlj.addon.weather.wbug.service.Location;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -144,7 +141,7 @@ public class AjaxController extends HttpServlet {
         return configData;
     }
 
-    private void showData(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
+    private void showData(ConfigData configData, ResponseWriter writer, HttpServletRequest req) throws IOException {
         String rowString = req.getParameter(ROW_PARAM_NAME);
         try {
             int rowNum = Integer.parseInt(rowString);
@@ -217,6 +214,8 @@ public class AjaxController extends HttpServlet {
                 row.put(JSON_VALUE, icon.getValue());
                 writer.appendToArray(JSON_ICON, row);
             }
+
+            writeLocations(configData, writer);
 
         } catch (NumberFormatException e) {
             writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
@@ -349,10 +348,10 @@ public class AjaxController extends HttpServlet {
         for (String key : data.keySet()) {
             writer.putStringChild(JSON_DATA, key, data.get(key));
         }
-        writeLocations(writer, configData);
+        writeLocations(configData, writer);
     }
 
-    private void writeLocations(ResponseWriter writer, ConfigData configData) {
+    private void writeLocations(ConfigData configData, ResponseWriter writer) {
         List<WeatherConfigEntry> locations = configData.getList();
         WeatherServiceUI ui;
         try {
@@ -369,7 +368,6 @@ public class AjaxController extends HttpServlet {
                 for (String fieldName : ui.getServiceEntryFields()) {
                     next[i++] = serviceEntryData.get(fieldName);
                 }
-                //next.put("zip", location.getZipCode()); // TODO: fix me!
 
                 writer.appendToArray("locations", next);
             }

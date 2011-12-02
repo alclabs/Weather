@@ -157,6 +157,10 @@ Handles results of a showdata request.  This has a block of html content under
 data.resultdata.
  */
 function handleResultData(data) {
+    // first, process any other data (such as locations) that might be in the response
+    handleData(data)
+
+    // clear out any previous result data that might be currently displayed
     $("#resultname").empty()
     $("#stationdata tbody").empty()
     $("#currentdata tbody").empty()
@@ -164,6 +168,7 @@ function handleResultData(data) {
     $("#forecastdata tbody").empty()
     $("#icondata tbody").empty()
 
+    // put the new data onto the page
     if (data.name) {
         $("#resultname").text(data.name)
     }
@@ -197,6 +202,7 @@ function handleResultData(data) {
         })
     }
 
+    // show the result data block if it's hidden (which it is when the page first renders)
     $("#resultdata").css("display","block")
 }
 
