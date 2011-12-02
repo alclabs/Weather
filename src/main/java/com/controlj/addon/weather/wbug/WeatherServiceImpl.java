@@ -69,7 +69,7 @@ public class WeatherServiceImpl implements WeatherService
       }
       catch (WeatherBugServiceException e)
       {
-         throw new WeatherServiceException(e);
+         throw new WeatherServiceException(e.getMessage(), e);
       }
    }
 
@@ -86,7 +86,7 @@ public class WeatherServiceImpl implements WeatherService
       }
       catch (WeatherBugServiceException e)
       {
-         throw new WeatherServiceException(e);
+         throw new WeatherServiceException(e.getMessage(), e);
       }
    }
 
@@ -103,7 +103,7 @@ public class WeatherServiceImpl implements WeatherService
       }
       catch (WeatherBugServiceException e)
       {
-         throw new WeatherServiceException(e);
+         throw new WeatherServiceException(e.getMessage(), e);
       }
 
       Forecast[] forecastArray = forecasts.getForecasts();
@@ -118,7 +118,7 @@ public class WeatherServiceImpl implements WeatherService
        try {
            return getService().getLocationList(searchString);
        } catch (WeatherBugServiceException e) {
-           throw new WeatherServiceException(e);
+           throw new WeatherServiceException(e.getMessage(), e);
        }
    }
 
@@ -130,7 +130,7 @@ public class WeatherServiceImpl implements WeatherService
                return getService().getStationListByCityCode(cityZipCode);
            }
        } catch (WeatherBugServiceException e) {
-           throw new WeatherServiceException(e);
+           throw new WeatherServiceException(e.getMessage(), e);
        }
    }
 
