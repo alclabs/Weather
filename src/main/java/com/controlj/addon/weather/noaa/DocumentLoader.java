@@ -50,7 +50,7 @@ public class DocumentLoader
        try {
            return new HTTPHelper().readDocument("http", "weather.gov", -1, "/forecasts/xml/sample_products/browser_interface/ndfdXMLclient.php", params);
        } catch (Exception e) {
-           throw new WeatherServiceException(e);
+           throw new WeatherServiceException(e.getMessage(), e);
        }
    }
 
@@ -59,7 +59,7 @@ public class DocumentLoader
        try {
            return new HTTPHelper().readDocument("http", "weather.gov", -1, "/xml/current_obs/"+stationID+".xml", null);
        } catch (Exception e) {
-           throw new WeatherServiceException(e);
+           throw new WeatherServiceException(e.getMessage(), e);
        }
    }
 
@@ -75,7 +75,7 @@ public class DocumentLoader
        try {
            return new HTTPHelper().readDocument("http", "graphical.weather.gov", -1, "/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php", params);
        } catch (Exception e) {
-           throw new WeatherServiceException(e);
+           throw new WeatherServiceException(e.getMessage(), e);
        }
    }
 

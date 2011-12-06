@@ -59,6 +59,9 @@ public class HTTPHelper {
         return httpclient.execute(new HttpGet(uri), new ResponseHandler<Document>() {
             @Override
             public Document handleResponse(HttpResponse response) throws IOException {
+                if (response.getStatusLine().getStatusCode() != 200)
+                    throw new IOException(response.getStatusLine().getReasonPhrase());
+
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     String responseString = EntityUtils.toString(entity);

@@ -164,10 +164,7 @@ public class WeatherBugService {
         params.put("stationid", stationId);
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getLiveWeatherRSS", params);
-        LiveWeather result = WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
-        if (result == null)
-            Logging.logDocument("conditions", "Returned null result", doc);
-        return result;
+        return WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", LiveWeather.class);
     }
 
     /**
@@ -346,8 +343,6 @@ public class WeatherBugService {
         params.put("UnitType", Integer.toString(unitType));
         Document doc = execute("getForecastRSS", params);
         Forecasts result = WeatherBugDataUtils.bindSingle(doc, "/rss/channel/aws:weather", Forecasts.class);
-        if (result == null)
-            Logging.logDocument("forecast", "Returned null result", doc);
         return result;
     }
 
@@ -384,7 +379,6 @@ public class WeatherBugService {
      * @throws WeatherBugServiceException
      *             if an error occurred processing the service response.
      */
-    //http://api.wxbug.net/getAlertsRSS.aspx?ACode=&lat=26&long=-80
     public Alert[] getAlertsByLatLong(double latitude, double longitude, int unitType) throws WeatherBugServiceException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("lat", WeatherBugDataUtils.formatNumber(latitude, "0.00"));
