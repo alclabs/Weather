@@ -118,6 +118,7 @@ public class AjaxController extends HttpServlet {
         } else if (ACTION_UPDATE.equals(action)) {
             retrieveData(configData, writer);
         } else if (ACTION_SHOWDATA.equals(action)) {
+            retrieveData(configData, writer);
             showData(configData, writer, req);
         } else if (ACTION_UI.equals(action)) {
             uiAction(configData, writer, req);

@@ -54,6 +54,7 @@ function setupHandlers() {
         var num = $(this).parents("tr").data("row")
         $.get("ajaxcontroller", {action:"showdata", rownum:num}, function(result) {
             if (!handleResponseErrors(result)) {
+                handleData(result)
                 handleResultData(result)
                 noErrors()
             }
@@ -157,13 +158,6 @@ Handles results of a showdata request.  This has a block of html content under
 data.resultdata.
  */
 function handleResultData(data) {
-    $("#resultname").empty()
-    $("#stationdata tbody").empty()
-    $("#currentdata tbody").empty()
-    $("#forecastdata thead tr").empty()
-    $("#forecastdata tbody").empty()
-    $("#icondata tbody").empty()
-
     if (data.name) {
         $("#resultname").text(data.name)
     }
