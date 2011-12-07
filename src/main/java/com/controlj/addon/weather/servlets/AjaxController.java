@@ -215,9 +215,6 @@ public class AjaxController extends HttpServlet {
                 row.put(JSON_VALUE, icon.getValue());
                 writer.appendToArray(JSON_ICON, row);
             }
-
-            writeLocations(configData, writer);
-
         } catch (NumberFormatException e) {
             writer.addError("Error deleting row.  Invalid row number '"+rowString+"'");
             Logging.println("Error deleting row.  Invalid row number '"+rowString+"'", e);
