@@ -39,6 +39,10 @@ public class ConditionsSourceImpl extends ConditionsSource {
     private Date observationTime;
     private WeatherIcon icon;
 
+    @Override protected boolean isMetric() {
+        return isMetric;
+    }
+
     public void setMetric(boolean metric) {
         isMetric = metric;
     }

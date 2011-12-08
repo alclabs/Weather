@@ -20,7 +20,6 @@ import com.controlj.addon.weather.service.WeatherServiceException;
 import com.controlj.addon.weather.util.Logging;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class WeatherLookup {
     private final ConfigData configData;
@@ -121,7 +120,7 @@ public class WeatherLookup {
     }
 
     private Date getDataExpirary(int refreshInMinutes) {
-        long refresh = TimeUnit.MILLISECONDS.convert(refreshInMinutes, TimeUnit.MINUTES);
+        long refresh = refreshInMinutes * 60000;
         return new Date(System.currentTimeMillis() - refresh);
     }
 }

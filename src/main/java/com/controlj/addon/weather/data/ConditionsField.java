@@ -66,6 +66,11 @@ public enum ConditionsField {
     temperature(FloatType),
 
     /**
+     * Field for {@link ConditionsSource#getTemperatureInCelsius()}
+     */
+    temperature_C(FloatType),
+
+    /**
      * Field for {@link ConditionsSource#getHumidity()}
      */
     humidity(FloatType),
@@ -216,6 +221,7 @@ public enum ConditionsField {
             case avgWindSpeed:     return source.getAverageWindSpeed();
             case feelsLike:        return source.getFeelsLike();
             case temperature:      return source.getTemperature();
+            case temperature_C:    return source.getTemperatureInCelsius();
             case humidity:         return source.getHumidity();
             case pressure:         return source.getPressure();
             case currentCondition: return source.getCurrentCondition();
@@ -243,6 +249,7 @@ public enum ConditionsField {
             case avgWindSpeed:     return source.getAverageWindSpeedUnits();
             case feelsLike:        return source.getFeelsLikeUnits();
             case temperature:      return source.getTemperatureUnits();
+            case temperature_C:    return source.getTemperatureInCelsiusUnits();
             case humidity:         return source.getHumidityUnits();
             case pressure:         return source.getPressureUnits();
             case dewPoint:         return source.getDewPointUnits();

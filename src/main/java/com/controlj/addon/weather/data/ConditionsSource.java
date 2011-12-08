@@ -33,6 +33,8 @@ public abstract class ConditionsSource {
         updateTime = new Date();
     }
 
+    protected abstract boolean isMetric();
+
     /**
      * Returns when this source was read from the service.
      */
@@ -101,6 +103,23 @@ public abstract class ConditionsSource {
      */
     public String getTemperatureUnits() {
         return "";
+    }
+
+    /**
+     * Returns the current temperature in Celsius, regardless of the normal
+     * units.
+     */
+    public final Float getTemperatureInCelsius() {
+        Float temperature = getTemperature();
+        if (temperature == null || isMetric())
+            return temperature;
+
+        // temperature is in Fahrenheit, so convert to celsius
+        return (temperature - 32f) * 5f / 9f;
+    }
+
+    public String getTemperatureInCelsiusUnits() {
+        return "\u00B0C";
     }
 
     /**

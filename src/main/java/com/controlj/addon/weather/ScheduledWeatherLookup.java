@@ -101,7 +101,10 @@ public class ScheduledWeatherLookup implements ServletContextListener {
                         if (handler.hasFieldsToWrite())
                             weatherLookup.lookupConditionsData(entry, true);
                     } catch (Exception e) {
-                        Logging.println("Error writing conditions data for entry " + entry, e);
+                        if (e.getMessage().equals("Missing station content"))
+                            Logging.println("Conditions data missing station content for entry " + entry);
+                        else
+                            Logging.println("Error writing conditions data for entry " + entry, e);
                     }
 
                     Thread.sleep(2000);

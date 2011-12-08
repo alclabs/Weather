@@ -82,7 +82,7 @@ public class WeatherServiceImpl implements WeatherService
          LiveWeather liveWeather = getService().getLiveWeatherByStationID(stationSource.getId(), isMetric ? 1 : 0);
          if (liveWeather == null)
              throw new WeatherServiceException("Error getting live weather data");
-         return new ConditionsSourceAdapter(liveWeather);
+         return new ConditionsSourceAdapter(liveWeather, isMetric);
       }
       catch (WeatherBugServiceException e)
       {

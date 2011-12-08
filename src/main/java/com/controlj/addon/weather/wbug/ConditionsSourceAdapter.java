@@ -34,9 +34,15 @@ import java.util.Map;
 
 public class ConditionsSourceAdapter extends ConditionsSource {
     private final LiveWeather liveWeather;
+    private final boolean isMetric;
 
-    public ConditionsSourceAdapter(LiveWeather liveWeather) {
+    public ConditionsSourceAdapter(LiveWeather liveWeather, boolean isMetric) {
         this.liveWeather = liveWeather;
+        this.isMetric = isMetric;
+    }
+
+    @Override protected boolean isMetric() {
+        return isMetric;
     }
 
     @Override public String getAverageWindDirection() {

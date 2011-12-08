@@ -256,10 +256,13 @@ public class WeatherBugDataUtils {
         Node h1 = doc.getRootElement().selectSingleNode("/h1");
         if (h1 != null)
             throw new WeatherBugServiceException(h1.getText());
-        else {
-            Logging.logDocument("unknown", "Unknown error", doc);
-            throw new WeatherBugServiceException("Unknown error");
-        }
+
+        Node title = doc.getRootElement().selectSingleNode("/title");
+        if (title != null && "Observations from , - USA".equals(title.getText()))
+            throw new WeatherBugServiceException("Missing station content");
+
+        Logging.logDocument("unknown", "Unknown error", doc);
+        throw new WeatherBugServiceException("Unknown error");
     }
 
     /**
