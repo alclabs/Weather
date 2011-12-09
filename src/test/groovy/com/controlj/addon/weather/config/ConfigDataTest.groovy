@@ -63,7 +63,7 @@ public class ConfigDataTest extends Specification
    Properties readProperties(String propData)
    {
       Properties properties = new Properties()
-      properties.load(new StringReader(propData))
+      properties.load(new StringBufferInputStream(propData))
       return properties
    }
 

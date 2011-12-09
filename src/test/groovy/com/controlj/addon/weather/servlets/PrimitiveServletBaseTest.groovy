@@ -28,6 +28,8 @@ import com.controlj.addon.weather.data.StationSource
 import com.controlj.addon.weather.data.ForecastSource
 import com.controlj.addon.weather.servlets.PrimitiveServletBase.FieldHandler
 import com.controlj.addon.weather.data.FieldType
+import com.controlj.addon.weather.config.ConfigData
+import com.controlj.green.addonsupport.access.SystemConnection
 
 class PrimitiveServletBaseTest extends Specification {
     def "Iterate Fields Normal"() {
@@ -40,11 +42,12 @@ class PrimitiveServletBaseTest extends Specification {
             for (int i=0; i<forecastData.length; i++) {
                 forecastData[i] = Mock(ForecastSource.class)
             }
+            ConfigData config = new ConfigData(Mock(SystemConnection));
 
             FieldHandler handler = Mock()
 
         when:
-            base.iterateFields(conditionData, stationData, forecastData, handler)
+            base.iterateFields(conditionData, stationData, forecastData, config, handler)
 
         then:
             conditionData.getTemperature() >> 42.0f
@@ -63,6 +66,7 @@ class PrimitiveServletBaseTest extends Specification {
             1 * handler.handleField(FieldType.FloatType, "wc_temperature", 42.0f)
             1 * handler.handleField(FieldType.StringType, "wc_windDirection", "Down")
             1 * handler.handleField(FieldType.StringType, "ws_name", "Wild Yonder")
+            1 * handler.handleField(FieldType.StringType, "ws_service", "nws")
             1 * handler.handleField(FieldType.FloatType, "wf0_highestTemperature", 101.0f)
             1 * handler.handleField(FieldType.FloatType, "wf1_highestTemperature", null)
             1 * handler.handleField(FieldType.FloatType, "wf1_lowestTemperature", 30.0f)

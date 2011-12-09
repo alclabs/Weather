@@ -85,7 +85,7 @@ public class PrimUpdate extends PrimitiveServletBase {
         ForecastSource[] forecastSources = weatherLookup.lookupForecastsData(entry, false);
 
         try {
-            iterateFields(conditionData, stationData, forecastSources, new FieldHandler() {
+            iterateFields(conditionData, stationData, forecastSources, config, new FieldHandler() {
                 //@Override
                 public void handleField(FieldType type, String fieldName, Object value) {
                     updatePrimitive(builder, type, fieldName, value);

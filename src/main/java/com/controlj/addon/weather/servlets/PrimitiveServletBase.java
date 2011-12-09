@@ -43,7 +43,8 @@ public class PrimitiveServletBase extends HttpServlet {
         return ConfigDataFactory.loadConfigData();
     }
 
-    protected void iterateFields(ConditionsSource conditionData, StationSource stationData, ForecastSource[] forecastSources, FieldHandler handler) throws EquipmentWriteException, WeatherServiceException {
+    protected void iterateFields(ConditionsSource conditionData, StationSource stationData, ForecastSource[] forecastSources,
+                                 ConfigData configData, FieldHandler handler) throws EquipmentWriteException, WeatherServiceException {
         FieldType fieldType;
 
         for (ConditionsField field : ConditionsField.values()) {
@@ -57,7 +58,6 @@ public class PrimitiveServletBase extends HttpServlet {
             }
         }
 
-        ConfigData configData = getConfigData();
         for (StationField field : StationField.values()) {
             String fieldName = field.getName();
             if (field.isSupported(stationData, configData)) {
