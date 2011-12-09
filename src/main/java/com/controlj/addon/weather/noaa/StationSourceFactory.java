@@ -23,6 +23,7 @@
 package com.controlj.addon.weather.noaa;
 
 import com.controlj.addon.weather.data.StationSource;
+import com.controlj.addon.weather.service.InvalidConfigurationDataException;
 import com.controlj.addon.weather.service.WeatherServiceException;
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -40,7 +41,7 @@ public class StationSourceFactory {
         this.latLongDoc = document;
     }
 
-   public StationSource findClosestWeatherStation(Document weatherStations) throws WeatherServiceException
+   public StationSource findClosestWeatherStation(Document weatherStations) throws InvalidConfigurationDataException
    {
       String text = getLatLong();
       float latitude;
@@ -53,18 +54,18 @@ public class StationSourceFactory {
       }
       catch (NumberFormatException e)
       {
-         throw new WeatherServiceException("Error parsing lat/lon from "+text, e);
+         throw new InvalidConfigurationDataException("Error parsing lat/lon from "+text, e);
       }
 
       String id = findClosestWeatherStationID(weatherStations, latitude, longitude);
       return getStationSource(weatherStations, id);
    }
 
-   private String getLatLong() throws WeatherServiceException
+   private String getLatLong() throws InvalidConfigurationDataException
       {
        Node node = latLongDoc.selectSingleNode("/dwml/latLonList");
        if (node == null) {
-           throw new WeatherServiceException("Can't find latitude/longitude from zip code");
+           throw new InvalidConfigurationDataException("Can't find latitude/longitude from zip code");
        }
        return node.getText();
    }

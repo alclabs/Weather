@@ -57,7 +57,7 @@ public class HTTPHelper {
             throws IOException, URISyntaxException {
         URI uri = URIUtils.createURI(scheme, host, port, path, encodeParams(params), null);
         return httpclient.execute(new HttpGet(uri), new ResponseHandler<Document>() {
-            @Override
+            //@Override
             public Document handleResponse(HttpResponse response) throws IOException {
                 if (response.getStatusLine().getStatusCode() != 200)
                     throw new IOException(response.getStatusLine().getReasonPhrase());
@@ -69,7 +69,7 @@ public class HTTPHelper {
                         SAXReader reader = new SAXReader();
                         return reader.read(new StringReader(responseString));
                     } catch (DocumentException e) {
-                        throw new IOException("Service returned \""+responseString+'"', e);
+                        throw (IOException)new IOException("Service returned \""+responseString+'"').initCause(e);
                     }
                 }
 

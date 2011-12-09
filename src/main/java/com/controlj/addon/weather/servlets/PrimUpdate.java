@@ -86,7 +86,7 @@ public class PrimUpdate extends PrimitiveServletBase {
 
         try {
             iterateFields(conditionData, stationData, forecastSources, new FieldHandler() {
-                @Override
+                //@Override
                 public void handleField(FieldType type, String fieldName, Object value) {
                     updatePrimitive(builder, type, fieldName, value);
                     builder.append("\n");

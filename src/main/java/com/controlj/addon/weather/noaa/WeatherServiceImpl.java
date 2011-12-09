@@ -53,7 +53,7 @@ public class WeatherServiceImpl implements WeatherService {
        return factory.findClosestWeatherStation(documentLoader.getWeatherStationsDoc());
    }
 
-   @Override
+   //@Override
    public ConditionsSource getConditionsSource(Map<String, String> configData, StationSource station, Map<String, String> entryData) throws WeatherServiceException {
       boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
       Document currentObs = documentLoader.getCurrentObs(station.getId());
@@ -61,7 +61,7 @@ public class WeatherServiceImpl implements WeatherService {
       return wsFactory.createSourceFromDocument(currentObs, isMetric);
    }
 
-   @Override
+   //@Override
    public ForecastSource[] getForecastSources(Map<String, String> configData, StationSource station, Map<String, String> entryData) throws WeatherServiceException {
        int requestedDays = 7;  //TODO: fix me!
        boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
@@ -77,14 +77,14 @@ public class WeatherServiceImpl implements WeatherService {
        return result;
    }
 
-    @Override
+    //@Override
     public Map<String, String> getDefaults() {
         Map<String, String> results = new HashMap<String, String>();
         results.put(CONFIG_KEY_UNITS, CONFIG_VALUE_UNITS_IMPERIAL);
         return results;
     }
 
-    @Override
+    //@Override
     public WeatherServiceUI getUI() {
         return ui;
     }

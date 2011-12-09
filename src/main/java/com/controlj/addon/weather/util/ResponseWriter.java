@@ -28,7 +28,6 @@ import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -140,7 +139,7 @@ public class ResponseWriter {
         try {
             jsonRoot.write(resp.getWriter());
         } catch (JSONException e) {
-            throw new IOException("Error writing JSON", e);
+            throw (IOException)new IOException("Error writing JSON").initCause(e);
         }
     }
 

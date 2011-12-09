@@ -157,10 +157,10 @@ public class AjaxController extends HttpServlet {
             StationSource stationSource = entry.getStationSource();
             if (stationSource != null) {
                 for (StationField field : StationField.values()) {
-                    if (field.isSupported(stationSource)) {
+                    if (field.isSupported(stationSource, configData)) {
                         Map<String, Object> row = new HashMap<String, Object>(2);
                         row.put(JSON_FIELD, field.getName());
-                        row.put(JSON_VALUE, formatValue(field.getValue(stationSource)));
+                        row.put(JSON_VALUE, formatValue(field.getValue(stationSource, configData)));
                         writer.appendToArray(JSON_STATION, row);
                     }
                 }

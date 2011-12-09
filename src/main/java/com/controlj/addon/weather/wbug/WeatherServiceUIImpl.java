@@ -39,12 +39,12 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         fieldList = new ArrayList<String>(fields.keySet());
     }
 
-    @Override @NotNull
+    //@Override @NotNull
     public List<String> getServiceEntryFields() {
         return fieldList;
     }
 
-    @Override @NotNull
+    //@Override @NotNull
     public String getServiceEntryHeaderName(String fieldName) {
         String result = fields.get(fieldName);
         if (result == null) {
@@ -53,14 +53,14 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         return result;
     }
 
-    @Override
+    //@Override
     public String getAddDialogHTML() {
         StringWriter result = new StringWriter();
         copyHTMLTemplate(WeatherServiceUIImpl.class, "adddialog.html", result);
         return result.getBuffer().toString();
     }
 
-    @Override
+    //@Override
     public String getServiceConfigHTML() {
         StringWriter result = new StringWriter();
         result.append(super.getServiceConfigHTML());
@@ -68,20 +68,20 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         return result.getBuffer().toString();
     }
 
-    @Override
+    //@Override
     public String getEntryDisplayName(WeatherConfigEntry entry) {
         String zip = entry.getServiceEntryData().get(FIELD_CITY);
         return zip;
     }
 
-    @Override
+    //@Override
     public void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         // super class handles the refresh rates
         super.updateConfiguration(configData, writer, req);
         updateConfigField(WeatherServiceImpl.CONFIG_KEY_UNITS, configData, writer, req);
     }
 
-    @Override
+    //@Override
     public void addRow(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         String path = req.getParameter("path");
         String cityKey = req.getParameter("locationlist");
@@ -113,11 +113,14 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
             } catch (InvalidConfigurationDataException e) {
                 writer.addError("Can't find station");
                 Logging.println("Can't find station", e);
+            } catch (IllegalStateException e) {
+                writer.addError("An entry for " + path + " has already been configured");
+                Logging.println("An entry for " + path + " has already been configured", e);
             }
         }
     }
 
-    @Override
+    //@Override
     public void dialogAction(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         String dialogaction = req.getParameter("dialogaction");
         if (PARAM_FINDCITY.equals(dialogaction)) {
@@ -221,6 +224,4 @@ public class WeatherServiceUIImpl extends WeatherServiceUIBase {
         }
         return key.substring(1);
     }
-
-
 }

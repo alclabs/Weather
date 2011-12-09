@@ -35,138 +35,119 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class WeatherServiceImpl implements WeatherService
-{
-   static final String CONFIG_KEY_UNITS = "units";
-   static final String CONFIG_VALUE_UNITS_IMPERIAL = "imperial";
-   static final String CONFIG_VALUE_UNITS_METRIC = "metric";
+public class WeatherServiceImpl implements WeatherService {
+    static final String CONFIG_KEY_UNITS = "units";
+    static final String CONFIG_VALUE_UNITS_IMPERIAL = "imperial";
+    static final String CONFIG_VALUE_UNITS_METRIC = "metric";
 
-   private static final AtomicReference<String> LICENSE_KEY = new AtomicReference<String>();
-   private WeatherServiceUI ui = new WeatherServiceUIImpl();
+    private static final AtomicReference<String> LICENSE_KEY = new AtomicReference<String>();
+    private WeatherServiceUI ui = new WeatherServiceUIImpl();
 
-   public StationSource resolveConfigurationToStation(boolean isZip, String cityZipCode, String stationCode) throws InvalidConfigurationDataException, WeatherServiceException
-   {
-      try
-      {
-         Station result = null;
-         Station[] stations;
-         if (isZip) {
-             stations = getService().getStationListByUSZipCode(cityZipCode);
-         } else {
-             stations = getService().getStationListByCityCode(cityZipCode);
-         }
-         for (Station station : stations) {
-            if (stationCode.equals(station.getId())) {
-                 result = station;
-                 break;
-             }
-         }
+    public StationSource resolveConfigurationToStation(boolean isZip, String cityZipCode, String stationCode) throws InvalidConfigurationDataException, WeatherServiceException {
+        try {
+            Station result = null;
+            Station[] stations;
+            if (isZip) {
+                stations = getService().getStationListByUSZipCode(cityZipCode);
+            } else {
+                stations = getService().getStationListByCityCode(cityZipCode);
+            }
+            for (Station station : stations) {
+                if (stationCode.equals(station.getId())) {
+                    result = station;
+                    break;
+                }
+            }
 
-         if (result == null)
-            throw new InvalidConfigurationDataException("Unknown station code "+stationCode);
+            if (result == null)
+                throw new InvalidConfigurationDataException("Unknown station code " + stationCode);
 
-         return new StationSourceAdapter(result);
-      }
-      catch (WeatherBugServiceException e)
-      {
-         throw new WeatherServiceException(e.getMessage(), e);
-      }
-   }
+            return new StationSourceAdapter(result);
+        } catch (WeatherBugServiceException e) {
+            throw new WeatherServiceException(e.getMessage(), e);
+        }
+    }
 
-   @Override
-   public ConditionsSource getConditionsSource(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException
-   {
-      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
-      try
-      {
-         LiveWeather liveWeather = getService().getLiveWeatherByStationID(stationSource.getId(), isMetric ? 1 : 0);
-         if (liveWeather == null)
-             throw new WeatherServiceException("Error getting live weather data");
-         return new ConditionsSourceAdapter(liveWeather, isMetric);
-      }
-      catch (WeatherBugServiceException e)
-      {
-         throw new WeatherServiceException(e.getMessage(), e);
-      }
-   }
+    //@Override
+    public ConditionsSource getConditionsSource(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException {
+        boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
+        try {
+            LiveWeather liveWeather = getService().getLiveWeatherByStationID(stationSource.getId(), isMetric ? 1 : 0);
+            if (liveWeather == null)
+                throw new WeatherServiceException("Error getting live weather data");
+            return new ConditionsSourceAdapter(liveWeather, isMetric);
+        } catch (WeatherBugServiceException e) {
+            throw new WeatherServiceException(e.getMessage(), e);
+        }
+    }
 
-   @Override
-   public ForecastSource[] getForecastSources(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException
-   {
-      boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
-      Forecasts forecasts;
-      try
-      {
-         forecasts = getService().getForecastByLatLong(stationSource.getLatitude(), stationSource.getLongitude(), isMetric ? 1 : 0);
-          if (forecasts == null)
-              throw new WeatherServiceException("Error getting live weather data");
-      }
-      catch (WeatherBugServiceException e)
-      {
-         throw new WeatherServiceException(e.getMessage(), e);
-      }
+    //@Override
+    public ForecastSource[] getForecastSources(Map<String, String> configData, StationSource stationSource, Map<String, String> entryData) throws WeatherServiceException {
+        boolean isMetric = CONFIG_VALUE_UNITS_METRIC.equals(configData.get(CONFIG_KEY_UNITS));
+        Forecasts forecasts;
+        try {
+            forecasts = getService().getForecastByLatLong(stationSource.getLatitude(), stationSource.getLongitude(), isMetric ? 1 : 0);
+            if (forecasts == null)
+                throw new WeatherServiceException("Error getting live weather data");
+        } catch (WeatherBugServiceException e) {
+            throw new WeatherServiceException(e.getMessage(), e);
+        }
 
-      Forecast[] forecastArray = forecasts.getForecasts();
-      ForecastSource[] results = new ForecastSource[forecastArray.length];
-      for (int i = 0; i < forecastArray.length; i++)
-         results[i] = new ForecastSourceAdapter(forecasts, forecastArray[i]);
+        Forecast[] forecastArray = forecasts.getForecasts();
+        ForecastSource[] results = new ForecastSource[forecastArray.length];
+        for (int i = 0; i < forecastArray.length; i++)
+            results[i] = new ForecastSourceAdapter(forecasts, forecastArray[i]);
 
-      return results;
-   }
+        return results;
+    }
 
-   public Location[] findLocations(String searchString) throws WeatherServiceException {
-       try {
-           return getService().getLocationList(searchString);
-       } catch (WeatherBugServiceException e) {
-           throw new WeatherServiceException(e.getMessage(), e);
-       }
-   }
+    public Location[] findLocations(String searchString) throws WeatherServiceException {
+        try {
+            return getService().getLocationList(searchString);
+        } catch (WeatherBugServiceException e) {
+            throw new WeatherServiceException(e.getMessage(), e);
+        }
+    }
 
-   public Station[] findStations(boolean isZip, String cityZipCode) throws WeatherServiceException {
-       try {
-           if (isZip) {
-               return getService().getStationListByUSZipCode(cityZipCode);
-           } else {
-               return getService().getStationListByCityCode(cityZipCode);
-           }
-       } catch (WeatherBugServiceException e) {
-           throw new WeatherServiceException(e.getMessage(), e);
-       }
-   }
+    public Station[] findStations(boolean isZip, String cityZipCode) throws WeatherServiceException {
+        try {
+            if (isZip) {
+                return getService().getStationListByUSZipCode(cityZipCode);
+            } else {
+                return getService().getStationListByCityCode(cityZipCode);
+            }
+        } catch (WeatherBugServiceException e) {
+            throw new WeatherServiceException(e.getMessage(), e);
+        }
+    }
 
-   @Override public Map<String, String> getDefaults()
-   {
-      return Collections.emptyMap();
-   }
+    //@Override
+    public Map<String, String> getDefaults() {
+        return Collections.emptyMap();
+    }
 
-   @Override public WeatherServiceUI getUI()
-   {
-      return ui;
-   }
+    //@Override
+    public WeatherServiceUI getUI() {
+        return ui;
+    }
 
-   private WeatherBugService getService() throws WeatherServiceException
-   {
-      return new WeatherBugService(getKey());
-   }
+    private WeatherBugService getService() throws WeatherServiceException {
+        return new WeatherBugService(getKey());
+    }
 
-   private String getKey() throws WeatherServiceException
-   {
-      String key = LICENSE_KEY.get();
-      if (key == null)
-      {
-         try
-         {
-            InputStream stream = getClass().getResourceAsStream("wbug-key.txt");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            key = reader.readLine();
-            LICENSE_KEY.set(key);
-         }
-         catch (IOException e)
-         {
-            throw new WeatherServiceException("Error reading WeatherBug license key", e);
-         }
-      }
+    private String getKey() throws WeatherServiceException {
+        String key = LICENSE_KEY.get();
+        if (key == null) {
+            try {
+                InputStream stream = getClass().getResourceAsStream("wbug-key.txt");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+                key = reader.readLine();
+                LICENSE_KEY.set(key);
+            } catch (IOException e) {
+                throw new WeatherServiceException("Error reading WeatherBug license key", e);
+            }
+        }
 
-      return key;
-   }
+        return key;
+    }
 }

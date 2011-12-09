@@ -57,10 +57,11 @@ public class PrimitiveServletBase extends HttpServlet {
             }
         }
 
+        ConfigData configData = getConfigData();
         for (StationField field : StationField.values()) {
             String fieldName = field.getName();
-            if (field.isSupported(stationData)) {
-                Object value = field.getValue(stationData);
+            if (field.isSupported(stationData, configData)) {
+                Object value = field.getValue(stationData, configData);
                 fieldType = field.getType();
                 if (fieldType != null) {
                     handler.handleField(fieldType, fieldName, value);

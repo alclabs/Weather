@@ -18,7 +18,7 @@ import java.io.Writer;
 public abstract class WeatherServiceUIBase implements WeatherServiceUI {
     //todo - override getServiceOptionHTML and generate refresh rates UI
 
-    @Override
+    //@Override
     public String getServiceConfigHTML() {
         StringWriter result = new StringWriter();
         copyHTMLTemplate(WeatherServiceUIBase.class, "baseserviceconfig.html", result);
@@ -56,7 +56,7 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
         return result;
     }
 
-    @Override
+    //@Override
     public void updateConfiguration(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         String conditionRateString = req.getParameter("conditionrefresh");
         String forecastRateString = req.getParameter("forecastrefresh");
@@ -89,7 +89,7 @@ public abstract class WeatherServiceUIBase implements WeatherServiceUI {
                                                      configData.getForecastsRefreshInMinutes());
     }
 
-    @Override
+    //@Override
     public void dialogAction(ConfigData configData, ResponseWriter writer, HttpServletRequest req) {
         // do nothing
     }

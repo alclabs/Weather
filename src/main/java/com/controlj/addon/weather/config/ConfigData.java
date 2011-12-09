@@ -184,8 +184,12 @@ public class ConfigData {
         return Collections.unmodifiableList(list);
     }
 
-    public void add(WeatherConfigEntry entry) {
+    public void add(WeatherConfigEntry entry) throws IllegalStateException {
         synchronized (list) {
+            for (WeatherConfigEntry configEntry : list) {
+                if (configEntry.getCpPath().equals(entry.getCpPath()))
+                    throw new IllegalStateException("duplicate cpPath");
+            }
             list.add(entry);
         }
     }
@@ -219,7 +223,7 @@ public class ConfigData {
                     }
                 });
             } catch (Exception e) {
-                throw new IOException("Error writing to data store", e);
+                throw (IOException)new IOException("Error writing to data store").initCause(e);
             }
         }
     }
@@ -234,7 +238,7 @@ public class ConfigData {
             this.properties = properties;
         }
 
-        @Override
+        //@Override
         public void run() {
             try {
                 systemConn.runWriteAction("Writing defaults to system datastore", new WriteAction() {

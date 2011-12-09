@@ -42,7 +42,7 @@ public class WeatherConfigEntry
 
    public WeatherConfigEntry(String cpPath, StationSource stationSource, Map<String, String> serviceEntryData)
    {
-      this.cpPath = cpPath;
+      this.cpPath = cpPath.trim();
       this.stationSource = stationSource;
       this.serviceEntryData = Collections.unmodifiableMap(serviceEntryData);
    }

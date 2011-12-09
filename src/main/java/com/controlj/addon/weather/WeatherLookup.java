@@ -97,7 +97,7 @@ public class WeatherLookup {
 
                 // periodically push this just so that it's kept up to date in the module (in case the equipment is reset to definition
                 // defaults or recreated or something)
-                equipmentHandler.writeStationData(entry.getStationSource());
+                equipmentHandler.writeStationData(entry.getStationSource(), configData);
             } catch (EquipmentWriteException e) {
                 Logging.println("Error writing forecast data to CP " + entry.getCpPath(), e);
                 errorMessage = "Error writing data";

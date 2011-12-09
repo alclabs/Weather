@@ -49,7 +49,8 @@ public class ScheduledWeatherLookup implements ServletContextListener {
     /**
      * Starts the scheduled update of weather information when the context starts.
      */
-    @Override public synchronized void contextInitialized(ServletContextEvent sce) {
+    //@Override
+    public synchronized void contextInitialized(ServletContextEvent sce) {
         ref.set(this);
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
@@ -63,7 +64,8 @@ public class ScheduledWeatherLookup implements ServletContextListener {
      * Stops the scheduled update of weather information when the context is destroyed.  This happens when
      * the server is shutting down, or if this add-on is disabled.
      */
-    @Override public synchronized void contextDestroyed(ServletContextEvent sce) {
+    //@Override
+    public synchronized void contextDestroyed(ServletContextEvent sce) {
         scheduledExecutorService.shutdownNow();
     }
 
@@ -91,7 +93,8 @@ public class ScheduledWeatherLookup implements ServletContextListener {
     }
 
     private static class ConditionsUpdate implements Runnable {
-        @Override public void run() {
+        //@Override
+        public void run() {
             try {
                 ConfigData configData = ConfigDataFactory.loadConfigData();
                 WeatherLookup weatherLookup = new WeatherLookup(configData);
@@ -116,7 +119,8 @@ public class ScheduledWeatherLookup implements ServletContextListener {
     }
 
     private static class ForecastsUpdate implements Runnable {
-        @Override public void run() {
+        //@Override
+        public void run() {
             try {
                 ConfigData configData = ConfigDataFactory.loadConfigData();
                 WeatherLookup weatherLookup = new WeatherLookup(configData);

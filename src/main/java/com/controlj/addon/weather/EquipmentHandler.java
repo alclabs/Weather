@@ -21,6 +21,7 @@
  */
 package com.controlj.addon.weather;
 
+import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.data.*;
 import com.controlj.addon.weather.util.Logging;
 import com.controlj.green.addonsupport.access.*;
@@ -59,7 +60,7 @@ public class EquipmentHandler {
         try {
             final String lookupString = "ABSPATH:1:" + path;
             presentValues = systemConnection.runReadAction(new ReadActionResult<Collection<PresentValue>>() {
-                @Override
+                //@Override
                 public Collection<PresentValue> execute(@NotNull SystemAccess systemAccess) throws Exception {
                     Location location = systemAccess.getTree(SystemTree.Geographic).resolve(lookupString);
                     if (location.getType() == LocationType.Equipment)
@@ -75,18 +76,18 @@ public class EquipmentHandler {
 
     public boolean hasFieldsToWrite() { return !presentValues.isEmpty(); }
 
-    public void writeStationData(final StationSource stationSource) throws EquipmentWriteException {
+    public void writeStationData(final StationSource stationSource, final ConfigData configData) throws EquipmentWriteException {
         if (!hasFieldsToWrite()) //short circuit if no data to update
             return;
 
         try {
             systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather station data", new WriteAction() {
-                @Override
+                //@Override
                 public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
                     workaroundFor41SP1b(systemAccess);
                     for (PresentValue presentValue : presentValues) {
                         String referenceName = presentValue.getLocation().getReferenceName();
-                        Float value = getValueIfStation(referenceName, stationSource);
+                        Float value = getValueIfStation(referenceName, stationSource, configData);
                         if (value != null)
                             setValue(presentValue, value);
                     }
@@ -103,7 +104,7 @@ public class EquipmentHandler {
 
         try {
             systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating current weather data", new WriteAction() {
-                @Override
+                //@Override
                 public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
                     workaroundFor41SP1b(systemAccess);
                     for (PresentValue presentValue : presentValues) {
@@ -125,7 +126,7 @@ public class EquipmentHandler {
 
         try {
             systemConnection.runWriteAction(FieldAccessFactory.newFieldAccess(), "Updating weather forecast data", new WriteAction() {
-                @Override
+                //@Override
                 public void execute(@NotNull WritableSystemAccess systemAccess) throws Exception {
                     workaroundFor41SP1b(systemAccess);
                     for (PresentValue presentValue : presentValues) {
@@ -141,13 +142,13 @@ public class EquipmentHandler {
         }
     }
 
-    private Float getValueIfStation(String referenceName, StationSource stationSource) {
+    private Float getValueIfStation(String referenceName, StationSource stationSource, ConfigData configData) {
         Matcher matcher = WEATHER_STATION_PATTERN.matcher(referenceName);
         if (matcher.matches()) {
             String fieldName = matcher.group(1);
             StationField field = StationField.find(fieldName);
             if (field != null)
-                return sanitizeValue(field.getValue(stationSource), field.getType());
+                return sanitizeValue(field.getValue(stationSource, configData), field.getType());
         }
         return null;
     }
@@ -206,7 +207,7 @@ public class EquipmentHandler {
 
     private static final class FieldReferenceAcceptor implements AspectAcceptor<PresentValue>
     {
-        @Override
+        //@Override
         public boolean accept(@NotNull PresentValue presentValue) {
             String referenceName = presentValue.getLocation().getReferenceName();
             Matcher stationPatternMatcher = WEATHER_STATION_PATTERN.matcher(referenceName);

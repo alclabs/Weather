@@ -21,6 +21,7 @@
  */
 package com.controlj.addon.weather.data;
 
+import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.util.Logging;
 
 import static com.controlj.addon.weather.data.FieldType.*;
@@ -49,7 +50,13 @@ public enum StationField
    /**
     * Field for {@link StationSource#getId()}
     */
-   id(StringType);
+   id(StringType),
+
+   /**
+    * Field for {@link com.controlj.addon.weather.config.ConfigData#getWeatherServiceEnum()}.name().  This
+    * belongs on a "ServiceField" field set, but I don't want to add a new one just for this!
+    */
+   service(StringType);
 
    /**
     * Finds a field given the {link #name} String for the field.  NOTE: this method does not accept the result of
@@ -86,11 +93,11 @@ public enum StationField
     * @param source the source of the data to return.
     * @return the value of this field from the source.  The type of the value can be determined using {@link #getType}.
     */
-   public Object getValue(StationSource source)
+   public Object getValue(StationSource source, ConfigData configData)
    {
       try
       {
-         return getRawValue(source);
+         return getRawValue(source, configData);
       }
       catch (UnsupportedOperationException e)
       {
@@ -103,11 +110,11 @@ public enum StationField
     * Returns true if this source supports this field, false if the source throws an UnsupportedOperationException
     * when retrieving the value of the field.
     */
-   public boolean isSupported(StationSource source)
+   public boolean isSupported(StationSource source, ConfigData configData)
    {
       try
       {
-         getRawValue(source);
+         getRawValue(source, configData);
          return true;
       }
       catch (UnsupportedOperationException e)
@@ -121,7 +128,7 @@ public enum StationField
     */
    public String getName() { return "ws_"+name(); }
 
-   private Object getRawValue(StationSource source)
+   private Object getRawValue(StationSource source, ConfigData configData)
    {
       switch (this)
       {
@@ -129,6 +136,7 @@ public enum StationField
          case longitude: return source.getLongitude();
          case name:      return source.getName();
          case id:        return source.getId();
+         case service:   return configData.getWeatherServiceEnum().name();
       }
       Logging.println("StationField.getRawValue() doesn't have a case for: " + this);
       throw new UnsupportedOperationException("StationField.getRawValue() doesn't have a case for: "+this);

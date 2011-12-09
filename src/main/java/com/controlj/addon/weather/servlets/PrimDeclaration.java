@@ -123,7 +123,7 @@ public class PrimDeclaration extends PrimitiveServletBase {
 
         try {
             iterateFields(conditionData, stationData, forecastSources, new FieldHandler() {
-                @Override
+                //@Override
                 public void handleField(FieldType type, String fieldName, Object value) {
                     definePrimitive(builder, type, fieldName, value);
                     builder.append("\n");
