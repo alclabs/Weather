@@ -257,7 +257,7 @@ public class WeatherBugDataUtils {
         if (h1 != null)
             throw new WeatherBugServiceException(h1.getText());
 
-        Node title = doc.getRootElement().selectSingleNode("/title");
+        Node title = doc.getRootElement().selectSingleNode("/rss/channel/title");
         if (title != null && "Observations from , - USA".equals(title.getText()))
             throw new WeatherBugServiceException("Missing station content");
 

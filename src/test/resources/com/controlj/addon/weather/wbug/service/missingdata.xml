@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rss xmlns:georss="http://www.georss.org/georss" version="2.0">
+  <channel>
+    <title>Observations from , - USA</title>
+    <link>?ZCode=Z5546&amp;Units=0&amp;stat=</link>
+    <description>Weatherbug, the owner of the world's largest weather network is now providing an API to it's weather data in the form of RSS. This will enable it's enthusiastic users to build their own applications.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 10 Dec 2011 13:00:00 GMT</lastBuildDate>
+    <ttl>60</ttl>
+    <image>
+      <title>Local Weather from WeatherBug</title>
+      <width>142</width>
+      <height>18</height>
+      <link>?ZCode=Z5546&amp;Units=0&amp;stat=</link>
+      <url>http://www.weatherbug.com/aws/imagesHmPg0604/img_wxbug_logo_whiteBG.gif</url>
+    </image>
+  </channel>
+</rss>
