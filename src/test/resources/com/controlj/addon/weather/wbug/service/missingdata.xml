@@ -2,7 +2,7 @@
 
 <rss xmlns:georss="http://www.georss.org/georss" version="2.0">
   <channel>
-    <title>Observations from , - USA</title>
+    <title>Observations from ,  - USA</title>
     <link>?ZCode=Z5546&amp;Units=0&amp;stat=</link>
     <description>Weatherbug, the owner of the world's largest weather network is now providing an API to it's weather data in the form of RSS. This will enable it's enthusiastic users to build their own applications.</description>
     <language>en-us</language>
