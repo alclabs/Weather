@@ -116,6 +116,21 @@ public enum ConditionsField {
     rainToday(FloatType),
 
     /**
+     * Field for {@link ConditionsSource#getRainMonth()}
+     */
+    rainMonth(FloatType),
+
+    /**
+     * Field for {@link ConditionsSource#getRainYear()}
+     */
+    rainYear(FloatType),
+
+    /**
+     * Field for {@link ConditionsSource#getLightPercent()}
+     */
+    lightPercent(FloatType),
+
+    /**
      * Field for {@link ConditionsSource#getObservationTime()}
      */
     observationTime(DateType),
@@ -231,6 +246,9 @@ public enum ConditionsField {
             case windDegrees:      return source.getWindDegrees();
             case rainRate:         return source.getRainRate();
             case rainToday:        return source.getRainToday();
+            case rainMonth:        return source.getRainMonth();
+            case rainYear:         return source.getRainYear();
+            case lightPercent:     return source.getLightPercent();
             case wetBulb:          return source.getWetBulb();
             case observationTime:  return source.getObservationTime();
             case observationStamp: return (int) (source.getObservationTime().getTime() / 600000);
@@ -257,6 +275,9 @@ public enum ConditionsField {
             case windDegrees:      return source.getWindDegreesUnits();
             case rainRate:         return source.getRainRateUnits();
             case rainToday:        return source.getRainTodayUnits();
+            case rainMonth:        return source.getRainMonthUnits();
+            case rainYear:         return source.getRainYearUnits();
+            case lightPercent:     return source.getLightPercentUnits();
             case wetBulb:          return source.getWetBulbUnits();
             case updateStamp:
             case observationStamp: return "10 minute intervals";

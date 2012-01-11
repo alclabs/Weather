@@ -137,6 +137,26 @@ public class ConditionsSourceAdapter extends ConditionsSource {
         return liveWeather.getRainTodayUnits();
     }
 
+    @Override public Float getRainMonth() {
+        return toFloatNullSafe(liveWeather.getRainMonth());
+    }
+
+    @Override public String getRainMonthUnits() {
+        return liveWeather.getRainMonthUnits();
+    }
+
+    @Override public Float getRainYear() {
+        return toFloatNullSafe(liveWeather.getRainYear());
+    }
+
+    @Override public String getRainYearUnits() {
+        return liveWeather.getRainYearUnits();
+    }
+
+    @Override public Float getLightPercent() {
+        return toFloatNullSafe(liveWeather.getLight());
+    }
+
     @Override public Float getWetBulb() {
         return toFloatNullSafe(liveWeather.getWetBulb());
     }
