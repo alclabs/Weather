@@ -235,6 +235,48 @@ public abstract class ConditionsSource {
     }
 
     /**
+     * Returns the amount of rainfall so far this month.
+     */
+    public Float getRainMonth() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the amount of rainfall so far this month.
+     */
+    public String getRainMonthUnits() {
+        return "";
+    }
+
+    /**
+     * Returns the amount of rainfall so far this year.
+     */
+    public Float getRainYear() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the amount of rainfall so far this year.
+     */
+    public String getRainYearUnits() {
+        return "";
+    }
+
+    /**
+     * Returns the relative percentage of daylight.
+     */
+    public Float getLightPercent() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the relative percentage of daylight.
+     */
+    public String getLightPercentUnits() {
+        return "%";
+    }
+
+    /**
      * Returns the temperature at which no evaporation occurs and temperature stops dropping.
      */
     public Float getWetBulb() {
