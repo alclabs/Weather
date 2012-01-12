@@ -250,7 +250,8 @@ $(document).ready(function() {
     addDialog = $("#adddialog").dialog({
         autoOpen:false,
         title:'Add New Location',
-        minWidth:550,
+        minWidth:700,   // this seems wide, but avoids a bug in IE with combo boxes that are too wide
+                        // test with wbug at zip code 60541
         modal:true,
 
         buttons: {

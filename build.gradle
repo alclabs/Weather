@@ -9,7 +9,7 @@ info {
   name = 'Weather'
   description = 'Periodically imports weather data from a selectable weather service into one or more locations '+
                 'for use in views and logic programming.'
-  version = '2.0 Pre-release '+new Date().format('yyyy/MM/dd kk:mm:ss')
+  version = '2.0' // Pre-release '+new Date().format('yyyy/MM/dd kk:mm:ss')
   vendor = 'ALC Labs'
 }
 
@@ -33,6 +33,9 @@ dependencies {
 
    js group: 'jquery', name: 'jquery', version: '1.7.1', classifier: 'min', ext: "js"
    js group: 'jquery', name: 'jquery-ui', version: '1.8.16', classifier: 'min', ext: "js"
+   // use below for debugging javascript
+   //js group: 'jquery', name: 'jquery', version: '1.7.1', ext: "js"
+   //js group: 'jquery', name: 'jquery-ui', version: '1.8.16', ext: "js"
 }
 
 // required for compatibility with 4.1 SP1b
