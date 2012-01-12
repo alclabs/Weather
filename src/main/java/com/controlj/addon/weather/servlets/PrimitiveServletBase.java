@@ -45,16 +45,13 @@ public class PrimitiveServletBase extends HttpServlet {
 
     protected void iterateFields(ConditionsSource conditionData, StationSource stationData, ForecastSource[] forecastSources,
                                  ConfigData configData, FieldHandler handler) throws EquipmentWriteException, WeatherServiceException {
-        FieldType fieldType;
-
         for (ConditionsField field : ConditionsField.values()) {
             String fieldName = field.getName();
             if (field.isSupported(conditionData)) {
                 Object value = field.getValue(conditionData);
-                fieldType = field.getType();
-                if (fieldType != null) {
-                    handler.handleField(fieldType, fieldName, value);
-                }
+                handler.handleField(field.getType(), fieldName, value);
+                String units = field.getUnits(conditionData);
+                handler.handleField(FieldType.StringType, fieldName+"Unit", units);
             }
         }
 
@@ -62,10 +59,7 @@ public class PrimitiveServletBase extends HttpServlet {
             String fieldName = field.getName();
             if (field.isSupported(stationData, configData)) {
                 Object value = field.getValue(stationData, configData);
-                fieldType = field.getType();
-                if (fieldType != null) {
-                    handler.handleField(fieldType, fieldName, value);
-                }
+                handler.handleField(field.getType(), fieldName, value);
             }
         }
 
@@ -75,10 +69,9 @@ public class PrimitiveServletBase extends HttpServlet {
                 String fieldName = field.getName(sourceCount);
                 if (field.isSupported(forecastData)) {
                     Object value = field.getValue(forecastData);
-                    fieldType = field.getType();
-                    if (fieldType != null) {
-                        handler.handleField(fieldType, fieldName, value);
-                    }
+                    handler.handleField(field.getType(), fieldName, value);
+                    String units = field.getUnits(forecastData);
+                    handler.handleField(FieldType.StringType, fieldName+"Unit", units);
                 }
             }
             sourceCount++;
