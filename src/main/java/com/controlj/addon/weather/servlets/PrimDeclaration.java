@@ -71,7 +71,7 @@ public class PrimDeclaration extends PrimitiveServletBase {
             "updateWeatherData(\"";
 
         if (location == null) {
-            writePrefixScript(out);
+            writePrefixScript(out, info.getName());
         } else {
             try {
                 ConfigData config = getConfigData();
@@ -93,9 +93,9 @@ public class PrimDeclaration extends PrimitiveServletBase {
 
     }
 
-    private void writePrefixScript(PrintWriter out) {
+    private void writePrefixScript(PrintWriter out, String addonName) {
         out.println("document.write(\"<iframe style=\\\"visibility:hidden\\\" width=0 height=0 src=\\\"about:blank\\\" id=\\\"dataupdate\\\" name=\\\"dataupdate\\\"></iframe>\")");
-        out.println("document.write(\"<script src=\\\"/weather/data?title=\"+escape(document.title)+\"\\\"></script>\")");
+        out.println("document.write(\"<script src=\\\"/"+addonName+"/data?title=\"+escape(document.title)+\"\\\"></script>\")");
     }
 
     private static String getLocation(HttpServletRequest request) {
