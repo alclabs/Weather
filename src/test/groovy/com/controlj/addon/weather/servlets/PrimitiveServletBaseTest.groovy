@@ -51,25 +51,37 @@ class PrimitiveServletBaseTest extends Specification {
 
         then:
             conditionData.getTemperature() >> 42.0f
+            conditionData.getTemperatureUnits() >> "F"
             conditionData.getWindDirection() >> "Down"
             conditionData._ >> { throw new UnsupportedOperationException() }
             stationData.getName() >> "Wild Yonder"
             stationData._ >> { throw new UnsupportedOperationException() }
             forecastData[0].highestTemperature >> 101.0f
+            forecastData[0].highestTemperatureUnits >> "F"
             forecastData[1].lowestTemperature >> 30.0f
+            forecastData[1].lowestTemperatureUnits >> "F"
             forecastData[1].highestTemperature >> null
+            forecastData[1].highestTemperatureUnits >> "F"
             for (int i=0; i<forecastData.length; i++) {
                 forecastData[i]._ >> { throw new UnsupportedOperationException() }
             }
             3 * handler.handleField(FieldType.DateType, {it.endsWith("_updateTime")}, _)
+            3 * handler.handleField(FieldType.StringType, {it.endsWith("_updateTimeUnit")}, "")
             3 * handler.handleField(FieldType.IntegerType, {it.endsWith("_updateStamp")}, _)
+            3 * handler.handleField(FieldType.StringType, {it.endsWith("_updateStampUnit")}, "10 minute intervals")
+            //1 * handler.handleField(FieldType.StringType, "wc_updateStampUnit", "10 minute intervals")
             1 * handler.handleField(FieldType.FloatType, "wc_temperature", 42.0f)
+            1 * handler.handleField(FieldType.StringType, "wc_temperatureUnit", "F")
             1 * handler.handleField(FieldType.StringType, "wc_windDirection", "Down")
+            1 * handler.handleField(FieldType.StringType, "wc_windDirectionUnit", "")
             1 * handler.handleField(FieldType.StringType, "ws_name", "Wild Yonder")
             1 * handler.handleField(FieldType.StringType, "ws_service", "nws")
             1 * handler.handleField(FieldType.FloatType, "wf0_highestTemperature", 101.0f)
+            1 * handler.handleField(FieldType.StringType, "wf0_highestTemperatureUnit", "F")
             1 * handler.handleField(FieldType.FloatType, "wf1_highestTemperature", null)
+            1 * handler.handleField(FieldType.StringType, "wf1_highestTemperatureUnit", "F")
             1 * handler.handleField(FieldType.FloatType, "wf1_lowestTemperature", 30.0f)
+            1 * handler.handleField(FieldType.StringType, "wf1_lowestTemperatureUnit", "F")
             0 * handler._
     }
 }
