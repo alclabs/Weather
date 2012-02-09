@@ -22,6 +22,8 @@
 
 package com.controlj.addon.weather.servlets;
 
+import com.controlj.addon.weather.Licensing;
+import com.controlj.addon.weather.ScheduledWeatherLookup;
 import com.controlj.addon.weather.WeatherLookup;
 import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
@@ -105,24 +107,29 @@ public class AjaxController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ConfigData configData = getConfigData(req);
         ResponseWriter writer = new ResponseWriter(resp);
-
-        String action = req.getParameter(ACTION_PARAM_NAME);
-        if (ACTION_INIT.equals(action)) {
-            retrieveData(configData, writer);
-            retrieveUI(configData, writer);
-        } else if (ACTION_UPDATE.equals(action)) {
-            retrieveData(configData, writer);
-        } else if (ACTION_SHOWDATA.equals(action)) {
-            retrieveData(configData, writer);
-            showData(configData, writer, req);
-        } else if (ACTION_UI.equals(action)) {
-            uiAction(configData, writer, req);
+        if (!Licensing.isLicensed()) {
+            writer.putString("error","ERROR: This add-on requires the Enterprise license option.");
         } else {
-            String message = "Unknown action \"" + action + "\" specified for controller";
-            writer.addError(message);
-            Logging.println("ERROR:" + message);
+
+            ConfigData configData = getConfigData(req);
+
+            String action = req.getParameter(ACTION_PARAM_NAME);
+            if (ACTION_INIT.equals(action)) {
+                retrieveData(configData, writer);
+                retrieveUI(configData, writer);
+            } else if (ACTION_UPDATE.equals(action)) {
+                retrieveData(configData, writer);
+            } else if (ACTION_SHOWDATA.equals(action)) {
+                retrieveData(configData, writer);
+                showData(configData, writer, req);
+            } else if (ACTION_UI.equals(action)) {
+                uiAction(configData, writer, req);
+            } else {
+                String message = "Unknown action \"" + action + "\" specified for controller";
+                writer.addError(message);
+                Logging.println("ERROR:" + message);
+            }
         }
         writer.write();
     }

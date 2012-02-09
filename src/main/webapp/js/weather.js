@@ -207,6 +207,11 @@ function handleResultData(data) {
 Adds the parts of the UI contributed by the WeatherServiceUI
  */
 function handleUIResults(data) {
+    if (data.error) {   // currently just used for licensing error
+        $("#errortext").text(data.error);
+        $("#error").css("display","block")
+        return;
+    }
     $("#adddialog").html(data.adddialog)
 
     $("#serviceconfig").html(data.serviceconfig)

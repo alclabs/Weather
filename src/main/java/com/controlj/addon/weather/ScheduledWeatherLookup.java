@@ -25,6 +25,7 @@ import com.controlj.addon.weather.config.ConfigData;
 import com.controlj.addon.weather.config.ConfigDataFactory;
 import com.controlj.addon.weather.config.WeatherConfigEntry;
 import com.controlj.addon.weather.util.Logging;
+import com.controlj.green.addonsupport.LicensedFeatures;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -51,6 +52,9 @@ public class ScheduledWeatherLookup implements ServletContextListener {
      */
     //@Override
     public synchronized void contextInitialized(ServletContextEvent sce) {
+        if (!Licensing.isLicensed()) {
+            return;
+        }
         ref.set(this);
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
